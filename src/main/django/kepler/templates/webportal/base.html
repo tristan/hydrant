@@ -1,0 +1,18 @@
+<html lang="en">
+	<head>
+		<title>{% block title %}{% endblock %} | KEPLER@JCU</title>
+		<script type="text/javascript" src="/media/js/js-graph-it.js"></script>
+		<link rel="stylesheet" type="text/css" href="/media/css/js-graph-it.css">
+		<style>
+			{% block extrastyle %}{% endblock %}
+		</style>
+		{% block extrahead %}{% endblock %}
+	</head>
+	<body onload="initPageObjects();">
+	{% block header %}{% endblock %}
+	
+	{% block canvas %}{% endblock %}
+	
+	{% block footer %}{% endblock %}
+	</body>
+</html>

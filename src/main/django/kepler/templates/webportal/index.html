@@ -1,0 +1,7 @@
+{% if workflows %}
+	<ul>
+	{% for key, value in workflows.items %}
+		<li><a href="{% url workflow_view workflow_id=key %}">{{ key }}</a></li>
+	{% endfor %}
+	</ul>
+{% endif %}
