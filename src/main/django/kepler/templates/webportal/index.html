@@ -1,7 +1,11 @@
-{% if workflows %}
+{% extends "webportal/base.html" %}
+{% if results.workflows %}
+{% block title %}Workflow list{% endblock %}
+{% block body %}
 	<ul>
-	{% for key, value in workflows.items %}
-		<li><a href="{% url workflow_view workflow_id=key %}">{{ key }}</a></li>
+	{% for i in results.workflows %}
+		<li><a href="{% url workflow_view workflow_id=i.id %}">{{ i.id }}</a></li>
 	{% endfor %}
 	</ul>
+{% endblock %}
 {% endif %}

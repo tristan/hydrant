@@ -1,18 +1,41 @@
+{% load debugtable %}
 <html lang="en">
 	<head>
 		<title>{% block title %}{% endblock %} | KEPLER@JCU</title>
 		<script type="text/javascript" src="/media/js/js-graph-it.js"></script>
+		<script type="text/javascript" src="/media/js/prototype.js"></script>
 		<link rel="stylesheet" type="text/css" href="/media/css/js-graph-it.css">
-		<style>
-			{% block extrastyle %}{% endblock %}
-		</style>
 		{% block extrahead %}{% endblock %}
+		<style>
+			table.debug {
+		    	border-width: 1px;
+		    	border-style: outset;
+		    	border-spacing: 0px;
+		    }
+		    table.debug tr {
+		    	border-width: 1px;
+		    	border-style: inset;
+		    	border-padding: 3px;
+		    }
+		    table.debug td {
+		    	border-width: 1px;
+		    	border-style: inset;
+		    	border-padding: 3px;
+		    }
+		</style>
 	</head>
 	<body onload="initPageObjects();">
-	{% block header %}{% endblock %}
+		{% block header %}{% endblock %}
 	
-	{% block canvas %}{% endblock %}
+		{% block body %}{% endblock %}
 	
-	{% block footer %}{% endblock %}
+		{% block footer %}{% endblock %}
+		<p style="font-size: x-small;">Powered by <a href="http://www.python.org/">Python</a>, <a href="http://www.jython.org/">Jython</a>, <a href="http://www.djangoproject.com/">Django</a> and <a href="http://www.kepler-project.org/">Kepler</a>/<a href="http://ptolemy.berkeley.edu/ptolemyII/">Ptolemy II</a></p>
+		
+		{% if results.items %}
+			{% debug_table results.items %}
+		{% else %}
+			{{ results }}
+		{% endif %}
 	</body>
 </html>

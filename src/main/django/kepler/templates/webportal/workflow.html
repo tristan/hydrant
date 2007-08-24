@@ -1,94 +1,111 @@
 {% extends "webportal/base.html" %}
-{% if workflow %}
+{% if results.workflow %}
 	{% block title %}
-		{% if workflow.base_workflow %}{{ workflow.base_workflow }}:{% endif %}{{ workflow.name }}
+		{% if results.workflow.base_workflow %}{{ results.workflow.base_workflow }}:{% endif %}{{ results.workflow.name }}
 	{% endblock %}
-	{% block extrastyle %}
+	{% block extrahead %}
+		<style>
+		.annotation { position: absolute; 
+	    }
 	 	.director { position: absolute; 
 					font-size: small; 
+					font-family: sans-serif;
+	    }
+	    .crumbs {   font-size: small; 
+					font-family: sans-serif;
 	    }
 		.actor { position: absolute;
 				 font-size: small;
+				 font-family: sans-serif;
 		}
 	    .compactor { position: absolute; 
 					 font-size: small;
+					 font-family: sans-serif;
 		}
+		
+		a img { border: 0; }
+		
 	  	.vertex { position: absolute; 
 
 	    	    }
 	   	.port { position: absolute; 
-
+				font-size: small;
+				font-family: sans-serif;
 	    	    }
-	    table.debug {
+
+	    table.main {
 	    		border-width: 1px;
 	    		border-style: outset;
 	    		border-spacing: 0px;
+	    		width: 100%;
 	    }
-	    table.debug tr {
-	    		border-width: 1px;
+	    table.main tr {
+	    		border-width: 0px;
 	    		border-style: inset;
 	    		border-padding: 3px;
 	    }
-	    table.debug td {
-	    		border-width: 1px;
+	    table.main td {
+	    		border-width: 0px;
 	    		border-style: inset;
 	    		border-padding: 3px;
+	    		vertical-align:
 	    }
-	{% endblock %}   
+	    div.small {
+	    	border-width: 0px;
+	    	border-spacing: 0px;
+	    	border-padding: 0px;
+	    	display: table;
+	    	vertical-align: middle;
+	    }
+	    div.smalltr {
+	    	border-width: 0px;
+	    	border-spacing: 0px;
+	    	border-padding: 0px;
+	    	display: table-row;
+	    	vertical-align: middle;
+	    }
+	    div.smalltd {
+	    	border-width: 0px;
+	    	border-spacing: 0px;
+	    	border-padding: 0px;
+	    	display: table-cell;
+	    	vertical-align: middle;
+	    }
+	    </style>
+	    <script type="text/javascript">
+
+	    	{% if results.workflow.base_workflow %}
+	    		workflow='{{ results.workflow.base_workflow }}/';
+	    		path = '{{ results.workflow.name }}/'
+	    	{% else %}
+	    		workflow='{{ results.workflow.name }}/';
+	    		path = ''
+	    	{% endif %}
+    		{% if results.workflow.crumbs %}
+    			path = '{{ results.workflow.name }}/'
+    			{% for crumb in results.workflow.crumbs %}
+    				path += '{{ crumb }}/';
+    			{% endfor %}
+    		{% else %}
+    		{% endif %}
+	    	function update_properties(actorname) {
+	    		new Ajax.Updater('properties', '/webportal/workflow/' + workflow + 'properties/' + path + actorname + '/', {asynchronous:true});
+	    		//alert('/' + workflow + 'getproperties/' + path + actorname + '/');
+	    		
+	    	}
+	    </script>
+	{% endblock %}
 	{% block header %}
-	<p><a href="{% url index_view %}">home</a>{% if workflow.base_workflow %} | <a href="{% url workflow_view workflow_id=workflow.base_workflow %}">base workflow</a> {% endif %}{% if workflow.parent %} | <a href="{% url composite_view workflow_id=workflow.base_workflow,actor_path=workflow.parent %}">up one level</a>{% endif %}</p>
-	{% endblock %}
-	{% block canvas %}
-	<div class="canvas" id="mainCanvas" style="width: 800px; height: 600px; border: 1px solid black;">
-	{% if workflow.director %}
-		<div class="director draggable" 
-				onDblclick="alert('double clicked')" 
-				style="left: {{ workflow.director.location.x }}px; top: {{ workflow.director.location.y }}px">
-			<img id="{{ workflow.director.name }}" class="block" src="/media/images/director.png"/>
-			<div>{{ workflow.director.name }}</div>
-		</div>
-	{% endif %}
-	{% for actor in workflow.actors %}
-		<div class="actor draggable"  
-			style="left: {{ actor.location.x }}px; top: {{ actor.location.y }}px">
-			<img id="{{ actor.name }}" class="block" src="/media/images/basic-actor.png"/>
-			<div style="overflow: auto">{{ actor.name }}</div>
-		</div>
-	{% endfor %}
-	
-	{% for actor in workflow.compositeactors %}
-		<div class="compactor draggable" 
-			style="left: {{ actor.location.x }}px; top: {{ actor.location.y }}px">
-			<a style="cursor: pointer;" href="{% if workflow.base_workflow %}{% else %}composite/{{ workflow.name }}/{% endif %}{{ actor.name }}"><img id="{{ actor.name }}" class="block" src="/media/images/composite.png"/></a>
-			<div style="overflow: auto">{{ actor.name }}</div>
-		</div>
-	{% endfor %}
-	
-	{% for port in workflow.ports %}
-		<div class="port draggable" 		
-			style="left: {{ port.location.x }}px; top: {{ port.location.y }}px">
-			<img class="block" id="{{ port.name }}" src="/media/images/in-port.png"/>
-		</div>
-	{% endfor %}
-	
-	{% for vertex in workflow.vertices %}
-		<div class="vertex draggable"
-			style="left: {{ vertex.location.x }}px; top: {{ vertex.location.y }}px">
-			<img class="block" id="{{ vertex.name }}" src="/media/images/vertex.png"/>
-		</div>
-	{% endfor %}
-	{% for connection in workflow.connections %}
-		<div class="connector {{ connection.start }} {{ connection.end }}"></div>
-	{% endfor %}
-	</div>
-	{% endblock %}
-	{% block footer %}
-		<table class="debug">
-		{% for i,j in workflow.items %}
-			<tr><td>{{ i }}</td><td>{{ j }}</td></tr>
+	<p><a href="{% url index_view %}">home</a>{% if results.workflow.base_workflow %}</p><p class="crumbs"><a href="{% url workflow_view workflow_id=results.workflow.base_workflow %}">base workflow</a> {% endif %}
+	{% if results.workflow.crumbs %}
+		{% for crumb in results.workflow.crumbs %}
+			: <a href="{% url composite_view workflow_id=results.workflow.base_workflow,composite_path=crumb.path %}">{{ crumb.name }}</a>
 		{% endfor %}
-		</table>
+	{% endif %}</p>
+	{% endblock %}
+	{% block body %}
+		{% include "webportal/includes/canvas.html" %}
 	{% endblock %}
 {% else %}
-		<p>No workflow available</p>
+		<p>No Workflow available</p>
 {% endif %}

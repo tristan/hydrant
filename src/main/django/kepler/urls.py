@@ -9,4 +9,5 @@ urlpatterns = patterns('',
     (r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': MEDIA_ROOT, 'show_indexes': True}),
     (r'^admin/', include('django.contrib.admin.urls')),
     (r'^webportal/', include('kepler.webportal.urls')),
+    (r'^backend/', include('kepler.backend.urls')),
 )

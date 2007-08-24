@@ -1,0 +1,54 @@
+{% if results.workflow %}
+	<div style="display: table; border: 1px solid; width: 100%;">
+		<div style="display: table-cell; vertical-align: top;">
+			<div class="canvas" id="mainCanvas" style="width: {{ results.workflow.canvas.x }}px; height: {{ results.workflow.canvas.y }}px; border: 1px solid black;">
+				{% if results.workflow.director %}
+					<div class="director draggable" 
+							style="left: {{ results.workflow.director.location.x }}px; top: {{ results.workflow.director.location.y }}px">
+						<div>{{ results.workflow.director.name }}</div>
+						<img id="{{ results.workflow.director.name }}" class="block" src="/media/images/director.png"
+							onDblclick="update_properties('{{ results.workflow.director.name }}');"
+						/>
+					</div>
+				{% endif %}
+				{% for actor in results.workflow.actors %}
+					{% include "webportal/includes/actor.html" %}
+				{% endfor %}
+				{% for port in results.workflow.ports %}
+					<div class="port draggable" 		
+						style="left: {{ port.location.x }}px; top: {{ port.location.y }}px">
+						<div style="overflow: auto">{{ port.name }}</div>
+						<img class="block" id="{{ port.id }}" src="/media/images/in-port.png"/>
+					</div>
+				{% endfor %}
+				
+				{% for vertex in results.workflow.vertices %}
+					<div class="vertex draggable"
+						style="left: {{ vertex.location.x }}px; top: {{ vertex.location.y }}px">
+						<img class="block" id="{{ vertex.name }}" src="/media/images/vertex.png"/>
+					</div>
+				{% endfor %}
+				{% for link in results.workflow.links %}
+					<div class="connector {{ link.0 }} {{ link.1 }}"></div>
+				{% endfor %}
+				{% for annotation in results.workflow.annotations %}
+					<div class="annotation draggable"
+						style="left: {{ annotation.location.x }}px; top: {{ annotation.location.y }}px;
+								color: #{{ annotation.text_color }};
+								font-family: {{ annotation.font_family }};
+								font-size: {{ annotation.text_size }}pt;
+								{% ifequal annotation.bold 'true' %}
+									font-weight: bold;
+								{% endifequal %}
+								{% ifequal annotation.italic 'true' %}
+									font-style: italic;
+								{% endifequal %}">
+						{{ annotation.text|linebreaks }}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		<div id="properties" style="display: table-cell; overflow: false;">
+		</div>
+	</div>
+{% endif %}
