@@ -1,0 +1,22 @@
+{% extends "admin/base_site.html" %}
+{% load i18n %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url index_view %}">Home</a> &rsaquo;
+    {% if crumbs %}
+    {% for crumb in crumbs %}
+    <a href="{{ crumb.path }}">{{ crumb.name }}</a> &rsaquo;
+    {% endfor %}
+    {% endif %}
+    Delete Workflow
+</div>
+{% endblock %}
+{% block content %}
+    <p>Are you sure you want to delete the workflow "{{ workflow.name }}"?</p>
+    <form action="" method="post">
+    <div>
+    <input type="hidden" name="post" value="yes" />
+    <input type="submit" value="{% trans "Yes, I'm sure" %}" />
+    </div>
+    </form>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends "kepler/base_site.html" %}
+{% load i18n %}
+
+{% block stylesheet %}{{ MEDIA_URL }}css/form.css{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/prototype.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms.css" />
+<style>
+    .button { background: #7CA0C7 url({{ MEDIA_URL }}img/kepler/default-bg.gif); repeat-x scroll center bottom; border: 2px solid #5B80B2; color: white; font-weight: bold;
+}
+
+</style>
+<script>
+</script>
+{% endblock %}
+{% block coltype %}colM{% endblock %}
+{% block bodyclass %}{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url index_view %}">Home</a> &rsaquo;
+    {% if crumbs %}
+    {% for crumb in crumbs %}
+    <a href="{{ crumb.path }}">{{ crumb.name }}</a> &rsaquo;
+    {% endfor %}
+    {% endif %}
+    {{ template.name }}
+</div>
+{% endblock %}
+{% block extrabodyparams %}{% endblock %}
+{% block content %}
+<div id="content-main">
+    <form action="" method="post" id="{{ template.name }}_template_form">
+        <fieldset class="module aligned ()">
+
+        {% for field in fields %}
+        <div class="form-row">
+            <label for="id_{{ field.property_id }}" class="required">{{ field.display_name }}:</label>
+            <textarea id="id_{{ field.property_id }}" class="vLargeTextField required" name="{{ field.property_id }}" rows="5" cols="20">{{ field.default_value }}</textarea>
+            <p>
+            {{ field.description }}
+            </p>
+        </div>
+        {% endfor %}
+    </form>
+    <div class="submit-row">
+        <input type="submit" value="Submit" class="default[type='submit']"/>
+        <input type="submit" value="Cancel" name="_cancel" class="default[type='submit']"/>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,93 @@
+{% extends "kepler/base_site.html" %}
+{% load i18n %}
+
+{% block stylesheet %}{{ MEDIA_URL }}css/dashboard.css{% endblock %}
+{% block coltype %}colMS{% endblock %}
+{% block extrahead %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms.css"/>
+{% endblock %}
+{% block bodyclass %}dashboard{% endblock %}
+{% block breadcrumbs %}{% endblock %}
+{% block content %}
+<div id="content-main">
+
+    {% if user.is_authenticated %}
+    <ul class="object-tools">
+        <li>
+            <a href="{% url upload_workflow_view %}" class="addlink">Upload Workflow</a>
+        </li>
+    </ul>
+    {% endif %}
+
+    <div class="module">
+    <table summary="{% blocktrans with app.name as name %}Models available in the {{ name }} application.{% endblocktrans %}">
+    <caption>{% trans 'Workflows in repository' %}</caption>
+    {% if workflow_list %}
+        {% for model in workflow_list %}
+        <tr>
+            <th scope="row"><a href="{{ model.view_url }}">{{ model.name|escape }}</a></th>
+            <td><a class="changelink" href="{{ model.view_url }}edit/">Edit</a></td>
+            <td><a class="addlink" href="{{ model.view_url }}template/">Template</a></td>
+            <td><a class="deletelink" href="{{ model.view_url }}delete/">Delete</a></td>
+            <td>{{ model.owner }}</td>
+        {% if model.public %}
+            <td>{% trans 'Public' %}</a></td>
+        {% else %}
+            <td>{% trans 'Private' %}</td>
+        {% endif %}
+        </tr>
+        {% endfor %}
+    {% else %}
+        <th>{% trans "There are no workflows in the repository" %}</th>
+        <td></td>
+    {% endif %}
+    </table>
+    </div>
+
+    <!-- TEMPLATING BLOCK -->
+    <div class="module">
+    <table summary="{% blocktrans with app.name as name %}Models available in the {{ name }} application.{% endblocktrans %}">
+    <caption>{% trans 'Available Templates' %}</caption>
+    {% if template_list %}
+        {% for template in template_list %}
+        <tr>
+            <th scope="row"><a href="{% url template_view template.id %}">{{ template.name|escape }}</a></th>
+            <td><a class="changelink" href="{% url edit_template template.id %}">Edit</a></td>
+            <td><a class="deletelink" href="{% url delete_template template.id %}">Delete</a></td>
+        </tr>
+        {% endfor %}
+    {% else %}
+        <th>{% trans "There are no templates available" %}</th>
+        <td></td>
+    {% endif %}
+    </table>
+    </div>
+
+    <!-- WORKSPACE BLOCK -->
+{% if user.is_authenticated %}
+    <div class="module">
+        <table summary="Workspaces active">
+        <caption>{% trans 'Active Workspaces' %}</caption>
+        {% if workspace_list %}
+            {% for workspace in workspace_list %}
+                <tr>
+                    <th scope="row"><a href="{% url portal_workspace_view workspace.id %}">{{ workspace.name }}{% if workspace.is_template %} (template){% endif %}</a></th>
+                    <td><a class="savelink" href="{% url portal_workspace_view workspace.id %}save/">Save</a></td>
+                    <td><a class="deletelink" href="{% url portal_workspace_view workspace.id %}close/">Close</a></td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <th>{% trans "You have no active workspaces" %}</th>
+            <td></td>
+        {% endif %}
+        </table>
+        </div>
+    </div>
+{% endif %}
+</div>
+{% endblock %}
+{% block sidebar %}
+<div id="content-related">
+{% include 'kepler/login_sidebar.html' %}
+</div>
+{% endblock %}

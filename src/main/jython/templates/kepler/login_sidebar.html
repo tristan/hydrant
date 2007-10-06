@@ -1,0 +1,23 @@
+{% if not user.is_authenticated %}
+    <div class="module" id="login-module">
+        <h2>Login</h2>
+        <form action="/accounts/login/" method="post" id="login-form">
+            <div class="form-row">
+                <label for="id_username">Username:</label> <input type="text" name="username" id="id_username" />
+            </div>
+            <div class="form-row">
+                <label for="id_password">Password:</label> <input type="password" name="password" id="id_password" />
+                <input type="hidden" name="this_is_the_login_form" value="0" />
+                <input type="hidden" name="post_data" value="{{ post_data }}" /> {#<span class="help">Have you <a href="/password_reset/">forgotten your password</a>?</span>#}
+                <input type="hidden" name="next" value="{{ next }}" />
+            </div>
+            <div class="submit-row">
+                <label>&nbsp;</label><input type="submit" value="Log in" />
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript">
+        document.getElementById('id_username').focus()
+    </script>
+
+{% endif %}

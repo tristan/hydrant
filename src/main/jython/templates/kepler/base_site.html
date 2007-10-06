@@ -1,0 +1,10 @@
+{% extends "kepler/base.html" %}
+{% load i18n %}
+
+{% block title %}{{ title|escape }} | {% trans 'Kepler web service' %}{% endblock %}
+
+{% block branding %}
+<h1 id="site-name">{% trans 'Kepler Templating Service' %}</h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

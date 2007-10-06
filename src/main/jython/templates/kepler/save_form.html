@@ -1,0 +1,45 @@
+{% extends "kepler/base_site.html" %}
+{% block extrahead %}{{ block.super }}
+{% endblock %}
+{% block stylesheet %}{{ MEDIA_URL }}css/forms.css{% endblock %}
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+{% block bodyclass %}change-form{% endblock %}
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+    <a href="{% url index_view %}">Home</a> &rsaquo;
+    {% if crumbs %}
+    {% for crumb in crumbs %}
+    <a href="{{ crumb.path }}">{{ crumb.name }}</a> &rsaquo;
+    {% endfor %}
+    {% endif %}
+    Save {% if is_template %}Template{% else %}Workflow{% endif %}
+</div>
+
+{% endif %}{% endblock %}
+{% block content %}<div id="content-main">
+<form enctype="multipart/form-data" action="" method="post" id="save_workspace_form">{% block form_top %}{% endblock %}
+<div>
+{% if form.error_dict %}
+    <p class="errornote">
+    </p>
+{% endif %}
+    <fieldset class="module aligned {{ bound_field_set.classes }}">
+    <div class="form-row" >
+    <label for="id_name" class="required">Name:</label>
+    <input type="text" id="id_name" class="vTextField" name="name" value="{{ original.name }}" />
+    </div>
+    <div class="form-row checkbox-row" >
+        <input type="checkbox" id="id_public" class="vCheckboxField" name="public" {% if original.public %}checked{% endif %}/>
+        <label for="id_public" class="vCheckboxLabel">Make public</label>
+        <input type="checkbox" id="id_overwrite" class="vCheckboxField" name="overwrite" {% if not is_template %}checked{% endif %}/>
+        <label for="id_overwrite" class="vCheckboxLabel">Overwrite original</label>
+    </div>
+    </fieldset>
+<div class="submit-row">
+<input type="submit" value="Save and continue editing" name="_continue"/>
+<input type="submit" value="Save and close workspace" class="default" />
+</div>
+   <script type="text/javascript">document.getElementById("id_name").focus();</script>
+</div>
+</form></div>
+{% endblock %}

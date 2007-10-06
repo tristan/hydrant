@@ -1,0 +1,36 @@
+{% if actor %}
+<div class="actor draggable down_start down_end"  
+    style="left: {{ actor.location.x }}px; top: {{ actor.location.y }}px">
+    <div style="overflow: auto;">{{ actor.name }}</div>
+    <div style="display: table;">
+        <div class="smalltd">
+            <div class="small">
+                {% for ip in actor.inputports %}
+                    <div class="smalltr">
+                        <img id="{{ ip }}" class="block" src="/media/images/single-port.png"/>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="smalltd">
+            {% if actor.composite %}
+                <a style="cursor: pointer;" href="{% if workflow.id %}{% else %}{% endif %}{{ actor.name }}">
+                    <img id="{{ actor.name }}" class="block" src="/media/images/composite.png"/>
+                </a>
+            {% else %}
+                <img id="{{ actor.name }}" class="block" src="/media/images/basic-actor.png"
+                    onDblclick="update_properties('{{ actor.name }}', false); set_visibility(1, 'properties-div');"/>
+            {% endif %}
+        </div>
+        <div class="smalltd">
+            <div class="small">
+                {% for ip in actor.outputports %}
+                    <div class="smalltr">
+                        <img id="{{ ip }}" class="block" src="/media/images/single-port.png"/>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

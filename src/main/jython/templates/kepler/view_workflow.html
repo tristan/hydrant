@@ -1,0 +1,119 @@
+{% extends "kepler/base_site.html" %}
+{% load i18n %}
+
+{% block stylesheet %}{{ MEDIA_URL }}css/dashboard.css{% endblock %}
+{% block extrahead %}
+<script type="text/javascript" src="{{ MEDIA_URL }}js/js-graph-it.js"></script>
+<script type="text/javascript" src="{{ MEDIA_URL }}js/prototype.js"></script>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/js-graph-it.css"/>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms.css" />
+<style>
+    .annotation { position: absolute; }
+    .director { position: absolute; font-size: small; font-family: sans-serif; }
+    .crumbs { font-size: small; font-family: sans-serif; }
+    .actor { position: absolute; font-size: small; font-family: sans-serif; }
+    .compactor { position: absolute; font-size: small; font-family: sans-serif; }
+    a img { border: 0; }
+    .vertex { position: absolute; }
+    .port { position: absolute; font-size: small; font-family: sans-serif; }
+
+    div.small { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table; vertical-align: middle; }
+    div.smalltr { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-row; vertical-align: middle; }
+    div.smalltd { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-cell; vertical-align: middle; }
+
+    .properties { visibility:hidden; position: absolute; border: 1px solid #9DA3B3; background-color: #FFFFFF; padding: 10px; left: 100px; top: 50px; z-index: 100; width: 300px; height:240px; }
+
+    .button { background: #7CA0C7 url({{ MEDIA_URL }}img/kepler/default-bg.gif); repeat-x scroll center bottom; border: 2px solid #5B80B2; color: white; font-weight: bold;
+}
+
+</style>
+<script>
+// stolen from http://www.quirksmode.org/js/cross_dhtml.html
+var DHTML = (document.getElementById || document.all || document.layers);
+function get_element(name) {
+    if (document.getElementById) {
+        this.obj = document.getElementById(name);
+        this.style = document.getElementById(name).style;
+    } else if (document.all) {
+        this.obj = document.all[name];
+        this.style = document.all[name].style;
+    } else if (document.layers) {
+        this.obj = document.layers[name];
+        this.style = document.layers[name];
+    }
+}
+function set_visibility(flag, obj) {
+    if (!DHTML) return;
+    var x = new get_element(obj);
+    x.style.visibility = (flag) ? 'visible' : 'hidden';
+}
+function set_properties_to_loading() {
+    new Ajax.Updater('properties-div', '{{ next }}__none__/properties/', { method: 'get' });
+}
+function set_properties(actor_name, type) {
+    var form_data = $(actor_name + '_' + type + '_form')
+    new Ajax.Updater('properties-div', '{{ next }}' + actor_name + '/properties/', {postBody:form_data.serialize()});
+}
+function update_properties(actor_name) {
+    new Ajax.Updater('properties-div', '{{ next }}' + actor_name + '/properties/', { method: 'get' });
+}
+</script>
+{% endblock %}
+{% block coltype %}{% endblock %}
+{% block bodyclass %}{% endblock %}
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url index_view %}">Home</a> &rsaquo;
+    {% if crumbs %}
+    {% for crumb in crumbs %}
+    <a href="{{ crumb.path }}">{{ crumb.name }}</a> &rsaquo;
+    {% endfor %}
+    {% endif %}
+    {{ workflow.name }}{% if is_template %} Template{% endif %}
+</div>
+{% endblock %}
+{% block extrabodyparams %}onload="initPageObjects();"{% endblock %}
+{% block content %}
+<div id="content-workflow">
+    {% include "kepler/workflow_canvas.html" %}
+</div>
+{% endblock %}
+{% block sidebar %}
+<div id="content-workflow-related">
+{% if user.is_authenticated %}
+<div class="module" id="tools-module">
+{% if is_workspace %}
+<table width="100%">
+<caption>Workspace Actions</caption>
+<tr>
+    <th scope="row"><a href="save/">Save {% if is_template %}Template{% else %}Workflow{% endif %}</a></th>
+    <td></td>
+</tr>
+<tr>
+    <th scope="row"><a href="close/">Close Workspace</a></th>
+    <td></td>
+</tr>
+</table>
+{% else %}
+<table width="100%">
+<caption>Workflow Actions</caption>
+<tr>
+    <th scope="row"><a href="edit/">Edit Workflow</a></th>
+    <td></td>
+</tr>
+<tr>
+    <th scope="row"><a href="template/">Create Template</a></th>
+    <td></td>
+</tr>
+<tr>
+    <th scope="row"><a href="delete/">Delete Workflow</a></th>
+    <td></td>
+</tr>
+</table>
+{% endif %}
+</div>
+{% else %}
+{% include 'kepler/login_sidebar.html' %}
+{% endif %}
+</div>
+{% endblock %}
