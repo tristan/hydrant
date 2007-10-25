@@ -1,0 +1,55 @@
+{% extends "kepler/base_site.html" %}
+{% block extrahead %}{{ block.super }}
+{% endblock %}
+{% block stylesheet %}{{ MEDIA_URL }}css/forms.css{% endblock %}
+{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
+{% block bodyclass %}change-form{% endblock %}
+{% block breadcrumbs %}{% if not is_popup %}
+<div class="breadcrumbs">
+    <a href="{% url index_view %}">Home</a> &rsaquo;
+    {{ title }}
+</div>
+
+{% endif %}{% endblock %}
+{% block content %}
+<div id="content-main">
+    <div class="module">
+        <table summary="Job Details">
+        <caption>Job Details</caption>
+        <tr>
+             <th scope="row">Submission Date</th>
+             <td>{{ job.submission_date }}</td>
+        </tr>
+        <tr>
+             <th scope="row">Start Date</th>
+             <td>{{ job.start_date }}</td>
+        </tr>
+        <tr>
+             <th scope="row">End Date</th>
+             <td>{{ job.end_date }}</td>
+        </tr>
+        </table>
+    </div>
+{% ifequal job.status 'DONE' %}
+{% for out in outputs %}
+    <div class="module">
+        <table summary="{{ out.name }}">
+        <caption>{{ out.name }}</caption>
+        <tr><th style="font-weight: normal;" scope="row">
+                {% ifequal out.type 'TEXT' %}
+                {{ out.content|escape|linebreaks }}
+                {% endifequal %}
+                {% ifequal out.type 'IMAGE' %}
+                <center>
+                    <img src="{{ out.url }}"/>
+                </center>
+                {% endifequal %}
+        </th>
+        <td></td></tr>
+        </table>
+    </div>
+{% endfor %}
+{% else %}
+{% endifequal %}
+</div>
+{% endblock %}

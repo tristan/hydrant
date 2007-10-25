@@ -6,7 +6,7 @@
             {% with workflow.director as director %}
             <div class="director draggable" style="left: {{ director.location.x }}px; top: {{ director.location.y }}px">
                 <div>{{ director.name }}</div>
-                <img id="{{ director.name }}" class="block" src="/media/images/director.png"
+                <img id="{{ director.name }}" class="block" src="{{ MEDIA_URL }}images/director.png"
                 onDblClick="update_properties('{{ director.name }}'); set_visibility(1, 'properties-div');"/>
             </div>
             {% endwith %}
@@ -19,13 +19,13 @@
             {% for port in workflow.ports %}
             <div class="port draggable" style="left: {{ port.location.x }}px; top: {{ port.location.y }}px">
                 <div style="overflow: auto">{{ port.name }}</div>
-                <img class="block" id="{{ port.id }}" src="/media/images/in-port.png"/>
+                <img class="block" id="{{ port.id }}" src="{{ MEDIA_URL }}images/in-port.png"/>
             </div>
             {% endfor %}
 
             {% for vertex in workflow.vertices %}
             <div class="vertex draggable" style="left: {{ vertex.location.x }}px; top: {{ vertex.location.y }}px">
-                <img class="block" id="{{ vertex.name }}" src="/media/images/vertex.png"/>
+                <img class="block" id="{{ vertex.name }}" src="{{ MEDIA_URL }}images/vertex.png"/>
             </div>
             {% endfor %}
 
@@ -46,6 +46,7 @@
                 {{ annotation.text|linebreaks }}
             </div>
             {% endfor %}
+            <!--
             <div id="properties-div" class="properties">
             </div>
             <script type="text/javascript">
@@ -55,6 +56,7 @@
                 update_properties('{{ open_actor_properties }}');
                 {% endif %}
             </script>
+            -->
         </div>
     </div>
     <!--</div>-->

@@ -1,0 +1,3 @@
+mvn compile
+mvn jar:jar
+cp target/kts-1.0-SNAPSHOT.jar lib/

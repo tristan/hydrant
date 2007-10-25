@@ -13,7 +13,8 @@ import java.lang.Class
 import ptolemy.data.IntMatrixToken
 
 import utils
-from utils import validateMoML
+from utils import validateMoML, addMoMLFilters
+import traceback
 
 
 import ptolemy.data.Token
@@ -81,13 +82,11 @@ def lazy_proxy_assign(obj):
         print 'lazy_proxy_ unable to assign %s a proxy' % obj
         return obj
 
-do_parser_once = True
-
 class ModelProxy(object):
-    def __init__(self, m):
+    def __init__(self, m, filters=[]):
         try:
             if isinstance(m, basestring):
-                self.from_moml(m)
+                self.from_moml(m, filters)
             else:
                 self.from_model(m)
             self.has_entities = hasattr(self.model, 'getEntities')
@@ -104,20 +103,24 @@ class ModelProxy(object):
             if hasattr(self.model, 'name'):
                 self.name = self.model.name
         except Exception, e:
+            traceback.print_exc()
             raise Exception('expects either moml or a model type')
-    def from_moml(self, moml):
-        global do_parser_once
-        if do_parser_once:
-            rgc = RemoveGraphicalClasses()
-            rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
-            MoMLParser.addMoMLFilter(rgc)
-            do_parser_once = False
+    def from_moml(self, moml, filters=[]):
+
+        rgc = RemoveGraphicalClasses()
+        rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
+        f = [rgc]
+        f.extend(filters)
+        MoMLParser.setMoMLFilters(f)
+
+        messages = validateMoML(moml)
+
+        if messages is []:
+            raise Exception('VALIDATION ERRORS')
+
         parser = MoMLParser()
-
-        validateMoML(moml)
-
+        parser.reset()
         self.model = parser.parse(moml)
-
     def from_model(self, model):
         if isinstance(model, (Entity, Actor, Director)):
             self.model = model
@@ -212,7 +215,7 @@ class ModelProxy(object):
                         #    if i.getName() == p:
                         #        self.model = i
                 rdic['crumbs'] = crumbs[:-1]
-                print crumbs
+                #print crumbs
             return rdic
 
         rdic['name'] = self.model.getName()
@@ -223,7 +226,7 @@ class ModelProxy(object):
         iterator = self.model.containedObjectsIterator()
         for i in iterator:
             if isinstance(i, SizeAttribute):
-                print i.getToken().toString()
+                #print i.getToken().toString()
                 rdic['canvas'] = utils.locationToDict(i.getToken().toString())
             elif isinstance(i, Actor):
                 a = {}
@@ -314,7 +317,7 @@ class ModelProxy(object):
                 pass # we don't need to know the semantic type
             elif isinstance(a, NamedObjId):
                 pass # ...
-            elif a.getName() == 'class':
+            elif a.getName() == 'class' or a.getName() == 'kar':
                 pass # ignore class properties for now
             else:
                 try:
@@ -341,3 +344,16 @@ class ModelProxy(object):
 
     def get_xml(self):
         return self.model.exportMoML()
+
+
+
+"""
+from ptolemy.moml import MoMLParser
+from ptolemy.moml.filter import RemoveGraphicalClasses
+from au.edu.jcu.kepler.kts import WebServiceFilter
+MoMLParser.addMoMLFilters([RemoveGraphicalClasses(), WebServiceFilter()])
+parser = MoMLParser()
+moml = open('../../../media/workflows/40309d8779e8faa29196034ae1959bfe').read()
+tl = parser.parse(moml)
+tl = parser.parseFile('../../../media/workflows/40309d8779e8faa29196034ae1959bfe')
+"""

@@ -45,3 +45,5 @@ MEDIA_URL = '/media/'
 LIB_DIRECTORY = PROJECT_HOME + '/lib'
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 ROOT_URLCONF = 'jython.urls'
+
+STORAGE_ROOT = PROJECT_HOME + '/storage'

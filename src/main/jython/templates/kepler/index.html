@@ -1,15 +1,10 @@
 {% extends "kepler/base_site.html" %}
 {% load i18n %}
-
-{% block stylesheet %}{{ MEDIA_URL }}css/dashboard.css{% endblock %}
-{% block coltype %}colMS{% endblock %}
-{% block extrahead %}
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/forms.css"/>
-{% endblock %}
-{% block bodyclass %}dashboard{% endblock %}
+{% block extrahead %}{% endblock %}
+{% block bodyclass %}{% endblock %}
 {% block breadcrumbs %}{% endblock %}
 {% block content %}
-<div id="content-main">
+<div style="float: left; width: 100%;">
 
     {% if user.is_authenticated %}
     <ul class="object-tools">
@@ -82,12 +77,32 @@
         {% endif %}
         </table>
         </div>
+
+    <!-- JOB BLOCK -->
+     <div class="module">
+        <table summary="Jobs">
+        <caption>{% trans 'Jobs' %}</caption>
+        {% if jobs %}
+            {% for job in jobs %}
+                <tr>
+                    <th scope="row"><a href="{% url job_details_view job.pk %}">{{ job.template.name }}</a></th>
+                    <td>{{ job.submission_date }}</td>
+                    <td>{{ job.status }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <th>{% trans "You have no jobs" %}</th>
+            <td></td>
+        {% endif %}
+        </table>
+        </div>
     </div>
+
 {% endif %}
 </div>
 {% endblock %}
 {% block sidebar %}
-<div id="content-related">
+<div id="sidebar">
 {% include 'kepler/login_sidebar.html' %}
 </div>
 {% endblock %}

@@ -2,8 +2,6 @@ import sys, dircache, md5, time, urllib, os, copy
 
 from settings import MEDIA_ROOT
 from django.utils import simplejson
-from storage import *
-from repository import *
 from workflow.proxy import *
 from workflow.cache import *
 from models import Template, TemplateNode

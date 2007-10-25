@@ -1,4 +1,4 @@
-import time, md5, traceback, copy
+import time, md5, traceback, copy, array
 
 from django import oldforms #, template
 from django.template.context import RequestContext
@@ -11,20 +11,25 @@ from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
+from django.views.static import serve
 
-import repository
 from workflow.proxy import ModelProxy
-from workflow.cache import open_workflow, delete_workflow as dwf
+from workflow.utils import validateMoML
+from workflow.cache import open_workflow, open_workflow_from_object, delete_workflow as dwf
 from workspaces import *
 from portalviewshelper import *
 from models import *
+from job import *
+from settings import STORAGE_ROOT
 
 def index(request):
     workflows = [i for i in Workflow.objects.filter(public=True)]
     templates = [i for i in Template.objects.filter(public=True)]
+    jobs = []
     if request.user.is_authenticated():
         workflows.extend([i for i in Workflow.objects.filter(owner=request.user) if i not in workflows])
         templates.extend([i for i in Template.objects.filter(owner=request.user) if i not in templates])
+        jobs = Job.objects.filter(owner=request.user)
     else:
         # set the test cookie, so that if the user decides to log in the login form actually works
         request.session.set_test_cookie()
@@ -49,7 +54,8 @@ def index(request):
         t = {'id': i.id, 'name': i.name}
         t_list.append(t)
     workspace_list = list_active_workspaces(request.user)
-    return render_to_response('kepler/index.html', {'next': reverse('index_view'), 'title': _('Home'), 'workflow_list': wf_list, 'template_list': t_list, 'workspace_list': workspace_list}, context_instance=RequestContext(request))
+
+    return render_to_response('kepler/index.html', {'next': reverse('index_view'), 'title': _('Home'), 'workflow_list': wf_list, 'template_list': t_list, 'workspace_list': workspace_list, 'jobs': jobs}, context_instance=RequestContext(request))
 
 def workflow(request, path, is_workspace=False):
     p = path.split('/')
@@ -63,7 +69,7 @@ def workflow(request, path, is_workspace=False):
     else:
         model, workflow = open_workflow(request.user.is_authenticated() and User.objects.get(id=request.user.id) or None, w_id)
         actor = None
-        is_template = false
+        is_template = False
     results = model.get_as_dict(p[1:])
     crumbs = build_crumbs_from_path(model, path)
     return render_to_response('kepler/view_workflow.html', {'open_actor_properties': actor, 'is_workspace': is_workspace, 'crumbs': crumbs, 'next': reverse(is_workspace and 'portal_workspace_view' or 'portal_workflow_view', args=(path,)), 'title': '%s%s' % (_(model.name), is_workspace and ' Workspace' or ''), 'workflow': results, 'is_template': is_template}, context_instance=RequestContext(request))
@@ -196,32 +202,30 @@ def save_workspace(request, path):
             destroy_workspace(User.objects.get(id=request.user.id), workspace_id)
             return HttpResponseRedirect(reverse('index_view'))
     else:
-        orig_model, orig_workflow = open_workflow(User.objects.get(id=request.user.id), orig_workflow_id)
-        crumbs = build_crumbs_from_path(m, '%s/save' % (path))
-        return render_to_response('kepler/save_form.html', {'crumbs':crumbs, 'original': {'name': orig_model.name, 'public': orig_workflow.public}, 'next': reverse('save_workspace', args=(path,)), 'is_template':is_template }, context_instance=RequestContext(request))
+        orig_workflow = Workflow.objects.get(pk=orig_workflow_id)
+        crumbs = build_crumbs_from_path(m.name, '%s/save' % (path))
+        return render_to_response('kepler/save_form.html', {'crumbs':crumbs, 'original': {'name': orig_workflow.name, 'public': orig_workflow.public}, 'next': reverse('save_workspace', args=(path,)), 'is_template':is_template }, context_instance=RequestContext(request))
 
 def upload_workflow(request):
     if request.POST:
         if request.FILES:
             file = request.FILES.get('uri_file')
-            try:
-                print file
-                m = ModelProxy(file.get('content'))
-            except Exception, e:
-                raise e
+            messages = validateMoML(file.get('content'))
+            name = '.'.join(file['filename'].split('.')[0:-1])
             workflow = request.POST.copy()
-            workflow['name'] = unicode(m.name)
+            workflow['name'] = unicode(name)
             workflow['owner'] = unicode(request.user.pk)
             d = time.localtime()
             workflow['created_date'] = unicode(time.strftime('%Y-%m-%d', d))
             workflow['created_time'] = unicode(time.strftime('%H:%M:%S', d))
             # generate new filename
-            file['filename'] = md5.new('%s%s%s%s' % (request.user.username, m.name, file.get('content'), d)).hexdigest()
+            file['filename'] = md5.new('%s%s%s%s' % (request.user.username, name, file.get('content'), d)).hexdigest()
             workflow['uri_file'] = file
-
             add_new_workflow(workflow)
-            msg = 'The workflow "%s" was uploaded successfully' % m.name
-            request.user.message_set.create(message=msg)
+            messages.append({'type':'MESSAGE', 'message':'The workflow "%s" was uploaded successfully' % name})
+            messages.append({'message':{'test':1}})
+            for msg in messages:
+                request.user.message_set.create(message=msg['message'])
             return HttpResponseRedirect(reverse('index_view'))
         else:
             raise Http404('''post without files, shouldn't happen''')
@@ -233,17 +237,17 @@ def delete_workflow(request, path):
     p = path.split('/')
     workflow_id = p[0]
     user = User.objects.get(id=request.user.id)
-    model, wm = open_workflow(user, workflow_id)
+    wm = Workflow.objects.get(id=workflow_id)
     if wm.owner != user:
         # the message here doesn't actually get passed. TODO: fix it
         raise PermissionDenied('''you don't have permission to delete this workflow: you are not the owner''')
     if request.POST:
         dwf(user, workflow_id)
-        msg = 'The workflow "%s" was deleted successfully' % model.name
+        msg = 'The workflow "%s" was deleted successfully' % wm.name
         request.user.message_set.create(message=msg)
         return HttpResponseRedirect(reverse('index_view'))
     workflow = { 'name': wm.name }
-    crumbs = build_crumbs_from_path(model, '%s/delete' % (path))
+    crumbs = build_crumbs_from_path(wm.name, '%s/delete' % (path))
     return render_to_response('kepler/delete_confirmation.html', {'crumbs':crumbs, 'workflow': workflow}, context_instance=RequestContext(request))
 delete_workflow = login_required(delete_workflow)
 
@@ -258,7 +262,7 @@ def close_workspace(request, path):
         request.user.message_set.create(message=msg)
         return HttpResponseRedirect(reverse('index_view'))
     workspace = { 'name': model.name }
-    crumbs = build_crumbs_from_path(model, '%s/close' % (path))
+    crumbs = build_crumbs_from_path(model.name, '%s/close' % (path))
     return render_to_response('kepler/close_confirmation.html', {'crumbs':crumbs, 'workspace': workspace}, context_instance=RequestContext(request))
 close_workspace = login_required(close_workspace)
 
@@ -288,7 +292,36 @@ def render_template(request, template_id):
     if request.POST:
         if request.POST.has_key('_cancel'):
             return HttpResponseRedirect(reverse('index_view'))
-        raise Http404('not yet implemented')
+        print request.POST
+        j = Job(template=template, owner=request.user, status='NEW')
+        j.save()
+        for i in request.POST:
+            ji = JobInput(job=j, node=TemplateNode.objects.get(property_id=i, template=template), value=request.POST.get(i))
+            ji.save()
+        queue_new_job(j)
+        return HttpResponseRedirect(reverse('job_details_view', args=(j.pk,)))
     crumbs = {}
     return render_to_response('kepler/template.html', {'title': _(template.name), 'crumbs':crumbs, 'template': template, 'fields': nodes}, context_instance=RequestContext(request))
 render_template = login_required(render_template)
+
+def job_details(request, job_id):
+    job = get_object_or_404(Job, pk=job_id)
+    outputs = []
+    if job.status == 'DONE':
+        for o in job.get_job_outputs():
+            out = {'name': o.name, 'type': o.type }
+            if o.type == 'TEXT':
+                f = open(o.file, 'r')
+                out['content'] = f.read()
+            elif o.type == 'IMAGE':
+                out['url'] = reverse('serve_job_media', args=(job_id, o.pk))
+            outputs.append(out)
+    return render_to_response('kepler/job.html', {'title': _(job), 'job': job, 'outputs': outputs}, context_instance=RequestContext(request))
+job_details = login_required(job_details)
+
+def job_media(request, job_id, output_id):
+    job = get_object_or_404(Job, pk=job_id)
+    out = get_object_or_404(JobOutput, pk=output_id)
+    # TODO: do check to make sure job_id == out.job.pk
+    # the [1:] is to remove the / from the start of the filename
+    return serve(request, out.file[1:], '/')

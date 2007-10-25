@@ -1,4 +1,3 @@
-from kepler.repository import *
 from proxy import *
 from kepler.models import *
 
@@ -13,7 +12,7 @@ def open_workflow_from_object(user, w):
     moml = open(w.get_uri_filename(), 'r').read()
     model = ModelProxy(moml)
     res = (model, w)
-    workflow_cache[id] = res
+    workflow_cache[w.id] = res
     return res
 
 def open_workflow(user, id):
@@ -30,6 +29,7 @@ def open_workflow(user, id):
 
 def delete_workflow(user, id):
     global workflow_cache
-    model, workflow = open_workflow(user, id)
+    workflow = Workflow.objects.get(pk=id)
     workflow.delete()
-    del workflow_cache[id]
+    if workflow_cache.has_key(workflow.id):
+        del workflow_cache[workflow.id]

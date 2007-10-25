@@ -6,6 +6,6 @@
 
 <p>Cya next time!</p>
 
-<p><a href="/accounts/login?next=/portal/">Log in again</a></p>
+<p><a href="{% url login_view %}?next={% url index_view %}">Log in again</a></p>
 
 {% endblock %}

@@ -19,6 +19,8 @@ urlpatterns = patterns('kepler.portalviews',
     url(r'^template/([\w /]+)/delete/', 'delete_template', name='delete_template'),
     url(r'^template/([\w /]+)/edit/', 'edit_template', name='edit_template'),
     url(r'^template/([\w /]+)/$', 'render_template', name='template_view'),
+    url(r'^job/([\w]+)/$', 'job_details', name='job_details_view'),
+    url(r'^job/([\w]+)/([\w]+)/$', 'job_media', name='serve_job_media'),
     url(r'^upload/$', 'upload_workflow', name='upload_workflow_view'),
     #(r'^save/(?P<id>[\.\w_-]+)', 'save'),
 )

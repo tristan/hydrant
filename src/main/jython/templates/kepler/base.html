@@ -1,9 +1,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}" {% if LANGUAGE_BIDI %}dir="rtl"{% endif %}>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
 <head>
 <title>{% block title %}{% endblock %}</title>
 <link rel="stylesheet" type="text/css" href="{% block stylesheet %}{{ MEDIA_URL }}css/base.css{% endblock %}" />
-{% if LANGUAGE_BIDI %}<link rel="stylesheet" type="text/css" href="{% block stylesheet_rtl %}{{ MEDIA_URL }}css/rtl.css{% endblock %}" />{% endif %}
 {% block extrastyle %}{% endblock %}
 {% block extrahead %}{% endblock %}
 {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
@@ -11,11 +10,9 @@
 {% load i18n %}
 
 <body class="{% block bodyclass %}{% endblock %}" {% block extrabodyparams %}{% endblock %}>
-
 <!-- Container -->
 <div id="container">
 
-    {% if not is_popup %}
     <!-- Header -->
     <div id="header">
         <div id="branding">
@@ -25,7 +22,7 @@
         <div id="user-tools">
         {% trans 'Welcome,' %} <strong>{% if user.first_name %}{{ user.first_name|escape }}{% else %}{{ user.username }}{% endif %}</strong>.
         {% block userlinks %}
-        <a href="/accounts/logout">{% trans 'Log out' %}</a>
+        <a href="{% url logout_view %}">{% trans 'Log out' %}</a>
         {% endblock %}
         </div>
         {% endif %}
@@ -33,14 +30,13 @@
     </div>
     <!-- END Header -->
     {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title|escape }}{% endif %}</div>{% endblock %}
-    {% endif %}
 
         {% if messages %}
         <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
         {% endif %}
 
     <!-- Content -->
-    <div id="content" class="{% block coltype %}colM{% endblock %}">
+    <div id="content">
         {% block pretitle %}{% endblock %}
         {% block content_title %}{% if title %}<h1>{{ title|escape }}</h1>{% endif %}{% endblock %}
         {% block content %}
@@ -53,8 +49,8 @@
     <!-- END Content -->
 
     {% block footer %}<div id="footer"></div>{% endblock %}
-</div>
-<!-- END Container -->
 
+    <!-- END Container -->
+    </div>
 </body>
 </html>

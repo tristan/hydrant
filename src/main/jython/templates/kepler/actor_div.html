@@ -7,7 +7,7 @@
             <div class="small">
                 {% for ip in actor.inputports %}
                     <div class="smalltr">
-                        <img id="{{ ip }}" class="block" src="/media/images/single-port.png"/>
+                        <img id="{{ ip }}" class="block" src="{{ MEDIA_URL }}images/single-port.png"/>
                     </div>
                 {% endfor %}
             </div>
@@ -15,10 +15,10 @@
         <div class="smalltd">
             {% if actor.composite %}
                 <a style="cursor: pointer;" href="{% if workflow.id %}{% else %}{% endif %}{{ actor.name }}">
-                    <img id="{{ actor.name }}" class="block" src="/media/images/composite.png"/>
+                    <img id="{{ actor.name }}" class="block" src="{{ MEDIA_URL }}images/composite.png"/>
                 </a>
             {% else %}
-                <img id="{{ actor.name }}" class="block" src="/media/images/basic-actor.png"
+                <img id="{{ actor.name }}" class="block" src="{{ MEDIA_URL }}images/basic-actor.png"
                     onDblclick="update_properties('{{ actor.name }}', false); set_visibility(1, 'properties-div');"/>
             {% endif %}
         </div>
@@ -26,7 +26,7 @@
             <div class="small">
                 {% for ip in actor.outputports %}
                     <div class="smalltr">
-                        <img id="{{ ip }}" class="block" src="/media/images/single-port.png"/>
+                        <img id="{{ ip }}" class="block" src="{{ MEDIA_URL }}images/single-port.png"/>
                     </div>
                 {% endfor %}
             </div>

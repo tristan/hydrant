@@ -3,6 +3,7 @@ from ptolemy.moml import MoMLParser, Vertex
 from ptolemy.moml.filter import RemoveGraphicalClasses
 from java.lang import Class, Throwable, NoClassDefFoundError, NullPointerException
 from ptolemy.kernel.util import NamedObj
+import org.python.core.PyJavaPackage
 
 re_class_attribs = re.compile(r'class=\"([\.\w]+)\"')
 
@@ -14,40 +15,78 @@ class ValidationError(Exception):
         def getValue(self):
             return self.value
 
+def checkClassHeirachy(klass):
+    if klass is None:
+        return None
+    try:
+        klass = klass.getSuperclass()
+    except NoClassDefFoundError, e:
+        return e
+    # TODO: uploading more than one workflow causes nullpointer exceptions
+    # figure out why
+    except NullPointerException, e:
+        return None
+    return checkClassHeirachy(klass)
+
+
+def addMoMLFilters(filters):
+    """
+    checks each filter to make sure it's not already been added
+    and only adds new filters if they haven't
+    """
+    current_filters = MoMLParser.getMoMLFilters() or []
+    fcs = [f.__class__ for f in current_filters]
+    for f in filters:
+        if f.__class__ not in fcs:
+            MoMLParser.addMoMLFilter(f)
+
 def validateMoML(moml):
-    errors = []
+    """
+    checks all the classes in a MoML file by importing each one along with it's entire class heirarchy
+    checking for any missing classes or libraries.
+
+    returns a list of any errors found.
+    """
+    #rgc = RemoveGraphicalClasses()
+    #rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
+    #addMoMLFilters([rgc])
+
+    messages = []
     classnames = getAllClassesInMoML(moml)
     # run the MoML filters over the class list
-    for filter in MoMLParser.getMoMLFilters():
+    momlfilters = MoMLParser.getMoMLFilters() or []
+    for filter in momlfilters:
         classnames = [classname for classname in classnames if filter.filterAttributeValue(None, None, None, classname) != None]
+
+    # check each of the classes for errors
     for classname in classnames:
         try:
-            __import__(classname)
-        except ImportError:
-            error = {'cause':'ImportError', 'message':classname}
-            errors.append(error)
-        try:
-            print 'checking class: %s' % classname
-            obj = sys.modules.get(classname)()
-#           if isinstance(obj, NamedObj):
-#               pass
-        except NoClassDefFoundError, e:
-            error = {'cause':'java.lang.NoClassDefFoundError when loading actor %s' % classname, 'message':e.getMessage()}
-            errors.append(error)
-        except NullPointerException:
-            pass
-        except TypeError:
-            pass
+            # get a list of the package heirarchy for the class
+            k_list = classname.split('.')[1:]
+            # get the base package
+            klass = __import__(classname)
+            # check if the imported object is a javapackage, rather than a class,
+            # and if so loop thru the package heirarchy to find the class
+            while isinstance(klass, org.python.core.PyJavaPackage):
+                klass = getattr(klass, k_list[0])
+                k_list = k_list[1:]
+            # once we have the class itself, check it's class heirarchy for errors
+            errors = checkClassHeirachy(klass)
+            if errors is not None:
+                #print 'NEW ERROR MESSAGE: %s' % errors
+                messages.append({'type':'ERROR','message': errors})
+        except ImportError, e:
+            error = {'type':'ERROR', 'message':e}
+            messages.append(error)
+
     # we just loaded a heap of classes into the default workspace, to avoid problems lets remove them
     NamedObj().workspace().removeAll()
-
-    # if we have errors, raise them
-    if errors:
-        #print 'we have errors: %s' % errors
-        raise ValidationError(errors)
-    return True #{'result':errors == [], 'errors': errors }
+    return messages
 
 def getAllClassesInMoML(moml):
+    """
+    runs a regexp over a moml to find the values of all class="..." attributes
+    """
     return {}.fromkeys(re_class_attribs.findall(moml)).keys()
 
 def locationToDict(s):

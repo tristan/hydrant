@@ -1,11 +1,14 @@
 from workflow.cache import *
 from django.http import Http404
 
-def build_crumbs_from_path(model, path):
+def build_crumbs_from_path(current_name, path):
+    """
+    current_name
+    """
     p = path.split('/')
     crumbs = []
     if len(p) > 1:
-        crumbs.append({'name': model.name, 'path': '%s/' % '/'.join(['..' for j in range(len(p)-1)])})
+        crumbs.append({'name': current_name, 'path': '%s/' % '/'.join(['..' for j in range(len(p)-1)])})
         q = p[1:]
         size = len(q)-1
         for i in range(size):
@@ -21,7 +24,6 @@ def add_new_workflow(form):
         raise Http404(unicode(errors))
     manipulator.do_html2python(form)
     new_object = manipulator.save(form)
-    print new_object.pk
 
 def update_existing_workflow(form, id):
     # get Workflow model manipulator
