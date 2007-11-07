@@ -1,41 +1,86 @@
 {% extends "kepler/base_site.html" %}
-{% block extrahead %}{{ block.super }}
+{% block extrahead %}
+<style>
+    .dashboard-block-container {
+        display: block;
+        float: left;
+        position: static;
+        margin: 0pt 0pt 1em;
+        padding-top: 1em;
+        width: auto;
+        overflow: hidden;
+    }
+    .dashboard-block {
+        display: block;
+        width: 47.5%;
+        float: left;
+        border: 1px solid #ffFFFF;
+        margin-left: 2%
+    }
+    .module {
+        overflow: hidden;
+        border: 1px solid #CCCCCC;
+        margin: 0em 0em 1em 0em;
+        }
+    .module h2 {
+        color: #666666;
+        background: #EEEEEE url(/media/img/kepler/nav-bg.gif) repeat-x scroll left bottom;
+        font-size: 11px;
+        font-weight: bold;
+        margin: 0pt;
+        padding: 2px 5px 3px;
+        text-align: left;
+    }
+    .module p {
+        width: 95%;
+        padding: 0em 8em 0em 2em;
+    }
+    .module table {
+        width: 100%;
+        padding: 0 0 0 0;
+    }
+    .module p.tools {
+        margin: 0 0 0 0;
+        padding: 2px 1em 2px 1em;
+        border-top: 1px solid #CCCCCC;
+        border-bottom: 1px solid #CCCCCC;
+        padding
+    }
+    .module p a.name {
+    }
+    .module p a.tool {
+    }
+</style>
 {% endblock %}
-{% block stylesheet %}{{ MEDIA_URL }}css/forms.css{% endblock %}
-{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
-{% block bodyclass %}change-form{% endblock %}
-{% block breadcrumbs %}{% if not is_popup %}
-<div class="breadcrumbs">
-    <a href="{% url index_view %}">Home</a> &rsaquo;
-    {{ title }}
-</div>
-
-{% endif %}{% endblock %}
 {% block content %}
-<div id="content-main">
-    <div class="module">
-        <table summary="Job Details">
-        <caption>Job Details</caption>
-        <tr>
-             <th scope="row">Submission Date</th>
-             <td>{{ job.submission_date }}</td>
-        </tr>
-        <tr>
-             <th scope="row">Start Date</th>
-             <td>{{ job.start_date }}</td>
-        </tr>
-        <tr>
-             <th scope="row">End Date</th>
-             <td>{{ job.end_date }}</td>
-        </tr>
-        </table>
+<div class="dashboard-block-container">
+    <div>
+    <div class="dashboard-block">
+        <div class="module">
+            <h2>Job Details</h2>
+            <table summary="Job Details">
+            <tr>
+                 <th scope="row">Submission Date</th>
+                 <td>{{ job.submission_date }}</td>
+            </tr>
+            <tr>
+                 <th scope="row">Start Date</th>
+                 <td>{{ job.start_date }}</td>
+            </tr>
+            <tr>
+                 <th scope="row">End Date</th>
+                 <td>{{ job.end_date }}</td>
+            </tr>
+            </table>
+        </div>
     </div>
 {% ifequal job.status 'DONE' %}
-{% for out in outputs %}
-    <div class="module">
-        <table summary="{{ out.name }}">
-        <caption>{{ out.name }}</caption>
-        <tr><th style="font-weight: normal;" scope="row">
+    <div class="dashboard-block">
+    {% for out in outputs %}
+        <div class="module">
+            <h2>{{ out.name }}</h2>
+            <table summary="{{ out.name }}">
+            <tr><td style="font-weight: normal;" scope="row">
                 {% ifequal out.type 'TEXT' %}
                 {{ out.content|escape|linebreaks }}
                 {% endifequal %}
@@ -44,11 +89,13 @@
                     <img src="{{ out.url }}"/>
                 </center>
                 {% endifequal %}
-        </th>
-        <td></td></tr>
-        </table>
+            </td></tr>
+            </table>
+        </div>
+    {% endfor %}
     </div>
-{% endfor %}
+    </div>
+</div>
 {% else %}
 {% endifequal %}
 </div>

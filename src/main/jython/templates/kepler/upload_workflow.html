@@ -1,36 +1,7 @@
 {% extends "kepler/base_site.html" %}
-{% block extrahead %}{{ block.super }}
-{% endblock %}
-{% block stylesheet %}{{ MEDIA_URL }}css/forms.css{% endblock %}
-{% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
-{% block bodyclass %}change-form{% endblock %}
-{% block breadcrumbs %}{% if not is_popup %}
-<div class="breadcrumbs">
-     <a href="../">Home</a> &rsaquo;
-     Upload Workflow
-</div>
-{% endif %}{% endblock %}
-{% block content %}<div id="content-main">
-<form enctype="multipart/form-data" action="{{ form_url }}" method="post" id="upload_workflow_form">{% block form_top %}{% endblock %}
-<div>
-{% if form.error_dict %}
-    <p class="errornote">
-    </p>
-{% endif %}
-    <fieldset class="module aligned {{ bound_field_set.classes }}">
-    <div class="form-row" >
-    <label for="id_uri_file" class="required">File:</label>
-    <input type="file" id="id_uri_file" class="vFileUploadField" name="uri_file" /><input type="hidden" id="id_uri" name="uri" value="" />
-    </div>
-    <div class="form-row checkbox-row" >
-        <input type="checkbox" id="id_public" class="vCheckboxField" name="public" />
-        <label for="id_public" class="vCheckboxLabel">Make Public</label>
-    </div>
-    </fieldset>
-<div class="submit-row">
-<input type="submit" value="Upload" class="default" />
-</div>
-   <script type="text/javascript">document.getElementById("id_uri_file").focus();</script>
-</div>
-</form></div>
+{% block content %}
+<form enctype="multipart/form-data" action="{{ form_url }}" method="post" id="upload_workflow_form">
+    <table>{{ form }}</table>
+    <input type="submit" value="Upload" />
+</form>
 {% endblock %}

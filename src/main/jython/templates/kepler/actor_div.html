@@ -1,5 +1,5 @@
 {% if actor %}
-<div class="actor draggable down_start down_end"  
+<div class="actor notdraggable down_start down_end"  
     style="left: {{ actor.location.x }}px; top: {{ actor.location.y }}px">
     <div style="overflow: auto;">{{ actor.name }}</div>
     <div style="display: table;">
@@ -14,12 +14,10 @@
         </div>
         <div class="smalltd">
             {% if actor.composite %}
-                <a style="cursor: pointer;" href="{% if workflow.id %}{% else %}{% endif %}{{ actor.name }}">
-                    <img id="{{ actor.name }}" class="block" src="{{ MEDIA_URL }}images/composite.png"/>
-                </a>
+            <img style="cursor: pointer;" id="{{ actor.name }}" class="block" src="{{ MEDIA_URL }}images/composite.png" onClick="update_workflow_div('{{ next }}{{ actor.name }}');"/>
             {% else %}
                 <img id="{{ actor.name }}" class="block" src="{{ MEDIA_URL }}images/basic-actor.png"
-                    onDblclick="update_properties('{{ actor.name }}', false); set_visibility(1, 'properties-div');"/>
+                {% if editable %}onDblclick="set_properties_to_loading(); update_properties('{{ properties_url_base }}','{{ actor.name }}', false); set_visibility(1, 'properties-div');"{% endif %}/>
             {% endif %}
         </div>
         <div class="smalltd">

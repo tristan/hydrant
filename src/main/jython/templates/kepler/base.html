@@ -1,46 +1,211 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+{% load rooturl %}
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
-<head>
-<title>{% block title %}{% endblock %}</title>
-<link rel="stylesheet" type="text/css" href="{% block stylesheet %}{{ MEDIA_URL }}css/base.css{% endblock %}" />
-{% block extrastyle %}{% endblock %}
-{% block extrahead %}{% endblock %}
-{% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
-</head>
+    <head>
+        <title>{% block title %}{{ title|escape }}{% endblock %}</title>
+        <style>
+            body {
+                background: #FFFFFF none repeat scroll 0%;
+                margin: 0pt;
+                padding: 0pt;
+                font-family:"Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
+                font-size: 12px;
+            }
+            a:link, a:visited {
+                color: #5D80B2;
+                text-decoration: none;
+            }
+            a:hover {
+                color: #036;
+            }
+            #container {
+                min-width: 760px;
+                padding: 0pt;
+                position: relative;
+                width: 100%;
+            }
+            #header {
+                background: #417690 none repeat scroll 0%;
+                color: #FFFFCC;
+                overflow: hidden;
+            }
+            #header a:link, #header a:visited {
+                color: white;
+            }
+            #header a:hover {
+                text-decoration: underline;
+            }
+            #branding h1 {
+                font-size: 18px;
+                font-weight: normal;
+                color: #F4F379;
+                margin: 8px 0pt;
+                padding: 0pt 10px;
+            }
+            #user-tools {
+                font-size: 12px;
+                padding: 1em 10px;
+                position: absolute;
+                right: 0pt;
+                text-align: right;
+                top: 0pt;
+            }
+            #title {
+                color: #f4f379;
+                background: #7ca9c0 none repeat scroll 0%;
+                padding: 0pt;
+            }
+            #title h1 {
+                font-size: 18px;
+                font-weight: normal;
+                margin: 0px 0pt;
+                padding: 2pt 30px;
+            }
+            #object-tools {
+                float: left;
+            }
+            #object-tools ul {
+                font-family: Arial,Helvetica,sans-serif;
+                font-size: 10px;
+                font-weight: bold;
+                margin-bottom: 0em;
+            }
+            #object-tools li {
+                background: transparent url(/{% root_url %}media/img/kepler/tool-left.gif) 0 0 no-repeat;
+                display: block;
+                float: left;
+                height: 16px;
+                margin-left: 2px;
+                padding: 0pt 2pt 0pt 8px;
+            }
+            #object-tools li:hover {
+                background: url(/{% root_url %}media/img/kepler/tool-left_over.gif) 0 0 no-repeat;
+            }
+            #object-tools a:link, #object-tools a:visited {
+                color: white;
+                display: block;
+                height: 14px;
+                padding: 0.1em 26px 0.1em 8px
+            }
+            #object-tools a {
+                background: #999999 url(/{% root_url %}media/img/kepler/tool-right.gif) no-repeat scroll right top;
+                padding-right: 38px;
+            }
+            #object-tools a:hover, #object-tools li:hover a {
+                background: #5b80b2 url(/{% root_url %}media/img/kepler/tool-right_over.gif) 100% 0 no-repeat;
+            }
+            #object-tools a.addlink {
+                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-add.gif) no-repeat scroll right top;
+            }
+            #object-tools a.addlink:hover {
+                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-add_over.gif) no-repeat scroll right top;
+            }
+            #object-tools a.xlink {
+                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-cross.gif) no-repeat scroll right top;
+            }
+            #object-tools a.xlink:hover {
+                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-add_over.gif) no-repeat scroll right top;
+            }
+            #object-tools a.arrowlink {
+                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-arrowright.gif) no-repeat scroll right top;
+            }
+            #object-tools a.arrowlink:hover {
+                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-arrowright_over.gif) no-repeat scroll right top;
+            }
+            #breadcrumbs {
+                background: white url(/{% root_url %}media/img/kepler/nav-bg-reverse.gif) 0 -10px repeat-x;
+                padding:2px 8px 3px 8px;
+                font-size:11px;
+                color:#999;
+                border-top:1px solid white;
+                border-bottom:1px solid #ccc;
+                text-align:left;
+            }
+            #content {
+                padding: 0 2em 0 2em;
+            }
+            input[type=text], input[type=password], textarea, select, .vTextField { border:1px solid #ccc; }
+
+            /*  FORM BUTTONS  */
+            input[type=submit], input[type=button], .submit-row input {
+                background: white url({{ MEDIA_URL }}img/kepler/nav-bg.gif) bottom repeat-x;
+                padding: 3px;
+                color: black;
+                border: 1px solid #bbb;
+                border-color: #ddd #aaa #aaa #ddd;
+            }
+            input[type=submit]:active, input[type=button]:active {
+                background-image: url({{ MEDIA_URL }}img/kepler/nav-bg-reverse.gif);
+                background-position: top;
+            }
+            input[type=submit].default, .submit-row input.default {
+                border: 2px solid #5b80b2;
+                background: #7CA0C7 url({{ MEDIA_URL }}img/kepler/default-bg.gif) bottom repeat-x;
+                font-weight: bold; color:white;
+            }
+            input[type=submit].default:active {
+                background-image: url({{ MEDIA_URL }}img/kepler/default-bg-reverse.gif);
+                background-position:top;
+            }
+
+            {% block extrastyle %}{% endblock %}
+        </style>
+        {% block extrahead %}{% endblock %}
+        {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
+    </head>
 {% load i18n %}
 
 <body class="{% block bodyclass %}{% endblock %}" {% block extrabodyparams %}{% endblock %}>
 <!-- Container -->
 <div id="container">
-
     <!-- Header -->
     <div id="header">
         <div id="branding">
-        {% block branding %}{% endblock %}
+            {% block branding %}{% endblock %}
         </div>
-        {% if user.is_authenticated %}
         <div id="user-tools">
-        {% trans 'Welcome,' %} <strong>{% if user.first_name %}{{ user.first_name|escape }}{% else %}{{ user.username }}{% endif %}</strong>.
-        {% block userlinks %}
-        <a href="{% url logout_view %}">{% trans 'Log out' %}</a>
-        {% endblock %}
+            {% if user.is_authenticated %}
+                Welcome <strong>{% if user.first_name %}{{ user.first_name|escape }}{% else %}{{ user.username }}{% endif %}</strong>.
+                {% block userlinks %}
+                    <a href="{% url workflows %}">Workflows</a>
+                    &#9733;
+                    <a href="{% url jobs %}">Jobs</a>
+                    &#9733;
+                    <a href="{% url notifications %}">Notifications (2)</a>
+                    &#9733;
+                    <a href="{% url logout_view %}">Log out</a>
+                {% endblock %}
+            {% else %}
+                <a href="{% url login_view %}">Log in</a>
+            {% endif %}
         </div>
-        {% endif %}
         {% block nav-global %}{% endblock %}
     </div>
     <!-- END Header -->
-    {% block breadcrumbs %}<div class="breadcrumbs"><a href="/">{% trans 'Home' %}</a>{% if title %} &rsaquo; {{ title|escape }}{% endif %}</div>{% endblock %}
-
-        {% if messages %}
+    {% block breadcrumbs %}
+        <div id="breadcrumbs">
+            {% if crumbs %}
+                <a href="{% url dashboard %}">Dashboard</a>
+                {% for crumb in crumbs %}
+                    {% ifequal crumb '' %}{% else %}
+                        &rsaquo; <a href="{{ crumb.path }}">{{ crumb.name }}</a>
+                    {% endifequal %}
+                {% endfor %}
+                &rsaquo;
+            {% endif %}
+            {{ title|escape }}
+        </div>
+    {% endblock %}
+    {% if messages %}
         <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
-        {% endif %}
+    {% endif %}
 
+    <div id="object-tools">
+        {% block object-tools %}{% endblock %}
+    </div>
     <!-- Content -->
     <div id="content">
-        {% block pretitle %}{% endblock %}
-        {% block content_title %}{% if title %}<h1>{{ title|escape }}</h1>{% endif %}{% endblock %}
         {% block content %}
-        {% block object-tools %}{% endblock %}
         {{ content }}
         {% endblock %}
         {% block sidebar %}{% endblock %}

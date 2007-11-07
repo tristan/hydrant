@@ -262,7 +262,7 @@ function Canvas(htmlElement)
 		}
 		this.htmlElement.appendChild(this.innerDiv);
 
-		this.htmlElement.style.overflow = "auto";
+		//this.htmlElement.style.overflow = "auto";
 		this.htmlElement.style.position = "relative";
 		this.innerDiv.id = this.id + "_innerDiv";
 		this.innerDiv.style.border = "none";
@@ -1195,8 +1195,12 @@ function initPageObjects()
 		var i;
 		for(i = 0; i < divs.length; i++)
 		{
-			if(isCanvas(divs[i]) && !findCanvas(divs[i].id))
-			{
+			if(isCanvas(divs[i]))
+            {
+                if(findCanvas(divs[i].id)) {
+                    /* added this so calls can be made using AJAX */
+                    removeCanvasFromArray(divs[i].id)
+                }
 				var newCanvas = new Canvas(divs[i]);
 				newCanvas.initCanvas();
 				canvases.push(newCanvas);
@@ -1210,6 +1214,20 @@ function initPageObjects()
  * Utility functions
  */
 
+/**
+ * added to remove a canvas from the array so it can
+ * be re-created. Needed for AJAX
+ **/
+function removeCanvasFromArray(canvasId) {
+    var i;
+    var cid;
+    for (i = 0; i < canvases.length; i++)
+        if (canvases[i].id == canvasId)
+            cid = i;
+    if (cid != null) {
+        canvases.splice(cid, 1);
+    }
+}
 
 function findCanvas(canvasId)
 {	

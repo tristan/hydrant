@@ -4,7 +4,7 @@ from settings import MEDIA_ROOT
 from django.utils import simplejson
 from workflow.proxy import *
 from workflow.cache import *
-from models import Template, TemplateNode
+from models import *
 from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 

@@ -1,29 +1,22 @@
 {% extends "kepler/base_site.html" %}
 
-{% block stylesheet %}{{ MEDIA_URL }}css/login.css{% endblock %}
-{% block bodyclass %}login{% endblock %}
-{% block content_title %}{% endblock %}
-{% block breadcrumbs %}{% endblock %}
-
+{% block extrastyle %}
+.errornote { font-size:12px !important; display:block; padding:4px 5px 4px 25px; margin:0 0 3px 0; border:1px solid red; color:red;background:#ffc url(/media/img/kepler/icon_error.gif) 5px .3em no-repeat; }
+{% endblock %}
 {% block content %}
-
-{% if error_message %}
-<p class="errornote">{{ error_message }}</p>
+{% if form.has_errors %}
+<p class="errornote">invalid username and/or password</p>
 {% endif %}
 <div id="content-main">
 <form action="" method="post" id="login-form">
-  <div class="form-row">
-    <label for="id_username">Username:</label> <input type="text" name="username" id="id_username" />
-  </div>
-  <div class="form-row">
-    <label for="id_password">Password:</label> <input type="password" name="password" id="id_password" />
-    <input type="hidden" name="this_is_the_login_form" value="1" />
-    <input type="hidden" name="post_data" value="{{ post_data }}" /> {#<span class="help">Have you <a href="/password_reset/">forgotten your password</a>?</span>#}
-    <input type="hidden" name="next" value="{{ next }}" />
-  </div>
-  <div class="submit-row">
-    <label>&nbsp;</label><input type="submit" value="Log in" />
-  </div>
+<table>
+<tr><td><label for="id_username">Username:</label></td><td>{{ form.username }}</td></tr>
+<tr><td><label for="id_password">Password:</label></td><td>{{ form.password }}</td></tr>
+</table>
+
+<input type="submit" value="Login" />
+<input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}{% url dashboard %}{% endif %}" />
+
 </form>
 
 <script type="text/javascript">

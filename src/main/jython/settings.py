@@ -40,7 +40,8 @@ TEMPLATE_DIRS = (
     PROJECT_HOME + '/src/main/jython/templates/',
 )
 
-MEDIA_URL = '/media/'
+ROOT_URL = ''
+MEDIA_URL = '/' + ROOT_URL + 'media/'
 
 LIB_DIRECTORY = PROJECT_HOME + '/lib'
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'

@@ -97,7 +97,7 @@ def locationToDict(s):
         t = s
     else:
         raise(Exception('unable to convert location in type %s' % type(s)))
-    return {'x':t[0], 'y':t[1]}
+    return {'x':float(t[0]), 'y':float(t[1])}
 
 def getVertexFromRelation(r):
     vertices = [v for v in r.containedObjectsIterator() if isinstance(v, Vertex)]

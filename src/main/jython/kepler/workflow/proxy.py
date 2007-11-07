@@ -218,6 +218,9 @@ class ModelProxy(object):
                 #print crumbs
             return rdic
 
+        min_x = min_y = 1000000
+        max_x = max_y = -1000000
+
         rdic['name'] = self.model.getName()
         #if self.model.getName() != metadata['name']:
         #    rdic['composite'] = True
@@ -225,20 +228,22 @@ class ModelProxy(object):
             rdic['composite'] = True
         iterator = self.model.containedObjectsIterator()
         for i in iterator:
+            loc = None
             if isinstance(i, SizeAttribute):
                 #print i.getToken().toString()
                 rdic['canvas'] = utils.locationToDict(i.getToken().toString())
             elif isinstance(i, Actor):
                 a = {}
                 a['name'] = i.getName()
-                a['location'] = utils.locationToDict(i.getAttribute('_location').getValueAsString())
+                loc = a['location'] = utils.locationToDict(i.getAttribute('_location').getValueAsString())
                 a['inputports'] = [utils.uniqueNameForPort(p) for p in i.inputPortList()]
                 a['outputports'] = [utils.uniqueNameForPort(p) for p in i.outputPortList()]
                 if isinstance(i, CompositeActor):
                     a['composite'] = True
                 rdic['actors'].append(a)
             elif isinstance(i, Director):
-                rdic['director'] = {'name':i.getName(), 'location':utils.locationToDict(i.getAttribute('_location').getValueAsString()) }
+                loc = utils.locationToDict(i.getAttribute('_location').getValueAsString())
+                rdic['director'] = {'name':i.getName(), 'location':loc }
             elif isinstance(i, Relation):
                 # get the vertices of this relation, if any
                 vertex = utils.getVertexFromRelation(i)
@@ -271,6 +276,10 @@ class ModelProxy(object):
                     raise(Exception('unable to handle relation %s' % i))
             elif isinstance(i, TextAttribute):
                 annotation = {'text': i.text.getExpression()}
+                try:
+                    style = i.text.attributeList()[0]
+                except:
+                    style = None
                 aparams = [i for i in i.containedObjectsIterator()]
                 textsize = [p for p in aparams if p.getName() == 'textSize']
                 if textsize:
@@ -289,10 +298,14 @@ class ModelProxy(object):
                     annotation['italic'] = 'true'
                 location = [p for p in aparams if p.getName() == '_location']
                 if location:
-                    annotation['location'] = utils.locationToDict(location[0].getValueAsString())
+                    loc = annotation['location'] = utils.locationToDict(location[0].getValueAsString())
+                    if style is not None:
+                        loc['x'] += style.width.getToken().intValue()
+                        loc['y'] += style.height.getToken().intValue()
                 rdic['annotations'].append(annotation)
             elif isinstance(i, Port):
-                port = {'name': i.getName(), 'id' : utils.uniqueNameForPort(i), 'location': utils.locationToDict(i.getAttribute('_location').getValueAsString())}
+                loc = utils.locationToDict(i.getAttribute('_location').getValueAsString())
+                port = {'name': i.getName(), 'id' : utils.uniqueNameForPort(i), 'location': loc}
                 if i.isInput():
                     port['input'] = True
                 if i.isOutput():
@@ -302,6 +315,34 @@ class ModelProxy(object):
                 rdic['ports'].append(port)
             else:
                 print 'unhandled object: %s' % i
+            if loc is not None:
+                if float(loc['x']) > max_x:
+                    max_x = float(loc['x'])
+                if float(loc['x']) < min_x:
+                    min_x = float(loc['x'])
+                if float(loc['y']) > max_y:
+                    max_y = float(loc['y'])
+                if float(loc['y']) < min_y:
+                    min_y = float(loc['y'])
+        rdic['canvas']['x'] = (max_x - min_x) + 200.0
+        rdic['canvas']['y'] = (max_y - min_y) + 200.0
+        do_x_offset = lambda a: a['location'].__setitem__('x', a['location']['x'] - (min_x - 50))
+        do_y_offset = lambda a: a['location'].__setitem__('y', a['location']['y'] - (min_y - 50))
+        if rdic.has_key('director'):
+            do_x_offset(rdic['director'])
+            do_y_offset(rdic['director'])
+        for a in rdic['actors']:
+            do_x_offset(a)
+            do_y_offset(a)
+        for a in rdic['annotations']:
+            do_x_offset(a)
+            do_y_offset(a)
+        for p in rdic['ports']:
+            do_x_offset(p)
+            do_y_offset(p)
+        for v in rdic['vertices']:
+            do_x_offset(v)
+            do_y_offset(v)
         return rdic
 
     def get_properties(self, path=[]):

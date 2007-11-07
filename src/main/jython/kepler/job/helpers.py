@@ -30,7 +30,7 @@ class DefaultReplacementManager(ReplacementManager):
     def __init__(self, container, name, jobid):
         ReplacementManager.__init__(self, container, name)
         self.jobid = jobid
-        os.makedirs('%s/%s/' % (STORAGE_ROOT, self.jobid))
+        os.makedirs('%s/jobs/%s/' % (STORAGE_ROOT, self.jobid))
     def writePythonData(self, data):
         output = data.get('output', None)
         if output != None:
@@ -40,7 +40,7 @@ class DefaultReplacementManager(ReplacementManager):
             ext = type
             if type == 'IMAGE':
                 ext = data.get('format', 'RAW')
-            file_name = '%s/%s/%s.%s' % (STORAGE_ROOT, self.jobid, name.replace('.', '_'), ext)
+            file_name = '%s/jobs/%s/%s.%s' % (STORAGE_ROOT, self.jobid, name.replace('.', '_'), ext)
             f = open(file_name, 'w%s' % (binary and 'b' or '',))
             if isinstance(output, array.array):
                 output.tofile(f)

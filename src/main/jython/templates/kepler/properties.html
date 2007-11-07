@@ -1,65 +1,41 @@
-<div class="colM">
-    {% if not loading %}
-    <h1>Properties for {{ actor.name }}</h1>
+<div>
+    <style>
+        .props { background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center; }
+        .forms th, .forms td { border: 1px solid #CCC; }
+    </style>
+    <table class="props"><tr><td>
+    <h1>Parameters for {{ actor.name }}</h1>
+    </td></tr><tr><td>
     {% if messages %}
     <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
+    </td></tr><tr><td>
     {% endif %}
-    {% if is_template %}
-    <form id="{{ actor.name }}_templating_form" method="get" action="">
+    <form id="{{ actor.name }}_parameters_form" method="get" action="">
     <div>
-        <fieldset class="module aligned">
-        {% if actor.properties %}
-        {% for property in actor.properties %}
-        <div class="form-row">
-            <label for="id_{{ property.name }}" class="required">{{ property.name }}:</label>
-            <p class="">
-            Enable Template: <input type="checkbox" id="id_{{ property.name }}_enable_template" class="vCheckboxField" name="{{ property.name }}_enable_template" {% if property.enabled %}checked{% endif %}/><br/>
-            Display Name: <input type="text" id="id_{{ property.name }}_display_name" class="vTextField" name="{{ property.name }}_display_name" value="{{ property.display_name }}"/><br/>
-            Default Value: <input type="text" id="id_{{ property.name }}_default_value" class="vTextField" name="{{ property.name }}_default_value" value="{{ property.value }}" /><br/>
-            Description: <textarea id="id_{{ property.name }}_description" class="vLargeTextField required" name="{{ property.name }}_description" rows="5" cols="10">{{ property.description }}</textarea>
-            </p>
-        </div>
-        {% endfor %}
-        {% else %}
-        <h2>no properties</h2>
-        {% endif %}
+        <table class="forms">
+            <th>Name</th><th>Value</th><th>Expose to user</th><th>Description</th>
+            {% for field in form %}
+            {% ifequal field.label 'Name' %}
+            <tr><td>{{ field }}</td>
+            {% else %}
+                {% ifequal field.label 'Value' %}
+                <td>{{ field }}</td>
+                {% else %}
+                    {% ifequal field.label 'Expose to User' %}
+                    <td>{{ field }}</td>
+                    {% else %}
+                        <td>{{ field }}</td></tr>
+                    {% endifequal %}
+                {% endifequal %}
+            {% endifequal %}
+            {% endfor %}
+        </table>
     </div>
-    <div class="submit-row">
-        <input type="button" value="Set" class="default[type='submit']" onClick="set_properties_to_loading();set_properties('{{ actor.name }}', 'templating');"/>
-        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'properties-div');set_properties_to_loading();"/>
+    <div style="border: 1px #CCC solid;" class="submit-row">
+        <input type="button" value="Apply" class="default[type='submit']" onClick="set_properties('{{ url }}', '{{ actor.name }}', 0);"/>
+        <input type="button" value="Save" class="default[type='submit']" onClick="set_properties('{{ url }}', '{{ actor.name }}', 1);"/>
+        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'properties-div');set_properties_to_none();"/>
     </div>
     </form>
-    {% else %}
-    <form id="{{ actor.name }}_properties_form" method="get" action="{% if is_workspace %}{% else %}{% url start_edit actor.path %}{% endif %}">
-    <div>
-        <fieldset class="module aligned">
-        {% if actor.properties %}
-        {% for property in actor.properties %}
-        <div class="form-row" >
-            <label for="id_{{ property.name }}" class="required">{{ property.name }}:</label>
-            <input type="text" id="id_{{ property.name }}" class="vTextField" name="{{ property.name }}" value="{{ property.value }}" {% if not is_workspace %}readonly{% endif %}/>
-        </div>
-        {% endfor %}
-        {% else %}
-        <h2>no properties</h2>
-        {% endif %}
-    </div>
-    <div class="submit-row">
-        <!-- <input type="hidden" name="next" value="{{ next }}"/> -->
-        {% if is_workspace %}
-        <input type="button" value="Set" class="default[type='submit']" onClick="set_properties_to_loading();set_properties('{{ actor.name }}', 'properties');"/>
-        {% else %}
-        <input type="submit" value="Edit" class="default[type='submit']" onClick="set_properties_to_loading();"/>
-        {% endif %}
-        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'properties-div');set_properties_to_loading();"/>
-    </div>
-    </form>
-    {% if not is_workspace %}
-    <ul><li>Clicking 'Edit' will load this workflow into a new workspace</li></ul>
-    {% endif %}
-    {% endif %}
-    {% else %}
-        <h1 style="text-align: center;">LOADING</h1>
-        <h3 style="text-align: center;">Please wait</h3>
-    {% endif %}
+    </td></tr></table>
 </div>

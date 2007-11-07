@@ -8,14 +8,14 @@ from au.edu.jcu.kepler.kts import WebServiceFilter
 def open_workflow_for_execution(user, w):
     if w is None or (w.owner != user and w.public == False):
         raise IOError('workflow does not exist')
-    moml = open(w.get_uri_filename(), 'r').read()
+    moml = open(w.get_moml_file_filename(), 'r').read()
     return ModelProxy(moml, [WebServiceFilter()])
 
 def queue_new_job(job):
-    model = open_workflow_for_execution(job.owner, job.template.workflow)
+    model = open_workflow_for_execution(job.owner, job.workflow)
     model.model.workspace().getWriteAccess()
     for input in job.get_job_inputs():
-        id = input.node.property_id
+        id = input.parameter.property_id
         il = id.split('.')[1:]
         path_to_actor = il[1:-1]
         prop = il[-1]

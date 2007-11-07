@@ -1,24 +1,3 @@
-import sys, random, os, time, md5
-import settings
-from StringIO import StringIO
-
-#import utils
-#from utils import KeplerEngine, WorkflowCache
-
-from java.lang import System
-from java.io import ByteArrayOutputStream, PrintStream
-
-import ptolemy
-from ptolemy.actor import Manager, CompositeActor, Actor, Director
-from ptolemy.moml import MoMLParser, Vertex
-from ptolemy.moml.filter import RemoveGraphicalClasses
-from ptolemy.kernel import Relation, Port
-from ptolemy.vergil.kernel.attributes import TextAttribute
-from ptolemy.vergil.basic import KeplerDocumentationAttribute
-from ptolemy.actor.gui import SizeAttribute
-from org.kepler.sms import SemanticType
-from org.kepler.moml import NamedObjId
-
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -27,81 +6,58 @@ class Workflow(models.Model):
     a database representation of a model.
     just stores metadata and URI to the workflow
     """
-    uri = models.FileField(upload_to='workflows')
+    moml_file = models.FileField(upload_to='workflows')
     name = models.CharField(max_length=50)
-    owner = models.ForeignKey(User)
+    owner = models.ForeignKey(User, editable=False)
     created = models.DateTimeField('date submitted', auto_now_add=True)
     public = models.BooleanField()
     last_modified_date = models.DateTimeField(auto_now=True)
-    """
-    def get_errors(self):
-        return WorkflowMessage.objects.filter(workflow=self,level='ERROR')
-    def get_warnings(self):
-        return WorkflowMessage.objects.filter(workflow=self,level='WARNING')
-    def get_messages(self):
-        return WorkflowMessage.objects.filter(workflow=self,level='MESSAGE')
-    """
+    description = models.TextField()
+    permissions = (("has_access_to", "Has Access To"),)
+    def get_parameter(self, id):
+        return WorkflowParameter.objects.get(workflow=self, property_id=id);
+    def get_all_parameters(self):
+        return WorkflowParameter.objects.filter(workflow=self);
+    def get_exposed_parameters(self):
+        return WorkflowParameter.objects.filter(workflow=self, expose_to_user=True);
     def __unicode__(self):
         return unicode(self.name)
     class Admin:
-        list_display = ('name', 'owner', 'created', 'last_modified_date', 'public')
-"""
-class WorkflowMessage(models.Model):
-"""    """
-    levels:
-        * ERROR
-        * WARNING
-        * MESSAGE
-    types:
-        * MISSING_ACTOR
-        * MISSING_DEPENDENCY
-        * UNHANDLED_ENTITY
+        list_display = ('name', 'owner', 'created', 'public')
+        search_fields = ('name', 'description')
+        date_hierarchy = 'created'
+    class Search:
+        list_display = ('name', 'description')
+        search_fields = ('name', 'description')
+        sortable = ('name',)
+
+class WorkflowAccessControl(models.Model):
     """
-"""    workflow = models.ForeignKey(Workflow)
-    level = models.CharField(max_length=20)
-    type = models.CharField(max_length=30)
-    message = models.TextField()
-
-"""
-class WorkflowChange(models.Model):
+    joining table for users and workflows
+    specifies which users can access which workflows
+    """
+    user = models.ForeignKey(User)
     workflow = models.ForeignKey(Workflow)
-    prev = models.IntegerField()
-    change_desc = models.TextField()
+    def __unicode__(self):
+        return '%s is allowed to access %s' % (self.user, self.workflow)
+    class Admin:
+        pass
+    unique_together = ('workflow', 'user')
 
-class Template(models.Model):
+class WorkflowParameter(models.Model):
     workflow = models.ForeignKey(Workflow)
-    owner = models.ForeignKey(User)
-    public = models.BooleanField()
+    property_id = models.CharField(max_length=200, editable=False)
+    expose_to_user = models.BooleanField()
+    description = models.TextField()
     name = models.CharField(max_length=50)
-    description = models.TextField()
-    creation_date = models.DateTimeField(auto_now_add=True)
-    last_modified_date = models.DateTimeField(auto_now=True)
-    def get_all_nodes(self):
-        return TemplateNode.objects.filter(template=self)
-    def get_node_with_id(self, property_id):
-        f = TemplateNode.objects.filter(template=self,property_id=property_id)
-        if f:
-            return f[0]
-        else:
-            return None
+    value = models.CharField(max_length=200)
     def __unicode__(self):
-        return unicode('%s, a template for workflow: %s' % (self.name, self.workflow))
+        return unicode('parameter "%s" for workflow "%s"' % (self.name, self.workflow.name))
     class Admin:
-        list_display = ('name', 'workflow', 'owner', 'creation_date', 'last_modified_date', 'public')
-
-class TemplateNode(models.Model):
-    template = models.ForeignKey(Template)
-    property_id = models.CharField(max_length=200)
-    description = models.TextField()
-    display_name = models.CharField(max_length=50)
-    default_value = models.TextField()
-    def __unicode__(self):
-        return unicode('property "%s" for template "%s"' % (self.display_name, self.template.name))
-    class Admin:
-        list_display = ('template', 'property_id', 'display_name')
+        list_display = ('workflow', 'property_id', 'name')
 
 class Job(models.Model):
-    template = models.ForeignKey(Template)
+    workflow = models.ForeignKey(Workflow)
     owner = models.ForeignKey(User)
     status = models.CharField(max_length=200)
     submission_date = models.DateTimeField(auto_now_add=True)
@@ -122,12 +78,19 @@ class Job(models.Model):
             status = 'Complete'
         return '%s job created on %s by %s' % (status, self.submission_date, self.owner)
     class Admin:
-        list_display = ('submission_date', 'start_date', 'end_date', 'status', 'template', 'owner')
+        list_display = ('workflow', 'submission_date', 'start_date', 'end_date', 'status', 'owner')
+        search_fields = ('workflow__name', 'status',)
+        list_filter = ('status',)
+        date_hierarchy = 'submission_date'
+    class Search:
+        list_display = ('workflow', 'status', 'submission_date', 'start_date', 'end_date')
+        search_fields = ('workflow__name', 'status',)
+        sortable = ('workflow__name',)
 
 class JobInput(models.Model):
     job = models.ForeignKey(Job)
-    node = models.ForeignKey(TemplateNode)
-    value = models.TextField()
+    parameter = models.ForeignKey(WorkflowParameter)
+    value = models.CharField(max_length=200)
     class Admin:
         pass
 
@@ -144,3 +107,4 @@ class JobOutput(models.Model):
     creation_date = models.DateTimeField(auto_now_add=True)
     class Admin:
         list_display = ('creation_date', 'job', 'name', 'type', 'file')
+

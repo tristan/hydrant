@@ -9,7 +9,7 @@ def open_workflow_from_object(user, w):
         raise IOError('workflow does not exist')
     if workflow_cache.has_key(w.id):
         return workflow_cache[w.id]
-    moml = open(w.get_uri_filename(), 'r').read()
+    moml = open(w.get_moml_file_filename(), 'r').read()
     model = ModelProxy(moml)
     res = (model, w)
     workflow_cache[w.id] = res
