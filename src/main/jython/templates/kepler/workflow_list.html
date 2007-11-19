@@ -2,7 +2,6 @@
 {% load i18n %}
 {% block extrastyle %}
     #content { margin: 10px 15px; padding: 0 0; }
-    h1 { font-size:18px; color:#666; padding:0 6px 0 0; margin:0 0 .2em 0; }
     .module {
         background: white;
         border: 1px solid #ccc;
@@ -78,7 +77,7 @@
 <div class="module" id="changelist">
     <div id="toolbar"><form id="changelist-search" action="" method="get">
     <div>
-        <label for="seachbar"><img src="{{ MEDIA_URL }}img/kepler/icon_searchbox.png" alt="Search"/></label>
+        <label for="searchbar"><img src="{{ MEDIA_URL }}img/kepler/icon_searchbox.png" alt="Search"/></label>
         <input type="text" size="40" name="{{ search_var }}" value="{{ query|escape }}" id="searchbar" />
         <input type="submit" value="Search"/>
         {% if show_result_count %}<span class="small quiet">{% blocktrans count result_count as counter %}1 result{% plural %}{{ counter }} results{% endblocktrans %} (<a href="?">{{ full_result_count }} total</a>)</span>{% endif %}

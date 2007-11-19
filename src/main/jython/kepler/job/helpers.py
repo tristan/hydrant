@@ -3,10 +3,11 @@ import os, array
 from ptolemy.actor import Initializable, TypedAtomicActor, TypedIOPort
 from ptolemy.data.type import BaseType
 from ptolemy.data import StringToken
-from ptolemy.kernel.util import SingletonAttribute
+from ptolemy.kernel.util import SingletonAttribute, Attribute
 from ptolemy.data.expr import StringParameter
 from ptolemy.moml import MoMLFilter, MoMLParser
 from au.edu.jcu.kepler.kts import ReplacementManager
+from org.kepler.provenance import ProvenanceListener, TextFileRecording
 
 from settings import STORAGE_ROOT
 from kepler.models import *
@@ -49,6 +50,20 @@ class DefaultReplacementManager(ReplacementManager):
             f.close()
             j = JobOutput(name=name, type=type, file=file_name, job=Job.objects.get(pk=self.jobid))
             j.save()
+
+class ProvenanceListenerWrapper(ProvenanceListener):
+    def __init__(self, container, name, jobid):
+        Attribute.__init__(self, container, name)
+        file_name = '%s/jobs/%s/provenance.txt' % (STORAGE_ROOT, jobid)
+        self.recordingType.setExpression('Text File')
+        self.attributeChanged(self.recordingType)
+        try:
+            f = [p for p in self.attributeList() if p.getName() == "Filename"][0]
+        except:
+            raise Exception('unable to find Filename property in provenance listener actor')
+        f.setExpression(file_name)
+        jo = JobOutput(name='Provenance Data', type='TEXT', file=file_name, job=Job.objects.get(pk=jobid))
+        jo.save()
 
 """
 from kepler.workflow.components import *

@@ -3,7 +3,23 @@
 {% block title %}{{ title|escape }} | Kepler Web Service{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">::: Kepler Web Service :::</h1>
+<h1 id="site-name">::: <a href="{% url welcome %}">Kepler Web Service</a> :::</h1>
+{% endblock %}
+
+{% block extrastyle %}
+    #content { margin: 10px 15px; padding: 0 0; }
+{% endblock %}
+
+{% block content %}
+<h1>Welcome to { insert name here }</h1>
+<h3>What is this?</h3>
+<p>This project is intended to create a Web interface for executing kepler workflows.</p>
+<p>The project is currently still in the proof of concept stage</p>
+<p>You can log in to play with things using<br/>
+Username: test<br/>
+Password: test</p>
+<p>Best viewed using <a href="http://www.mozilla.com/en-US/firefox/">Firefox</a> (i.e. looks terrible, and doesn't work right in other browsers. Compatibility is high on the to-do list)</p>
+<p>Development info availiable on the <a href="https://dev.archer.edu.au/projects/kepler/wiki/WebPortal">kepler @ jcu trac</a></p>
 {% endblock %}
 
 {% block nav-global %}{% endblock %}

@@ -6,7 +6,8 @@ urlpatterns = patterns('kepler.portalviews',
     # (r'^kepler/', include('kepler.foo.urls')),
 
     # Uncomment this for admin:
-    url(r'^$', 'dashboard', name='dashboard'),
+    url(r'^$', 'welcome', name='welcome'),
+    url(r'^dashboard/$', 'dashboard', name='dashboard'),
     url(r'^upload/$', 'upload_workflow', name='upload_workflow'),
     url(r'^workflow/([\w]+)/$', 'workflow', name='workflow_view'),
     url(r'^model/([\w /]+)/$', 'model', name='model_view'),

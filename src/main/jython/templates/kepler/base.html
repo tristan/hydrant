@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
     <head>
         <title>{% block title %}{{ title|escape }}{% endblock %}</title>
-        <style>
+        <style type="text/css">
             body {
                 background: #FFFFFF none repeat scroll 0%;
                 margin: 0pt;
@@ -18,6 +18,7 @@
             a:hover {
                 color: #036;
             }
+            h3 { font-size:14px; margin:.8em 0 .3em 0; color:#666; font-weight:bold; }
             #container {
                 min-width: 760px;
                 padding: 0pt;
@@ -41,6 +42,10 @@
                 color: #F4F379;
                 margin: 8px 0pt;
                 padding: 0pt 10px;
+            }
+            #branding h1 a:link, #branding h1 a:visited, #branding h1 a:hover {
+                color: #F4F379;
+                font-weight: normal;
             }
             #user-tools {
                 font-size: 12px;
@@ -124,6 +129,7 @@
             #content {
                 padding: 0 2em 0 2em;
             }
+            #content h1 { font-size:18px; color:#666; padding:0 6px 0 0; margin:0 0 .2em 0; }
             input[type=text], input[type=password], textarea, select, .vTextField { border:1px solid #ccc; }
 
             /*  FORM BUTTONS  */
@@ -147,7 +153,19 @@
                 background-image: url({{ MEDIA_URL }}img/kepler/default-bg-reverse.gif);
                 background-position:top;
             }
-
+            #footer {
+                clear:both;
+                padding:10px;
+                text-align: center;
+                width: 100%;
+                font-size: x-small;
+                color:#666;
+                border-top: 1px solid #eee;
+                border-bottom: 1px solid #eee;
+            }
+            #footer a img {
+                border: 0;
+            }
             {% block extrastyle %}{% endblock %}
         </style>
         {% block extrahead %}{% endblock %}
@@ -166,18 +184,24 @@
         <div id="user-tools">
             {% if user.is_authenticated %}
                 Welcome <strong>{% if user.first_name %}{{ user.first_name|escape }}{% else %}{{ user.username }}{% endif %}</strong>.
-                {% block userlinks %}
+            {% endif %}
+            {% block userlinks %}
+                {% if user.is_authenticated %}
+                    <a href="{% url dashboard %}">Dashboard</a>
+                    &#9733;
+                {% endif %}
                     <a href="{% url workflows %}">Workflows</a>
                     &#9733;
+                {% if user.is_authenticated %}
                     <a href="{% url jobs %}">Jobs</a>
                     &#9733;
                     <a href="{% url notifications %}">Notifications (2)</a>
                     &#9733;
                     <a href="{% url logout_view %}">Log out</a>
-                {% endblock %}
-            {% else %}
-                <a href="{% url login_view %}">Log in</a>
-            {% endif %}
+                {% else %}
+                    <a href="{% url login_view %}">Log in</a>
+                {% endif %}
+            {% endblock %}
         </div>
         {% block nav-global %}{% endblock %}
     </div>
@@ -213,7 +237,21 @@
     </div>
     <!-- END Content -->
 
-    {% block footer %}<div id="footer"></div>{% endblock %}
+    {% block footer %}
+    <div id="footer">
+        Copyright © 2007 Tristan King<br/>
+        <table style="margin-left: auto; margin-right: auto;">
+            <tr>
+                <td><a href="http://www.jcu.edu.au/"><img src="http://www.jcu.edu.au/idc/groups/public/documents/webgraphics/jcu_banner_logo_07.gif" alt="James Cook University"/></a></td>
+                <td><a href="http://www.djangoproject.com"><img src="http://code.djangoproject.com/attachment/ticket/509/80x15-django-powered-92cc47.png?format=raw" alt="Django"/></a></td>
+                <td><a href="http://www.jython.org"><img src="http://jython.org/css/jython.png" alt="Jython"/></a></td>
+                <td><a href="http://www.python.org"><img src="http://www.python.org/community/logos/python-powered-w-70x28.png" alt="Python"/></a></td>
+                <td><a href="http://www.kepler-project.org"><img src="http://www.kepler-project.org/templates/kepler/kepler-logo.png" alt="Kepler"/></a></td>
+                <td><a href="http://archer.edu.au"><img src="{{ MEDIA_URL }}images/archer.png" alt="Archer"/></a></td>
+            </tr>
+        </table>
+    </div>
+    {% endblock %}
 
     <!-- END Container -->
     </div>

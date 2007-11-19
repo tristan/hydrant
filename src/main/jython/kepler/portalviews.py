@@ -23,6 +23,9 @@ from job import *
 from settings import STORAGE_ROOT
 from django.newforms import form_for_model
 
+def welcome(request):
+    return render_to_response('kepler/base_site.html', {'title': _('Welcome')}, context_instance=RequestContext(request))
+
 def dashboard(request):
     workflows = [i for i in Workflow.objects.filter(public=True)]
     jobs = []
@@ -36,6 +39,7 @@ def dashboard(request):
         request.session.set_test_cookie()
 
     return render_to_response('kepler/dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs}, context_instance=RequestContext(request))
+dashboard = login_required(dashboard)
 
 def upload_workflow(request):
     WorkflowForm = form_for_model(Workflow)
@@ -147,6 +151,7 @@ def job_media(request, job_id, output_id):
     # TODO: do check to make sure job_id == out.job.pk
     # the [1:] is to remove the / from the start of the filename
     return serve(request, out.file[1:], '/')
+job_media = login_required(job_media)
 
 def workflows(request):
     results = SearchList(request, Workflow, 'workflow_view')
@@ -183,4 +188,4 @@ def jobs(request):
               'crumbs': [''],
             })
     return render_to_response('kepler/workflow_list.html', context_instance=c)
-
+jobs = login_required(jobs)

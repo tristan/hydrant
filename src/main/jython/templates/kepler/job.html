@@ -1,4 +1,5 @@
 {% extends "kepler/base_site.html" %}
+{% load listutils %}
 {% block extrahead %}
 <style>
     .dashboard-block-container {
@@ -73,10 +74,10 @@
             </tr>
             </table>
         </div>
-    </div>
 {% ifequal job.status 'DONE' %}
-    <div class="dashboard-block">
-    {% for out in outputs %}
+    {% for output_list in outputs|split_list %}
+    {% cycle '' '</div><div class="dashboard-block">' %}
+    {% for out in output_list %}
         <div class="module">
             <h2>{{ out.name }}</h2>
             <table summary="{{ out.name }}">
@@ -93,10 +94,10 @@
             </table>
         </div>
     {% endfor %}
-    </div>
-    </div>
-</div>
+    {% endfor %}
 {% else %}
 {% endifequal %}
+    </div>
+    </div>
 </div>
 {% endblock %}

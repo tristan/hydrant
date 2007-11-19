@@ -49,7 +49,6 @@
     .module p a.tool {
     }
 
-
 {% endblock %}
 {% block object-tools %}
     <ul>
@@ -88,7 +87,7 @@
             <h2>Recent Jobs</h2>
             {% if jobs %}
                 {% for job in jobs %}
-                <p><a href="{% url job_details_view job.pk %}">{{ job.workflow.name }}</a><br><small>submitted: {{ job.submission_date }} &nbsp; status: {{ job.status }}</small></p>
+                <p><a href="{% url job_details_view job.pk %}">{{ job.workflow.name }}</a><br/><small>submitted: {{ job.submission_date }} &nbsp; status: {{ job.status }}</small></p>
                 {% endfor %}
             {% else %}
                 <p>You have no Jobs</p>
