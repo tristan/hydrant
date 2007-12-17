@@ -1,4 +1,4 @@
-import os, array
+import os, array, random
 
 from ptolemy.actor import Initializable, TypedAtomicActor, TypedIOPort
 from ptolemy.data.type import BaseType
@@ -6,8 +6,12 @@ from ptolemy.data import StringToken
 from ptolemy.kernel.util import SingletonAttribute, Attribute
 from ptolemy.data.expr import StringParameter
 from ptolemy.moml import MoMLFilter, MoMLParser
-from au.edu.jcu.kepler.kts import ReplacementManager
+from au.edu.jcu.kepler.hydrant import ReplacementManager
 from org.kepler.provenance import ProvenanceListener, TextFileRecording
+
+from org.ecoinformatics.seek.R import RExpression
+from ptolemy.actor.lib.io import LineWriter
+from org.geon import BinaryFileWriter
 
 from settings import STORAGE_ROOT
 from kepler.models import *
@@ -31,12 +35,19 @@ class DefaultReplacementManager(ReplacementManager):
     def __init__(self, container, name, jobid):
         ReplacementManager.__init__(self, container, name)
         self.jobid = jobid
-        os.makedirs('%s/jobs/%s/' % (STORAGE_ROOT, self.jobid))
+        try:
+            os.makedirs('%s/jobs/%s/' % (STORAGE_ROOT, self.jobid))
+        except:
+            if not os.path.exists('%s/jobs/%s/' % (STORAGE_ROOT, self.jobid)):
+                raise
     def writePythonData(self, data):
         output = data.get('output', None)
-        if output != None:
-            name = data.get('name', 'unnamed')
-            type = data.get('type', 'unknown')
+        if output == None:
+            output = ''
+        name = data.get('name', 'unnamed')
+        type = data.get('type', 'unknown')
+        file_name = data.get('filename', None)
+        if file_name == None:
             binary = (type == 'BINARY' or type == 'IMAGE')
             ext = type
             if type == 'IMAGE':
@@ -48,8 +59,10 @@ class DefaultReplacementManager(ReplacementManager):
             else:
                 f.write(output)
             f.close()
-            j = JobOutput(name=name, type=type, file=file_name, job=Job.objects.get(pk=self.jobid))
-            j.save()
+        j = JobOutput(name=name, type=type, file=file_name, job=Job.objects.get(pk=self.jobid))
+        j.save()
+    def get_storage_dir(self):
+        return '%s/jobs/%s' % (STORAGE_ROOT, self.jobid)
 
 class ProvenanceListenerWrapper(ProvenanceListener):
     def __init__(self, container, name, jobid):
@@ -65,6 +78,22 @@ class ProvenanceListenerWrapper(ProvenanceListener):
         jo = JobOutput(name='Provenance Data', type='TEXT', file=file_name, job=Job.objects.get(pk=jobid))
         jo.save()
 
+"""
+from kepler.workflow.proxy import *
+from kepler.models import *
+w = Workflow.objects.all()[5]
+from org.ecoinformatics.seek.R import RExpression
+e = [e for e in m.allAtomicEntityList() if isinstance(e, RExpression)][0]
+
+"""
+def modify_rexpression_actors(model, replacement_manager):
+    for e in model.allAtomicEntityList():
+        if isinstance(e, RExpression):
+            e.Rcwd.setExpression(replacement_manager.get_storage_dir())
+        elif isinstance(e, (LineWriter, BinaryFileWriter)):
+            e.fileName.setExpression('%s/%s' % (replacement_manager.get_storage_dir(), e.getName()))
+    for e in model.allCompositeEntityList():
+        modify_rexpression_actors(e, replacement_manager)
 """
 from kepler.workflow.components import *
 from kepler.workflow.cache import *

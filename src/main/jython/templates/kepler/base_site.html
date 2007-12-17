@@ -1,24 +1,26 @@
 {% extends "kepler/base.html" %}
 
-{% block title %}{{ title|escape }} | Kepler Web Service{% endblock %}
+{% block title %}{{ title|escape }} | Hydrant{% endblock %}
 
 {% block branding %}
-<h1 id="site-name">::: <a href="{% url welcome %}">Kepler Web Service</a> :::</h1>
+<img style="float: left; position: absolute;" src="{{ MEDIA_URL }}img/logos/hydrant.gif" alt="hydrant"/><h1 id="site-name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="{% url welcome %}">Hydrant</a></h1>
 {% endblock %}
 
-{% block extrastyle %}
-    #content { margin: 10px 15px; padding: 0 0; }
-{% endblock %}
 
 {% block content %}
-<h1>Welcome to { insert name here }</h1>
+<!--div id="hydrant-logo">
+    <img src="{{ MEDIA_URL }}img/logos/hydrant.png" alt="hydrant"/>
+</div-->
+<h1>Welcome to Hydrant</h1>
 <h3>What is this?</h3>
-<p>This project is intended to create a Web interface for executing kepler workflows.</p>
+<p>This project is intended to create a Web portal for executing kepler workflows.</p>
 <p>The project is currently still in the proof of concept stage</p>
-<p>You can log in to play with things using<br/>
-Username: test<br/>
-Password: test</p>
-<p>Best viewed using <a href="http://www.mozilla.com/en-US/firefox/">Firefox</a> (i.e. looks terrible, and doesn't work right in other browsers. Compatibility is high on the to-do list)</p>
+<p>You can log in to play with things using either of the following logins<br/>
+Username: designer, Password: test<br/>
+Username: scientist, Password: test</p>
+<p>The designer user reflects the type of user who is kepler savvy and would be responsible for building and deploying workflows for the scientist. The designer can upload workflows and set up <i>exposed parameters</i>, and other properties relevent to the workflow to make it easy for scientists to use.</p>
+<p>The scientist user reflects the type of user who just wants to run workflows and doesn't want to have to learn how kepler works or how to use it. The scientist only has access to select and execute avaliable workflows.</p>
+<p>Best viewed using <a href="http://www.mozilla.com/en-US/firefox/">Firefox</a> &gt;= 2.0 (i.e. looks terrible, and doesn't work right in other browsers. Compatibility is high on the to-do list)</p>
 <p>Development info availiable on the <a href="https://dev.archer.edu.au/projects/kepler/wiki/WebPortal">kepler @ jcu trac</a></p>
 {% endblock %}
 

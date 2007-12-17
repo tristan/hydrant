@@ -1,57 +1,18 @@
 {% extends "kepler/base_site.html" %}
 {% load listutils %}
 {% block extrahead %}
-<style>
-    .dashboard-block-container {
-        display: block;
-        float: left;
-        position: static;
-        margin: 0pt 0pt 1em;
-        padding-top: 1em;
-        width: auto;
-        overflow: hidden;
-    }
-    .dashboard-block {
-        display: block;
-        width: 47.5%;
-        float: left;
-        border: 1px solid #ffFFFF;
-        margin-left: 2%
-    }
-    .module {
-        overflow: hidden;
-        border: 1px solid #CCCCCC;
-        margin: 0em 0em 1em 0em;
-        }
-    .module h2 {
-        color: #666666;
-        background: #EEEEEE url(/media/img/kepler/nav-bg.gif) repeat-x scroll left bottom;
-        font-size: 11px;
-        font-weight: bold;
-        margin: 0pt;
-        padding: 2px 5px 3px;
-        text-align: left;
-    }
-    .module p {
-        width: 95%;
-        padding: 0em 8em 0em 2em;
-    }
-    .module table {
-        width: 100%;
-        padding: 0 0 0 0;
-    }
-    .module p.tools {
-        margin: 0 0 0 0;
-        padding: 2px 1em 2px 1em;
-        border-top: 1px solid #CCCCCC;
-        border-bottom: 1px solid #CCCCCC;
-        padding
-    }
-    .module p a.name {
-    }
-    .module p a.tool {
-    }
-</style>
+<script type="text/javascript">
+function set_properties() {
+    var form_data = $('id_job_properties_form');
+    new Ajax.Request('{% url job_details_view job.pk %}',
+            { method:'post',
+              postBody:form_data.serialize(),
+              onSuccess: function(transport){ append_message('Properties Saved Sucessfully', 'good'); },
+              onFailure: function(){ append_message('Something went wrong...', 'bad'); }
+            }
+            );
+}
+</script>
 {% endblock %}
 {% block content %}
 <div class="dashboard-block-container">
@@ -60,6 +21,19 @@
         <div class="module">
             <h2>Job Details</h2>
             <table summary="Job Details">
+            <tr>
+                 <th scope="row">Status</th>
+                 {% ifequal job.status 'DONE' %}
+                 <td style="color: green">
+                 {% else %}
+                 {% ifequal job.status 'ERROR' %}
+                 <td style="color: red">
+                 {% else %}
+                 <td>
+                 {% endifequal %}
+                 {% endifequal %}
+                 {{ job.status }}</td>
+            </tr>
             <tr>
                  <th scope="row">Submission Date</th>
                  <td>{{ job.submission_date }}</td>
@@ -72,11 +46,14 @@
                  <th scope="row">End Date</th>
                  <td>{{ job.end_date }}</td>
             </tr>
+            <tr>
+                <th scope="row">Workflow</th>
+                <td><a href="{% url workflow_view job.workflow.pk %}">{{ job.workflow }}</a></td>
+            </tr>
             </table>
         </div>
-{% ifequal job.status 'DONE' %}
     {% for output_list in outputs|split_list %}
-    {% cycle '' '</div><div class="dashboard-block">' %}
+    {% cycle '' '</div><div class="dashboard-block"><div class="module"><h2>Job Properties</h2><form id="id_job_properties_form" action="" method="post"><table id="ident_table"></table></form><div class="submit-row"><input type="submit" value="Save" name="properties" onClick="set_properties();"/></div></div>' %}
     {% for out in output_list %}
         <div class="module">
             <h2>{{ out.name }}</h2>
@@ -90,14 +67,18 @@
                     <img src="{{ out.url }}"/>
                 </center>
                 {% endifequal %}
+                {% ifequal out.type 'FILE' %}
+                <a href="{{ out.url }}">Download File</a>
+                {% endifequal %}
             </td></tr>
             </table>
         </div>
     {% endfor %}
     {% endfor %}
-{% else %}
-{% endifequal %}
     </div>
     </div>
 </div>
+<script type="text/javascript">
+    Element.Methods.update('ident_table', '{{ form }}');
+</script>
 {% endblock %}

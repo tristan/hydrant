@@ -1,173 +1,47 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 {% load rooturl %}
+{% load advanced_messaging %}
+{% setup_advanced_messaging %}
 <html xmlns="http://www.w3.org/1999/xhtml" lang="{{ LANGUAGE_CODE }}" xml:lang="{{ LANGUAGE_CODE }}">
     <head>
         <title>{% block title %}{{ title|escape }}{% endblock %}</title>
+		  {% block links %}
+		  <link href="/{% root_url %}media/css/base.css" type="text/css" rel="stylesheet" />
+		  <link href="/{% root_url %}media/css/dashboard.css" type="text/css" rel="stylesheet" />
+		   <link href="/{% root_url %}media/css/changelist.css" type="text/css" rel="stylesheet" />
+           <link href="/{% root_url %}media/css/widgets.css" type="text/css" rel="stylesheet" />
+			
+			{% endblock %}
         <style type="text/css">
-            body {
-                background: #FFFFFF none repeat scroll 0%;
-                margin: 0pt;
-                padding: 0pt;
-                font-family:"Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif;
-                font-size: 12px;
-            }
-            a:link, a:visited {
-                color: #5D80B2;
-                text-decoration: none;
-            }
-            a:hover {
-                color: #036;
-            }
-            h3 { font-size:14px; margin:.8em 0 .3em 0; color:#666; font-weight:bold; }
-            #container {
-                min-width: 760px;
-                padding: 0pt;
-                position: relative;
-                width: 100%;
-            }
-            #header {
-                background: #417690 none repeat scroll 0%;
-                color: #FFFFCC;
-                overflow: hidden;
-            }
-            #header a:link, #header a:visited {
-                color: white;
-            }
-            #header a:hover {
-                text-decoration: underline;
-            }
-            #branding h1 {
-                font-size: 18px;
-                font-weight: normal;
-                color: #F4F379;
-                margin: 8px 0pt;
-                padding: 0pt 10px;
-            }
-            #branding h1 a:link, #branding h1 a:visited, #branding h1 a:hover {
-                color: #F4F379;
-                font-weight: normal;
-            }
-            #user-tools {
-                font-size: 12px;
-                padding: 1em 10px;
-                position: absolute;
-                right: 0pt;
-                text-align: right;
-                top: 0pt;
-            }
-            #title {
-                color: #f4f379;
-                background: #7ca9c0 none repeat scroll 0%;
-                padding: 0pt;
-            }
-            #title h1 {
-                font-size: 18px;
-                font-weight: normal;
-                margin: 0px 0pt;
-                padding: 2pt 30px;
-            }
-            #object-tools {
-                float: left;
-            }
-            #object-tools ul {
-                font-family: Arial,Helvetica,sans-serif;
-                font-size: 10px;
-                font-weight: bold;
-                margin-bottom: 0em;
-            }
-            #object-tools li {
-                background: transparent url(/{% root_url %}media/img/kepler/tool-left.gif) 0 0 no-repeat;
-                display: block;
-                float: left;
-                height: 16px;
-                margin-left: 2px;
-                padding: 0pt 2pt 0pt 8px;
-            }
-            #object-tools li:hover {
-                background: url(/{% root_url %}media/img/kepler/tool-left_over.gif) 0 0 no-repeat;
-            }
-            #object-tools a:link, #object-tools a:visited {
-                color: white;
-                display: block;
-                height: 14px;
-                padding: 0.1em 26px 0.1em 8px
-            }
-            #object-tools a {
-                background: #999999 url(/{% root_url %}media/img/kepler/tool-right.gif) no-repeat scroll right top;
-                padding-right: 38px;
-            }
-            #object-tools a:hover, #object-tools li:hover a {
-                background: #5b80b2 url(/{% root_url %}media/img/kepler/tool-right_over.gif) 100% 0 no-repeat;
-            }
-            #object-tools a.addlink {
-                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-add.gif) no-repeat scroll right top;
-            }
-            #object-tools a.addlink:hover {
-                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-add_over.gif) no-repeat scroll right top;
-            }
-            #object-tools a.xlink {
-                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-cross.gif) no-repeat scroll right top;
-            }
-            #object-tools a.xlink:hover {
-                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-add_over.gif) no-repeat scroll right top;
-            }
-            #object-tools a.arrowlink {
-                background: #999999 url(/{% root_url %}media/img/kepler/tooltag-arrowright.gif) no-repeat scroll right top;
-            }
-            #object-tools a.arrowlink:hover {
-                background: #5b80b2 url(/{% root_url %}media/img/kepler/tooltag-arrowright_over.gif) no-repeat scroll right top;
-            }
-            #breadcrumbs {
-                background: white url(/{% root_url %}media/img/kepler/nav-bg-reverse.gif) 0 -10px repeat-x;
-                padding:2px 8px 3px 8px;
-                font-size:11px;
-                color:#999;
-                border-top:1px solid white;
-                border-bottom:1px solid #ccc;
-                text-align:left;
-            }
-            #content {
-                padding: 0 2em 0 2em;
-            }
-            #content h1 { font-size:18px; color:#666; padding:0 6px 0 0; margin:0 0 .2em 0; }
-            input[type=text], input[type=password], textarea, select, .vTextField { border:1px solid #ccc; }
+            
 
-            /*  FORM BUTTONS  */
-            input[type=submit], input[type=button], .submit-row input {
-                background: white url({{ MEDIA_URL }}img/kepler/nav-bg.gif) bottom repeat-x;
-                padding: 3px;
-                color: black;
-                border: 1px solid #bbb;
-                border-color: #ddd #aaa #aaa #ddd;
-            }
-            input[type=submit]:active, input[type=button]:active {
-                background-image: url({{ MEDIA_URL }}img/kepler/nav-bg-reverse.gif);
-                background-position: top;
-            }
-            input[type=submit].default, .submit-row input.default {
-                border: 2px solid #5b80b2;
-                background: #7CA0C7 url({{ MEDIA_URL }}img/kepler/default-bg.gif) bottom repeat-x;
-                font-weight: bold; color:white;
-            }
-            input[type=submit].default:active {
-                background-image: url({{ MEDIA_URL }}img/kepler/default-bg-reverse.gif);
-                background-position:top;
-            }
-            #footer {
-                clear:both;
-                padding:10px;
-                text-align: center;
-                width: 100%;
-                font-size: x-small;
-                color:#666;
-                border-top: 1px solid #eee;
-                border-bottom: 1px solid #eee;
-            }
-            #footer a img {
-                border: 0;
-            }
+
             {% block extrastyle %}{% endblock %}
         </style>
+        <script type="text/javascript" src="/{% root_url %}admin/jsi18n/"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/prototype.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/core.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/SelectBox.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/SelectFilter2.js"></script>
+        <script type="text/javascript">
+            count = 0
+            function append_message(message, klass, url) {
+                count += 1;
+                message_id = 'message_number_' + count;
+                str = '<li id="' + message_id + '" class="' + klass + '">';
+                if (url != null) {
+                    str += '<a href="' + url + '">' + message + '</a>';
+                } else {
+                    str += message;
+                }
+                str += ' <a href="#" onClick="destroy_message(\'' + message_id + '\')">(click here to dismiss)</a></li>';
+                $('messagelist').insert(str);
+            }
+            function destroy_message(id) {
+                $(id).remove();
+            }
+
+        </script>
         {% block extrahead %}{% endblock %}
         {% block blockbots %}<meta name="robots" content="NONE,NOARCHIVE" />{% endblock %}
     </head>
@@ -188,15 +62,15 @@
             {% block userlinks %}
                 {% if user.is_authenticated %}
                     <a href="{% url dashboard %}">Dashboard</a>
-                    &#9733;
+                    |
                 {% endif %}
                     <a href="{% url workflows %}">Workflows</a>
-                    &#9733;
+                    |
                 {% if user.is_authenticated %}
                     <a href="{% url jobs %}">Jobs</a>
-                    &#9733;
+                    |
                     <a href="{% url notifications %}">Notifications (2)</a>
-                    &#9733;
+                    |
                     <a href="{% url logout_view %}">Log out</a>
                 {% else %}
                     <a href="{% url login_view %}">Log in</a>
@@ -207,8 +81,8 @@
     </div>
     <!-- END Header -->
     {% block breadcrumbs %}
-        <div id="breadcrumbs">
             {% if crumbs %}
+        <div id="breadcrumbs">
                 <a href="{% url dashboard %}">Dashboard</a>
                 {% for crumb in crumbs %}
                     {% ifequal crumb '' %}{% else %}
@@ -216,14 +90,13 @@
                     {% endifequal %}
                 {% endfor %}
                 &rsaquo;
-            {% endif %}
             {{ title|escape }}
         </div>
+            {% endif %}
     {% endblock %}
-    {% if messages %}
-        <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
-    {% endif %}
-
+    <div id="messagelistblock">
+    <ul id="messagelist" class="messagelist"></ul>
+    </div>
     <div id="object-tools">
         {% block object-tools %}{% endblock %}
     </div>
@@ -239,15 +112,19 @@
 
     {% block footer %}
     <div id="footer">
-        Copyright © 2007 Tristan King<br/>
-        <table style="margin-left: auto; margin-right: auto;">
+        <div class="copywrite">
+        Created By Tristan King<br/>
+        Copyright © 1995 to 2007, James Cook University. All rights reserved.<br/>
+        <a href="http://www.jcu.edu.au/top/jcuprd_013723.html">Terms of use</a> | <a href="http://www.jcu.edu.au/privacy/">Privacy statement</a>
+        </div>
+        <table class="logos" style="margin-left: auto; margin-right: auto;">
             <tr>
-                <td><a href="http://www.jcu.edu.au/"><img src="http://www.jcu.edu.au/idc/groups/public/documents/webgraphics/jcu_banner_logo_07.gif" alt="James Cook University"/></a></td>
-                <td><a href="http://www.djangoproject.com"><img src="http://code.djangoproject.com/attachment/ticket/509/80x15-django-powered-92cc47.png?format=raw" alt="Django"/></a></td>
-                <td><a href="http://www.jython.org"><img src="http://jython.org/css/jython.png" alt="Jython"/></a></td>
-                <td><a href="http://www.python.org"><img src="http://www.python.org/community/logos/python-powered-w-70x28.png" alt="Python"/></a></td>
-                <td><a href="http://www.kepler-project.org"><img src="http://www.kepler-project.org/templates/kepler/kepler-logo.png" alt="Kepler"/></a></td>
-                <td><a href="http://archer.edu.au"><img src="{{ MEDIA_URL }}images/archer.png" alt="Archer"/></a></td>
+                <!-- td><a href="http://www.jcu.edu.au/"><img src="http://www.jcu.edu.au/idc/groups/public/documents/webgraphics/jcu_banner_logo_07.gif" alt="James Cook University"/></a></td -->
+                <td><a href="http://www.djangoproject.com"><img src="{{ MEDIA_URL}}img/logos/django-powered.png" alt="Django"/></a></td>
+                <td><a href="http://www.jython.org"><img src="{{ MEDIA_URL }}img/logos/jython-powered.png" alt="Jython"/></a></td>
+                <!--td><a href="http://www.python.org"><img src="http://www.python.org/community/logos/python-powered-w-70x28.png" alt="Python"/></a></td-->
+                <td><a href="http://www.kepler-project.org"><img src="{{ MEDIA_URL }}img/logos/kepler-powered.png" alt="Kepler"/></a></td>
+                <!--td><a href="http://archer.edu.au"><img src="{{ MEDIA_URL }}images/archer.png" alt="Archer"/></a></td-->
             </tr>
         </table>
     </div>
@@ -255,5 +132,15 @@
 
     <!-- END Container -->
     </div>
+    <script type="text/javascript">
+        <!--
+
+    {% if messages %}
+    {% for message in messages %}
+    append_message('{{ message.message|escape }}', {% ifequal message.type 'ERROR' %}'bad'{% else %}'good'{% endifequal %});
+    {% endfor %}
+    {% endif %}
+        -->
+    </script>
 </body>
 </html>

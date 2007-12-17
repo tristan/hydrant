@@ -1,8 +1,4 @@
 <div>
-    <style>
-        .props { background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center; }
-        .forms th, .forms td { border: 1px solid #CCC; }
-    </style>
     <table class="props"><tr><td>
     <h1>Parameters for {{ actor.name }}</h1>
     </td></tr><tr><td>
@@ -32,9 +28,9 @@
         </table>
     </div>
     <div style="border: 1px #CCC solid;" class="submit-row">
-        <input type="button" value="Apply" class="default[type='submit']" onClick="set_properties('{{ url }}', '{{ actor.name }}', 0);"/>
-        <input type="button" value="Save" class="default[type='submit']" onClick="set_properties('{{ url }}', '{{ actor.name }}', 1);"/>
-        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'properties-div');set_properties_to_none();"/>
+        <input type="button" value="Apply" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 0);"/>
+        <input type="button" value="Save" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 1);"/>
+        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'parameters-div');set_parameters_to_none();"/>
     </div>
     </form>
     </td></tr></table>

@@ -1,0 +1,155 @@
+#changelist #toolbar {
+	background:#E1E1E1  url(../img/kepler/nav-bg.gif) 0 0 repeat-x;
+	border-bottom: 1px solid #DDDDDD;
+	color: #666666;
+	padding: 3px 0px 5px;
+	display: block;
+	width:100%;
+	margin: 0px;
+	
+	
+	
+    display: block;
+    width: 100%;
+    height: 20px;
+    margin: 0px;
+}
+
+    #changelist #toolbar form input {
+	font-size: 11px;
+	padding: 1px 2px;
+	
+}
+
+    #changelist #toolbar form #searchbar {
+	padding: 2px;
+	
+}
+
+#changelist #toolbar form {
+	padding: 0px;
+	margin: 0px;
+	width: 100%;
+}
+
+    #changelist #changelist-search img {
+	vertical-align: middle;
+	
+}
+
+    #changelist table, #changelist{
+	width: 100%;
+	
+	padding: 0px;
+	margin: 0px;
+}
+
+    th {
+	font-size: 12px;
+	font-weight: bold;
+	text-align: left;
+}
+
+    td a {
+	font-weight: bold;
+}
+
+    td, th {
+	border-bottom: 1px solid #EEEEEE;
+	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+	line-height: 13px;
+	padding: 5px;
+	vertical-align: top;
+}
+
+    thead th, tfoot td {
+	background: url(../img/kepler/nav-bg.gif) #E1E1E1 top left repeat-x;
+	border-bottom: 1px solid #DDDDDD;
+	border-left: 1px solid #DDDDDD;
+	color: #666666;
+	font-size: 11px;
+	padding: 2px 5px;
+}
+
+    thead th:first-child, tfoot td:first-child {
+	border-left: none !important;
+}
+
+    thead th a:link, thead th a:visited {
+	color: #666666;
+	display: block;
+}
+
+    .row1 {
+	background: #EDF3FE;
+}
+
+    .row2 {
+	background: #FFFFFF;
+}
+
+    .quiet, a.quiet:link, a.quiet:visited {
+	color: #999999 !important;
+	font-weight: normal !important;
+}
+
+    .small {
+	font-size: 11px;
+}
+
+    #changelist .paginator {
+	background: url(../img/kepler/nav-bg.gif) #FFFFFF 0 100% repeat-x;
+	border-bottom: 1px solid #EEEEEE;
+	border-top: 1px solid #eeeeee;
+	color: #666666;
+	width: 100%;
+}
+
+    #changelist table tbody td {
+	border-left: 1px solid #DDDDDD;
+}
+
+    .paginator {
+	border-top: 1px solid #DDDDDD;
+	font-size: 11px;
+	line-height: 22px;
+	margin: 0;
+	padding-bottom: 10px;
+	padding-top: 10px;
+}
+
+    .paginator a:link, .paginator a:visited {
+	background: #FFFFFF;
+	border: solid 1px #CCCCCC;
+	padding: 2px 6px;
+	text-decoration: none;
+}
+
+    .paginator a.showall {
+	border: none !important;
+	padding: 0 !important;
+}
+
+    .paginator a.showall:hover {
+	background: transparent !important;
+	color: #003366 !important;
+}
+
+    .paginator .end {
+	border-width: 2px !important;
+	margin-right: 6px;
+}
+
+    .paginator .this-page {
+	font-size: 13px;
+	font-weight: bold;
+	padding: 2px 6px;
+	vertical-align: top;
+}
+
+    .paginator a:hover {
+	background: #5B80B2;
+	border-color: #003366;
+	color: #FFFFFF;
+}
+

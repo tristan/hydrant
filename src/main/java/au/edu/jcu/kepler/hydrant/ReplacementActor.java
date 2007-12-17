@@ -1,4 +1,4 @@
-package au.edu.jcu.kepler.kts;
+package au.edu.jcu.kepler.hydrant;
 
 import ptolemy.actor.TypedAtomicActor;
 import ptolemy.kernel.CompositeEntity;

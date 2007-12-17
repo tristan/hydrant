@@ -18,7 +18,7 @@
             <img alt="{{ actor.name }}" style="cursor: pointer;" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}images/composite.png" onClick="update_workflow_div('{{ next }}{{ actor.name }}');"/>
             {% else %}
                 <img alt="{{ actor.name }}" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}images/basic-actor.png"
-                {% if editable %}onDblclick="set_properties_to_loading(); update_properties('{{ properties_url_base }}','{{ actor.name }}', false); set_visibility(1, 'properties-div');"{% endif %}/>
+                {% if editable %}onDblclick="set_parameters_to_loading(); update_parameters('{{ parameters_url_base }}','{{ actor.name }}', false); set_visibility(1, 'parameters-div');"{% endif %}/>
             {% endif %}
         </div>
         <div class="smalltd">

@@ -20,7 +20,7 @@
             <div class="director notdraggable" style="left: {{ director.location.x }}px; top: {{ director.location.y }}px">
                 <div>{{ director.name }}</div>
                 <img alt="{{ director.name }}" id="{{ director.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}images/director.png"
-                {% if editable %}onDblClick="set_properties_to_loading();update_properties('{{ properties_url_base }}', '{{ director.name }}'); set_visibility(1, 'properties-div');"{% endif %}/>
+                {% if editable %}onDblClick="set_parameters_to_loading();update_parameters('{{ parameters_url_base }}', '{{ director.name }}'); set_visibility(1, 'parameters-div');"{% endif %}/>
             </div>
             {% endwith %}
             {% endif %}
@@ -60,13 +60,13 @@
             </div>
             {% endfor %}
             <!--
-            <div id="properties-div" class="properties">
+            <div id="parameters-div" class="properties">
             </div>
             <script type="text/javascript">
-                set_properties_to_loading();
+                set_parameters_to_loading();
                 {% if open_actor_properties %}
-                set_visibility(1, 'properties-div');
-                update_properties('{{ open_actor_properties }}');
+                set_visibility(1, 'parameters-div');
+                update_parameters('{{ open_actor_properties }}');
                 {% endif %}
             </script>
             -->

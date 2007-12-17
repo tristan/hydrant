@@ -1,17 +1,22 @@
 from workflow.cache import *
 from django.http import Http404
-#from forms import ParameterForm
 from django.newforms import form_for_model
 from django.utils.encoding import force_unicode, smart_str
-from django.newforms.forms import BaseForm, SortedDictFromList
+from django.newforms.forms import BaseForm
+from django.utils.datastructures import SortedDict
 from django import newforms as forms
 from models import *
 from django.db import models
 from django.db.models.query import QuerySet
-import operator, traceback
+from django.db.models.fields import FieldDoesNotExist
+import operator, traceback, os
 from django.core.paginator import ObjectPaginator
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.core.urlresolvers import reverse
+from django.db.models.query import Q
+import widgets
+from django.utils.text import capfirst
+from settings import STORAGE_ROOT
 
 def build_crumbs_from_path(current_name, path):
     """
@@ -34,16 +39,54 @@ def generate_job_submission_form(workflow):
     if len(parameters) == 0:
         return None
     for p in parameters:
-        field = models.CharField(max_length=200, name='%s' % p.property_id)
-        field_list.append((field.name, formfield_callback(field, p.name, p.value, p.description)))
-    base_fields = SortedDictFromList(field_list)
+        if p.type == 'TEXT':
+            field_list.append(('%s' % p.property_id, forms.CharField(max_length=1000, initial=p.value, label=p.name, help_text=p.description, widget=forms.Textarea)))
+        elif p.type == 'CHECKBOX':
+            field_list.append(('%s' % p.property_id, forms.BooleanField(initial=eval(capfirst(p.value)), label=p.name, help_text=p.description)))
+        elif p.type == 'SELECT':
+            m = workflow.get_model()
+            actor = p.property_id.split('.')[2]
+            choices = tuple([(i, i) for i in [i for i in m.get_properties([actor]) if i['id'] == p.property_id][0]['choices']])
+            if '"' in p.value:
+                p.value = eval(p.value)
+            field_list.append(('%s' % p.property_id, forms.ChoiceField(initial=p.value, label=p.name, choices=choices, help_text=p.description)))
+        elif p.type == 'FILE':
+            field_list.append(('%s' % p.property_id, forms.FileField(initial=p.value, label=p.name, help_text=p.description)))
+        else:
+            field_list.append(('%s' % p.property_id, forms.CharField(initial=p.value, label=p.name, help_text=p.description)))
+    base_fields = SortedDict(field_list)
     return type('ExposedParametersForm', (BaseForm,), {'base_fields': base_fields,})
 
-def setup_job_parameters_from_post(job, post):
+BINARY_CONTENT_TYPES = ['application', 'image']
+def setup_job_parameters_from_post(job, post, files={}):
+    if not isinstance(files, dict):
+        print 'NOT PROCESSING FILES: %s' % files
+        files = {}
+    if files.keys() != []:
+        dirname = '%s/jobs/%s/input' % (STORAGE_ROOT, job.pk)
+        try:
+            os.makedirs(dirname)
+        except:
+            if not os.path.exists(dirname):
+                raise
     parameters = job.workflow.get_all_parameters()
     for p in parameters:
         if p.property_id in post.keys():
             value=post.get('%s' % p.property_id)
+        elif p.property_id in files.keys():
+            form_file = files.get(p.property_id)
+            # checks for the existance of each string in BINARY_CONTENT_TYPES inside the content-type string
+            # returning a list of Trues and Falses, if there is a True in the list, then one of the strings matched
+            # and thus we know we're dealing with binary data
+            if True in map(lambda a: a in form_file['content-type'], BINARY_CONTENT_TYPES):
+                binary = True
+            else:
+                binary = False
+            filename = '%s/%s' % (dirname, form_file['filename'])
+            stored_file = open(filename, 'w%s' % (binary and 'b' or ''))
+            stored_file.write(form_file['content'])
+            stored_file.close()
+            value = filename
         else:
             value = p.value
         ji = JobInput(job=job, parameter=p, value=value)
@@ -63,15 +106,32 @@ def generate_parameters_form(workflow, model, path_to_actor):
         except:
             expose_to_user = False
             property_description = ''
-        name = models.CharField(max_length=200, name='%s_name' % p['id'])
-        value = models.CharField(max_length=200, name='%s_value' % p['id'])
-        expose = models.BooleanField(name='%s_expose' % p['id'])
-        description = models.TextField(name='%s_description' % p['id'])
-        field_list.append((name.name, formfield_callback(name, 'Name', p['name'])))
-        field_list.append((value.name, formfield_callback(value, 'Value', p['value'])))
-        field_list.append((expose.name, formfield_callback(expose, 'Expose to User', expose_to_user)))
-        field_list.append((description.name, formfield_callback(description, 'Description', property_description)))
-    base_fields = SortedDictFromList(field_list)
+        field_list.append(('%s_name' % p['id'], forms.CharField(initial=p['name'], label='Name')))
+        thistype = p.get('type', 'INPUT')
+        if thistype == 'TEXT':
+            field_list.append(('%s_value' % p['id'], forms.CharField(max_length=1000, initial=p['value'], label='Value', widget=forms.Textarea)))
+        elif thistype == 'INPUT':
+            field_list.append(('%s_value' % p['id'], forms.CharField(initial=p['value'], label='Value')))
+        elif thistype == 'CHECKBOX':
+            try:
+                p['value'] = eval(capfirst(p['value']))
+            except:
+                if not isinstance(p['value'], bool):
+                    print 'WARNING, EVAL ON CHECKBOX FAILED: %s (%s)' % (p['value'], type(p['value']))
+            field_list.append(('%s_value' % p['id'], forms.BooleanField(initial=p['value'], label='Value', required=False)))
+        elif thistype == 'SELECT':
+            choices = tuple([(i, i) for i in p['choices']])
+            if '"' in p['value']:
+                p['value'] = eval(p['value'])
+            field_list.append(('%s_value' % p['id'], forms.ChoiceField(initial=p['value'], label='Value', choices=choices)))
+        elif thistype == 'FILE':
+            field_list.append(('%s_value' % p['id'], forms.FileField(initial=p['value'], label='Value')))
+        else:
+            print 'WARNING, UNKNOWN TYPE: %s' % thistype
+        field_list.append(('%s_expose' % p['id'], forms.BooleanField(initial=expose_to_user, label='Expose to User')))
+        field_list.append(('%s_description' % p['id'], forms.CharField(max_length=1000, initial=property_description, label='Description', widget=forms.Textarea)))
+        field_list.append(('%s_type' % p['id'], forms.CharField(initial=thistype, widget=forms.HiddenInput)))
+    base_fields = SortedDict(field_list)
     return type(path_to_actor[-1] + 'Form', (BaseForm,), {'base_fields': base_fields,})
 
 def save_parameters_from_post(workflow, post):
@@ -85,11 +145,18 @@ def save_parameters_from_post(workflow, post):
         value = post.get('%s_value' % id, None)
         expose = post.get('%s_expose' % id, False)
         description = post.get('%s_description' % id, '')
+        typ = post.get('%s_type' % id, 'INPUT')
+        if typ == 'CHECKBOX':
+            if value == None or value == '':
+                value = 'false'
+            else:
+                value = 'true'
         wfp, created = WorkflowParameter.objects.get_or_create(workflow=workflow, property_id=id)
         wfp.name = name
         wfp.value = value
         wfp.expose_to_user = expose
         wfp.description = description
+        wfp.type = typ
         wfp.save()
 
 # Changelist settings
@@ -107,7 +174,7 @@ EMPTY_CHANGELIST_VALUE = '(None)'
 MAX_SHOW_ALL_ALLOWED = 200
 
 class SearchList(object):
-    def __init__(self, request, model, view_url):
+    def __init__(self, request, model, qs, view_url):
         try:
             self.page_num = int(request.GET.get(PAGE_VAR, 0))
         except ValueError:
@@ -119,61 +186,10 @@ class SearchList(object):
             del self.params[ERROR_FLAG]
         self.show_all = ALL_VAR in request.GET
 
-        # do ordering
-        self.order_field, self.order_type = model.Search.list_display[0], 'asc'
-        if ORDER_VAR in self.params:
-            try:
-                order_field = self.params[ORDER_VAR]
-                try:
-                    model._meta.get_field(order_field)
-                except models.FieldDoesNotExist:
-                    traceback.print_exc()
-                    pass # invalid field name, ignore
-                else:
-                    self.order_field = order_field
-                    if ORDER_TYPE_VAR in self.params and self.params[ORDER_TYPE_VAR] in ('asc', 'desc'):
-                        self.order_type = self.params[ORDER_TYPE_VAR]
-            except (IndexError, ValueError):
-                pass # Invaid ordering specified.
-
         self.query = request.GET.get(SEARCH_VAR, '')
-        qs = model._default_manager.get_query_set()
-        lookup_params = self.params.copy()
-        for i in (ALL_VAR, ORDER_VAR, ORDER_TYPE_VAR, SEARCH_VAR):
-            if i in lookup_params:
-                del lookup_params[i]
-        for key, value in lookup_params.items():
-            if not isinstance(key, str):
-                del lookup_params[key]
-                lookup_params[smart_str(key)] = value
+        self.order_field, self.order_type = model.Search.list_display[0], 'asc'
 
-        print lookup_params
-        qs = qs.filter(**lookup_params)
-
-        for field_name in model.Search.list_display:
-            try:
-                f = model._meta.get_field(field_name)
-            except models.FieldDoesNotExist:
-                pass
-            else:
-                if isinstance(f.rel, models.ManyToOneRel):
-                    qs = qs.select_related()
-                    break
-
-        # do ordering stuff
-        lookup_order_field = self.order_field
-        try:
-            f = model._meta.get_field(self.order_field, many_to_many=False)
-        except models.FieldDoesNotExist:
-            pass
-        else:
-            if isinstance(f.rel, models.OneToOneRel):
-                pass
-            elif isinstance(f.rel, models.ManyToOneRel):
-                rel_ordering = f.rel.to._meta.ordering and f.rel.to._meta.ordering[0] or f.rel.to._meta.pk.column
-                lookup_order_field = '%s.%s' % (f.rel.to._meta.db_table, rel_ordering)
-
-        qs = qs.order_by((self.order_type == 'desc' and '-' or '') + lookup_order_field)
+        full_result_count = len(qs)
 
         # Apply keyword searches.
         def construct_search(field_name):
@@ -210,8 +226,6 @@ class SearchList(object):
 
         if isinstance(self.query_set._filters, models.Q) and not self.query_set._filters.kwargs:
             full_result_count = result_count
-        else:
-            full_result_count = model._default_manager.count()
 
         can_show_all = result_count <= MAX_SHOW_ALL_ALLOWED
         multi_page = result_count > max_per_page
@@ -352,3 +366,35 @@ class SearchList(object):
             elif v is not None:
                 p[k] = v
         return '?' + '&amp;'.join([u'%s=%s' % (k, v) for k, v in p.items()]).replace(' ', '%20')
+
+
+class WorkflowList(SearchList):
+    def __init__(self, request, view_url):
+        #qs = Workflow._default_manager.get_query_set()
+        #qs = (qs.filter(public=True) | qs.filter(owner=request.user)) & qs.filter(deleted=False)
+        qs = get_workflow_query_set(request.user)
+        SearchList.__init__(self, request, Workflow, qs, view_url)
+
+class JobList(SearchList):
+    def __init__(self, request, view_url):
+        qs = Job._default_manager.get_query_set()
+        qs = qs.filter(owner=request.user)
+        SearchList.__init__(self, request, Job, qs, view_url)
+
+def get_workflow_query_set(user):
+    """
+    does some funky messy creation of a complex filter, which selects all the workflows which a user has access to
+    as well as all the public workflows, and makes sure each one hasn't been deleted.
+    """
+    qs = Q()
+    for i in user.workflow_valid_users.all():
+        qs |= Q(pk=i.pk)
+    qs |= Q(public=True) | Q(owner=user)
+    qs &= Q(deleted=False)
+    return Workflow.objects.complex_filter(qs)
+
+def formfield_callback(field, **kwargs):
+    if isinstance(field, models.ManyToManyField):
+        kwargs['widget'] = widgets.FilteredSelectMultiple(field.verbose_name, False)
+    return field.formfield(**kwargs)
+

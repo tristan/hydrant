@@ -1,4 +1,4 @@
-package au.edu.jcu.kepler.kts;
+package au.edu.jcu.kepler.hydrant;
 
 import java.util.HashMap;
 
@@ -18,7 +18,7 @@ import ptolemy.kernel.util.StringAttribute;
  * Relplaces the Display actor in kepler workflows, 
  * 
  **/
-public class DisplayReplacement extends ReplacementActor {
+public class DisplayReplacement extends TypedAtomicActor {
 	public DisplayReplacement(CompositeEntity container, String name)
     throws IllegalActionException, NameDuplicationException {
 		super(container, name);
@@ -86,7 +86,7 @@ public class DisplayReplacement extends ReplacementActor {
 	}
 	
 	public void wrapup() {
-		ReplacementManager man = getReplacementManager();
+		ReplacementManager man = ReplacementUtils.getReplacementManager(this);
 		HashMap data_map = new HashMap();
 		data_map.put("name", getFullName());
 		data_map.put("type", "TEXT");

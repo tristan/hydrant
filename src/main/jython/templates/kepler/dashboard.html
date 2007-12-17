@@ -1,88 +1,41 @@
 {% extends "kepler/base_site.html" %}
 {% load rooturl %}
-{% block extrastyle %}
-    .block-container {
-        display: block;
-        float: left;
-        position: static;
-        margin: 0pt 0pt 1em;
-        padding-top: 1em;
-        width: auto;
-        overflow: hidden;
-    }
-    .block {
-        display: block;
-        width: 30.5%;
-        float: left;
-        border: 1px solid #ffFFFF;
-        margin-left: 2%
-    }
-    .module {
-        border: 1px solid #CCCCCC;
-        margin: 0em 0em 1em 0em;
-        }
-    .module h2 {
-        color: #666666;
-        background: #EEEEEE url(/{% root_url %}media/img/kepler/nav-bg.gif) repeat-x scroll left bottom;
-        font-size: 11px;
-        font-weight: bold;
-        margin: 0pt;
-        padding: 2px 5px 3px;
-        text-align: left;
-    }
-    .module p {
-        width: 100%;
-        font-weight: bold;
-        padding: 0em 2em 0em 2em;
-    }
-    .module p small {
-        font-weight: normal;
-    }
-    .module p.tools {
-        margin: 0 0 0 0;
-        padding: 2px 1em 2px 1em;
-        border-top: 1px solid #CCCCCC;
-        border-bottom: 1px solid #CCCCCC;
-    }
-    .module p a.name {
-    }
-    .module p a.tool {
-    }
 
-{% endblock %}
 {% block object-tools %}
+    {% if user.is_staff %}
     <ul>
-        <li>
+        <li style="width: 13em;">
             <a href="{% url upload_workflow %}" class="addlink">Upload Workflow</a>
         </li>
     </ul>
+    {% endif %}
 {% endblock %}
 {% block content %}
-<div class="block-container">
+<div class="dashboard-block-container">
     <div>
-    <div class="block">
+    <div class="dashboard-block">
         <div class="module">
-            <h2>Recent Workflows</h2>
+            <h2>Bookmarked Jobs</h2>
             {% if recent_workflows %}
                 {% for workflow in recent_workflows %}
                 <p><a class="name" href="{% url workflow_view workflow.pk %}">{{ workflow.name }}</a></p>
                 {% endfor %}
             {% else %}
-                <p>No Recently Used Workflows</p>
+                <p>No Bookmarked Jobs</p>
             {% endif %}
         </div>
         <div class="module">
-            <h2>Tagged Workflows</h2>
+            <h2>Bookmarked Workflows</h2>
             {% if workflows %}
                 {% for workflow in workflows %}
                     <p><a class="name" href="{% url workflow_view workflow.pk %}">{{ workflow.name }}</a></p>
                 {% endfor %}
             {% else %}
-                <p>No Tagged Workflows</p>
+                <p>No Bookmarked Workflows</p>
             {% endif %}
         </div>
     </div>
-    <div class="block">
+    <div class="dashboard-block">
         <div class="module">
             <h2>Recent Jobs</h2>
             {% if jobs %}
@@ -94,7 +47,7 @@
             {% endif %}
         </div>
     </div>
-    <div class="block">
+    <div class="dashboard-block">
         <div class="module">
             <h2>Notifications</h2>
             {% if notifications %}

@@ -5,6 +5,7 @@ from ptolemy.kernel import Relation, Port, Entity
 from ptolemy.vergil.kernel.attributes import TextAttribute
 from ptolemy.vergil.basic import KeplerDocumentationAttribute
 from ptolemy.actor.gui import SizeAttribute
+from ptolemy.actor.sched import Scheduler
 from org.kepler.sms import SemanticType
 from org.kepler.moml import NamedObjId
 
@@ -15,6 +16,9 @@ import ptolemy.data.IntMatrixToken
 import utils
 from utils import validateMoML, addMoMLFilters
 import traceback
+
+import ptolemy.kernel.util.StringAttribute
+from ptolemy.data.type import BaseType
 
 
 import ptolemy.data.Token
@@ -358,16 +362,39 @@ class ModelProxy(object):
                 pass # we don't need to know the semantic type
             elif isinstance(a, NamedObjId):
                 pass # ...
+            elif isinstance(a, Scheduler):
+                pass # ignore schedulers
             elif a.getName() == 'class' or a.getName() == 'kar':
                 pass # ignore class properties for now
             else:
                 try:
-                    attr = {'name':a.getName(), 'id':a.getFullName(), 'value':a.getValueAsString()}
+                    if hasattr(a, 'getExpression'):
+                        value = a.getExpression()
+                    elif hasattr(a, 'getValueAsString'):
+                        value = a.getValueAsString()
+                    else:
+                        try:
+                            value = a.getToken().toString()
+                        except:
+                            value = ''
+                            traceback.print_exc()
+                    attr = {'name':a.getName(), 'id':a.getFullName(), 'value':value}
+                    if isinstance(a, ptolemy.data.expr.FileParameter):
+                        attr['type'] = 'FILE'
+                    elif isinstance(a, ptolemy.kernel.util.StringAttribute):
+                        for i in a.attributeList():
+                            if isinstance(i, ptolemy.actor.gui.style.TextStyle):
+                                attr['type'] = 'TEXT'
+                    elif a.getType() == BaseType.BOOLEAN:
+                        attr['type'] = 'CHECKBOX'
+                        attr['value'] = a.getToken().booleanValue()
                     if hasattr(a, 'getChoices') and a.getChoices():
+                        attr['type'] = 'SELECT'
                         attr['choices'] = list(a.getChoices())
                     properties.append(attr)
                 except:
-                    pass
+                    print a
+                    traceback.print_exc()
         return properties
 
     def is_actor(self, path):
@@ -391,10 +418,18 @@ class ModelProxy(object):
 """
 from ptolemy.moml import MoMLParser
 from ptolemy.moml.filter import RemoveGraphicalClasses
-from au.edu.jcu.kepler.kts import WebServiceFilter
+from au.edu.jcu.kepler.hydrant import WebServiceFilter
 MoMLParser.addMoMLFilters([RemoveGraphicalClasses(), WebServiceFilter()])
 parser = MoMLParser()
 moml = open('../../../media/workflows/40309d8779e8faa29196034ae1959bfe').read()
 tl = parser.parse(moml)
 tl = parser.parseFile('../../../media/workflows/40309d8779e8faa29196034ae1959bfe')
+
+from kepler.workflow.cache import *
+from django.contrib.auth.models import User
+u = User.objects.get(username='tristan')
+mp, wf = open_workflow(u, 10)
+a = mp.model.allAtomicEntityList()[0]
+e = a.attributeList()[1]
+
 """

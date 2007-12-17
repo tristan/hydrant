@@ -1,8 +1,6 @@
 {% extends "kepler/base_site.html" %}
 
-{% block extrastyle %}
-.errornote { font-size:12px !important; display:block; padding:4px 5px 4px 25px; margin:0 0 3px 0; border:1px solid red; color:red;background:#ffc url(/media/img/kepler/icon_error.gif) 5px .3em no-repeat; }
-{% endblock %}
+
 {% block content %}
 {% if form.has_errors %}
 <p class="errornote">invalid username and/or password</p>

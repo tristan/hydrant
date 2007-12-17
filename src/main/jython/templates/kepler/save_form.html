@@ -1,7 +1,6 @@
 {% extends "kepler/base_site.html" %}
 {% block extrahead %}{{ block.super }}
 {% endblock %}
-{% block stylesheet %}{{ MEDIA_URL }}css/forms.css{% endblock %}
 {% block coltype %}{% if ordered_objects %}colMS{% else %}colM{% endif %}{% endblock %}
 {% block bodyclass %}change-form{% endblock %}
 {% block breadcrumbs %}{% if not is_popup %}

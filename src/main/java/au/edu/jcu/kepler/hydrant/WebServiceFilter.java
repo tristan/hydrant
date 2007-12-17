@@ -1,4 +1,4 @@
-package au.edu.jcu.kepler.kts;
+package au.edu.jcu.kepler.hydrant;
 
 import java.util.HashMap;
 
@@ -12,8 +12,13 @@ public class WebServiceFilter implements MoMLFilter {
 	
 	static {
 		_replacements = new HashMap();
-		_replacements.put("ptolemy.actor.lib.gui.Display", "au.edu.jcu.kepler.kts.DisplayReplacement");
-		_replacements.put("ptolemy.actor.lib.gui.XYPlotter", "au.edu.jcu.kepler.kts.XYPlotterReplacement");
+		_replacements.put("ptolemy.actor.lib.gui.Display", "au.edu.jcu.kepler.hydrant.DisplayReplacement");
+		_replacements.put("ptolemy.actor.lib.gui.XYPlotter", "au.edu.jcu.kepler.hydrant.XYPlotterReplacement");
+		_replacements.put("ptolemy.actor.lib.gui.TimedPlotter", "au.edu.jcu.kepler.hydrant.TimedPlotterReplacement");
+		_replacements.put("util.ImageJActor", "au.edu.jcu.kepler.hydrant.ImageStorage");
+		_replacements.put("ptolemy.actor.lib.io.LineWriter", "au.edu.jcu.kepler.hydrant.FileWriteReplacement");
+		_replacements.put("org.geon.FileWrite", "au.edu.jcu.kepler.hydrant.FileWriteReplacement");
+		_replacements.put("org.geon.BinaryFileWriter", "au.edu.jcu.kepler.hydrant.BinaryFileWriterReplacement");
 	}
 	
 	public String filterAttributeValue(NamedObj container, String element,
