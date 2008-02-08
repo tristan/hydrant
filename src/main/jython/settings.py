@@ -1,7 +1,7 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-PROJECT_HOME = '/home/tristan/projects/jcu/WebPortal'
+PROJECT_HOME = '/home/tristan/projects/hydrant'
 MEDIA_ROOT = PROJECT_HOME + '/media'
 
 SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'
@@ -37,7 +37,7 @@ INSTALLED_APPS = (
 )
 
 TEMPLATE_DIRS = (
-    PROJECT_HOME + '/src/main/jython/templates/',
+    PROJECT_HOME + '/templates/',
 )
 
 ROOT_URL = ''

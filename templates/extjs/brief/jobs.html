@@ -1,0 +1,7 @@
+{% if jobs %}
+<ul>
+    {% for job in jobs %}
+    <li>{{ job.name }}<br/><small>submitted: {{ job.submission_date }} status: {{ job.status }}</small></li>
+    {% endfor %}
+</ul>
+{% endif %}

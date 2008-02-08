@@ -1,0 +1,28 @@
+{% load textutils %}
+{% if model %}
+<div class="canvas" id="mainCanvas" style="position: relative; width: {{ model.canvas.x }}px; height: {{ model.canvas.y }}px;">
+{% if model.director %}
+{% with model.director as d %}
+<div class="director" style="left: {{ d.location.x }}px; top: {{ d.location.y }}px;">
+  <div>{{ d.name }}</div>
+  <img alt="{{ d.name }}" id="{{ d.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}images/director.png" {% if user.is_staff %}onClick="alert('clicked on actor {{ d.name }}');"{% endif %}/>
+</div>
+{% endwith %}
+{% endif %}
+
+{% for actor in model.actors %}
+{% include "extjs/workflow/actor.html" %}
+{% endfor %}
+
+{% for vertex in model.vertices %}
+<div class="vertex" style="left: {{ vertex.location.x }}px; top: {{ vertex.location.y }}px;">
+  <img alt="" class="block" id="{{ vertex.name|replace_spaces }}" src="{{ MEDIA_URL }}images/vertex.png"/>
+</div>
+{% endfor %}
+
+{% for link in model.links %}
+<div class="connector {{ link.0|replace_spaces }} {{ link.1|replace_spaces }}"></div>
+{% endfor %}
+
+</div>
+{% endif %}

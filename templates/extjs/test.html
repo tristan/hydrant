@@ -1,0 +1,31 @@
+<html>
+    <head>
+        <title>test page</title>
+        <link href="{{ MEDIA_URL }}css/ext-all.css" type="text/css" rel="stylesheet" />
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/ext-base.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/ext-all-debug.js"></script>
+        <script type="text/javascript" src="{{ MEDIA_URL }}js/djangojsonreader.js"></script>
+        <script type="text/javascript">
+            ds = new Ext.data.Store({
+                proxy: new Ext.data.HttpProxy({url: "{% url json_workflows %}"}),
+                reader: new Ext.data.JsonReader({
+                    root: 'workflows',
+                    totalProperty: 'total',
+                    id: 'pk'
+                }, [
+                    {name: 'name', mapping: 'fields.name'},
+                    {name: 'description', mapping: 'fields.description'},
+                    {name: 'created', mapping: 'fields.created'}
+                ])
+            });
+            var grid = new Ext.grid.GridPanel({
+                store: ds,
+                columns: [],
+                title: 'Test grid',
+                renderTo: document.body
+                });
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

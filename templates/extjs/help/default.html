@@ -1,0 +1,9 @@
+{% if user.is_authenticated %}
+<div id="help">
+    <p>Use the Navigation box to choose where you want to go</p>
+</div>
+{% else %}
+<div id="help">
+    <p>Click the "Log in" button in the above toolbar to log in</p>
+</div>
+{% endif %}

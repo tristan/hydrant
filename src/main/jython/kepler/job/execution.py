@@ -53,8 +53,8 @@ class KeplerExecutionThread(Thread):
         self.model = model
         self.job = job
         self.replacement_manager = replacement_manager
-        mgr = Manager(self.model.model.workspace(), 'manager')
-        self.model.model.setManager(mgr)
+        mgr = Manager(self.model.proxied_entity.workspace(), 'manager')
+        self.model.proxied_entity.setManager(mgr)
         self.manager = mgr
         self.job.status = 'QUEUED'
         self.job.save()

@@ -1,6 +1,12 @@
 {% extends "kepler/base_site.html" %}
 
 
+{% block portalcontentdivs %}
+<div id="welcome">
+    <h1>THIS IS THE LOGIN PAGE</h1>
+</div>
+{% endblock %}
+
 {% block content %}
 {% if form.has_errors %}
 <p class="errornote">invalid username and/or password</p>

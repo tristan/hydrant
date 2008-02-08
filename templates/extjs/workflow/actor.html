@@ -1,0 +1,23 @@
+{% load textutils %}
+{% if actor %}
+<div class="actor down_start down_end" style="left: {{actor.location.x }}px; top: {{ actor.location.y }}px">
+  <div style="overflow: auto;">{{ actor.name }}</div>
+  <table>
+    <tr>
+      <td>
+	{% for ip in actor.inputports %}
+	<img alt="" id="{{ ip }}" class="block" src="{{ MEDIA_URL }}images/single-port.png"/><br/>
+	{% endfor %}
+      </td>
+      <td>
+	<img alt="{{ actor.name }}" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}images/{% if actor.composite %}composite.png" style="cursor: pointer" onClick="alert('{{ actor.name }}');"{% else %}basic-actor.png" {% if user.is_staff %}onClick="alert('{{ actor.name }}');"{% endif %}{% endif %}"/>
+      </td>
+      <td>
+	{% for op in actor.outputports %}
+	<img alt="" id="{{ op }}" class="block" src="{{ MEDIA_URL }}images/single-port.png"/><br/>
+	{% endfor %}
+      </td>
+    </tr>
+  </table>
+</div>
+{% endif %}

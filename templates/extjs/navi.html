@@ -1,0 +1,29 @@
+{% if user.is_authenticated %}
+<ul id="navi" style="text-align: right;">
+    <li>
+    <!--a id="welcome-navi" href="#" onClick="open_welcome();">Welcome</a-->
+        Welcome {{ user.username }}
+    </li>
+    <li>
+        <a id="dashboard-navi" href="#" onClick="hydrant.loadDashboardView();">Dashboard</a>
+    </li>
+    <li>
+        <a id="workflows-navi" href="#">Workflows</a>
+    </li>
+    <li>
+        <a id="jobs-navi" href="#">Jobs</a>
+    </li>
+    <li>
+        <a id="logout-navi" href="#" onClick="hydrant.logout();">Logout</a>
+    </li>
+</ul>
+{% else %}
+<ul id="navi" style="text-align: right;">
+    <li>
+        <a id="welcome-navi" href="#" onClick="hydrant.showWelcome();">Welcome</a>
+    </li>
+    <li>
+        <a id="login-navi" href="#" onClick="hydrant.showLoginForm();">Login</a>
+    </li>
+</ul>
+{% endif %}

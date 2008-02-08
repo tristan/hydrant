@@ -1,4 +1,6 @@
-import os, array, random
+import os
+import array
+import random
 
 from ptolemy.actor import Initializable, TypedAtomicActor, TypedIOPort
 from ptolemy.data.type import BaseType
@@ -78,14 +80,6 @@ class ProvenanceListenerWrapper(ProvenanceListener):
         jo = JobOutput(name='Provenance Data', type='TEXT', file=file_name, job=Job.objects.get(pk=jobid))
         jo.save()
 
-"""
-from kepler.workflow.proxy import *
-from kepler.models import *
-w = Workflow.objects.all()[5]
-from org.ecoinformatics.seek.R import RExpression
-e = [e for e in m.allAtomicEntityList() if isinstance(e, RExpression)][0]
-
-"""
 def modify_rexpression_actors(model, replacement_manager):
     for e in model.allAtomicEntityList():
         if isinstance(e, RExpression):
@@ -94,19 +88,4 @@ def modify_rexpression_actors(model, replacement_manager):
             e.fileName.setExpression('%s/%s' % (replacement_manager.get_storage_dir(), e.getName()))
     for e in model.allCompositeEntityList():
         modify_rexpression_actors(e, replacement_manager)
-"""
-from kepler.workflow.components import *
-from kepler.workflow.cache import *
-from kepler.workflow.proxy import *
-from ptolemy.actor.lib.gui import Display
-from au.edu.jcu.kepler.kts import WebServiceFilter
-oldmp = open_workflow(None, 24)[0]
-moml = oldmp.get_xml()
-mp = ModelProxy(moml, [WebServiceFilter()])
-mp.model.workspace().getWriteAccess()
-RM(mp.model, 'replacement-manager')
-mp.model.workspace().doneWriting()
-mgr = Manager(mp.model.workspace(), 'manager')
-mp.model.setManager(mgr)
-mgr.execute()
-"""
+

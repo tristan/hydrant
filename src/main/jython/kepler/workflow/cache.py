@@ -8,7 +8,7 @@ def open_workflow_from_object(user, w):
     global workflow_cache
     if workflow_cache.has_key(w.id):
         return workflow_cache[w.id]
-    model = w.get_model()
+    model = w.get_proxy_object()
     res = (model, w)
     workflow_cache[w.id] = res
     return res

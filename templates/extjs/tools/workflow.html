@@ -1,0 +1,13 @@
+{% if user.is_authenticated %}
+<ul id="tools" style="text-align: right;">
+    <li>
+        <a id="show-workflow-canvas-tool" onClick="hydrant.showWorkflowCanvas('{{ params.id }}');" href="#">Workflow Canvas</a>
+    </li>
+    <li>
+        <a id="show-workflows-properties-tool" onClick="hydrant.showWorkflowProperties('{{ params.id }}');" href="#">Workflows Properties</a>
+    </li>
+    <li>
+        <a id="show-job-submition-form-tool" onClick="hydrant.showJobSubmittionForm();" href="#">Job Submittion</a>
+    </li>
+</ul>
+{% endif %}

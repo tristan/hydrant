@@ -1,0 +1,13 @@
+{% if user.is_authenticated %}
+<ul id="tools" style="text-align: right;">
+    <li>
+        <a id="upload-workflow-tool" onClick="hydrant.showUploadWorkflowForm();" href="#">Upload Workflow</a>
+    </li>
+    <li>
+        <a id="show-workflows-tool" onClick="hydrant.showRecentWorkflows();" href="#">Recent Workflows</a>
+    </li>
+    <li>
+        <a id="show-jobs-tool" onClick="show_brief_jobs();" href="#">Recent Jobs</a>
+    </li>
+</ul>
+{% endif %}

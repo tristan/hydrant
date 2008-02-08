@@ -1,0 +1,11 @@
+<div id="help">
+    <p>This is the workflow view</p>
+    <ul>
+{% if user.is_staff %}
+      <li>click on an actor to modify it's properties</li>
+      <li>use the workflow properties form to modify workflow specific properties</li>
+{% else %}
+      <li>fill in the job form and click submit to start a new job</li>
+{% endif %}
+    </ul>
+</div>

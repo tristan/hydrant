@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import widgets
-from workflow.proxy import ModelProxy
+from workflow.proxy import EntityProxy
 
 class Workflow(models.Model):
     """
@@ -24,9 +24,9 @@ class Workflow(models.Model):
         return WorkflowParameter.objects.filter(workflow=self, expose_to_user=True);
     def __unicode__(self):
         return unicode(self.name)
-    def get_model(self):
+    def get_proxy_object(self):
         moml = open(self.get_moml_file_filename(), 'r').read()
-        return ModelProxy(moml)
+        return EntityProxy(moml)
     class Admin:
         list_display = ('name', 'owner', 'created', 'public')
         search_fields = ('name', 'description')

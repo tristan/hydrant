@@ -35,15 +35,15 @@
 	<dependency>
       <groupId>jfreechart</groupId>
       <artifactId>jfreechart</artifactId>
-      <version>1.0.6</version>
+      <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
 	<dependency>
       <groupId>jcommon</groupId>
       <artifactId>jcommon</artifactId>
-      <version>1.0.10</version>
+      <version>1.0.12</version>
       <scope>compile</scope>
-    </dependency>     
+    </dependency>
   </dependencies>
   <build>
 	<plugins>
@@ -58,4 +58,3 @@
 	</plugins>
   </build>
 </project>
-

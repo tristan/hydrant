@@ -13,7 +13,6 @@ from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.views.static import serve
 
-from workflow.proxy import ModelProxy
 from workflow.utils import validateMoML
 from workflow.cache import open_workflow, open_workflow_from_object
 from portalviewshelper import *
@@ -40,6 +39,7 @@ def dashboard(request):
     else:
         # set the test cookie, so that if the user decides to log in the login form actually works
         request.session.set_test_cookie()
+    print 'DASHBOARD YEAH!'
     return render_to_response('kepler/dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs, }, context_instance=RequestContext(request))
 dashboard = login_required(dashboard)
 
