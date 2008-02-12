@@ -5,8 +5,6 @@ from java.lang import Class, Throwable, NoClassDefFoundError, NullPointerExcepti
 from ptolemy.kernel.util import NamedObj
 import org.python.core.PyJavaPackage
 
-re_class_attribs = re.compile(r'class=\"([\.\w]+)\"')
-
 class ValidationError(Exception):
         def __init__(self, value):
             self.value = value
@@ -41,16 +39,12 @@ def addMoMLFilters(filters):
             MoMLParser.addMoMLFilter(f)
 
 def validateMoML(moml):
-    """
-    checks all the classes in a MoML file by importing each one along with it's entire class heirarchy
-    checking for any missing classes or libraries.
+    """ Checks all the classes in a MoML file by importing each one
+    along with it's entire class heirarchy checking for any missing
+    classes or libraries.
 
-    returns a list of any errors found.
+    Returns a list of any errors found.
     """
-    #rgc = RemoveGraphicalClasses()
-    #rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
-    #addMoMLFilters([rgc])
-
     messages = []
     classnames = getAllClassesInMoML(moml)
     # run the MoML filters over the class list
@@ -83,14 +77,17 @@ def validateMoML(moml):
     NamedObj().workspace().removeAll()
     return messages
 
+re_class_attribs = re.compile(r'class=\"([\.\w]+)\"')
 def getAllClassesInMoML(moml):
-    """
-    runs a regexp over a moml to find the values of all class="..." attributes
+    """ Runs a regexp over a moml to find the values of all class="..."
+    attributes.
     """
     return {}.fromkeys(re_class_attribs.findall(moml)).keys()
 
 def locationToDict(s):
-    """ converts location string from kepler workflows into a {'x':x, 'y':y} dict """
+    """ Converts location string from kepler workflows into a {'x':x,
+    'y':y} styled dict.
+    """
     if type(s) is type(''):
         t = tuple(s[1:-1].replace(' ','').split(','))
     elif type(s) is type([]):
@@ -100,6 +97,9 @@ def locationToDict(s):
     return {'x':float(t[0]), 'y':float(t[1])}
 
 def getVertexFromRelation(r):
+    """ Takes a Kepler object and returns a dict representing the first
+    Vertex object that was found.
+    """
     vertices = [v for v in r.containedObjectsIterator() if isinstance(v, Vertex)]
     for v in vertices:
         vertex = {'name': '%s__%s' % (r.getName(), v.getName()), 'location':locationToDict(v.getValueAsString())}
@@ -107,10 +107,14 @@ def getVertexFromRelation(r):
     return None
 
 def addToListIfNotAlreadyThere(list, object):
+    """ A shortcut to add a value to a list only if the value isn't
+    already in the list.
+    """
     if object not in list:
         list.append(object)
 
 def sortList(list):
+    """ A wrapper for list.sort() which returns the list. """
     list.sort()
     return list
 
@@ -121,7 +125,13 @@ def objectDetailsFromKeplerPath(path):
     return {'object': l[-1], 'workflow': len(l) > 2 and l[1] or '', 'parent': len(l) > 3 and l[-2] or ''}
 
 def uniqueNameForPort(port):
+    """ Uses a port's full name to build a unique, html complient, name
+    to reference the port.
+    """
     return port.getFullName().replace('.', '__').replace(' ', '_')
 
 def floatcolortohex(s):
+    """ Takes an array of float representations of rgb color values and
+    returns a hex string representing the same color.
+    """
     return ('%2x%2x%2x' % ( int(255 * float(s[0])), int(255 * float(s[1])), int(255 * float(s[2])) )).replace(' ', '0')

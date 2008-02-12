@@ -33,6 +33,10 @@ def build_crumbs_from_path(current_name, path):
     return crumbs or ['']
 
 def generate_job_submission_form(workflow):
+    """ Generates a Django newforms class which can be used to
+    instantiate a Form containing all the exposed parameters linked
+    to the specified workflow.
+    """
     parameters = workflow.get_exposed_parameters()
     field_list = []
     formfield_callback = lambda f, l, i, h: f.formfield(label=l, initial=i, help_text=h)
@@ -59,6 +63,9 @@ def generate_job_submission_form(workflow):
 
 BINARY_CONTENT_TYPES = ['application', 'image']
 def setup_job_parameters_from_post(job, post, files={}):
+    """ Creates a number of JobInput entries based on the values
+    submitted from a job submission form.
+    """
     if not isinstance(files, dict):
         print 'NOT PROCESSING FILES: %s' % files
         files = {}
@@ -93,6 +100,16 @@ def setup_job_parameters_from_post(job, post, files={}):
         ji.save()
 
 def generate_parameters_form(workflow, model, path_to_actor):
+    """ This generates a Django newforms class which can be used to
+    instantiate an instance of a form containing all the properties of
+    the specified actor.
+
+    Keyword attributes:
+    workflow -- the Workflow object for which to generate the form
+    model -- an entity proxy object (EntityProxy)
+    path_to_actor -- the path to the actor from the proxy object for
+    which the properties form should be generated.
+    """
     properties = model.get_properties(path_to_actor)
     field_list = []
     formfield_callback = lambda f, l, i: f.formfield(label=l, initial=i)
@@ -135,6 +152,9 @@ def generate_parameters_form(workflow, model, path_to_actor):
     return type(path_to_actor[-1] + 'Form', (BaseForm,), {'base_fields': base_fields,})
 
 def save_parameters_from_post(workflow, post):
+    """ Saves changes to the Workflow metadata stored in the Workflow
+    model based of values passed in via a POST request.
+    """
     ids = []
     for k in post.keys():
         s = k.split('_name')
@@ -174,6 +194,15 @@ EMPTY_CHANGELIST_VALUE = '(None)'
 MAX_SHOW_ALL_ALLOWED = 200
 
 class SearchList(object):
+
+    """ Based off django.contrib.admin.views.main.ChangeList, with some
+    application specific changes.
+
+    A lof of the functions have been rolled out into the constructor,
+    and a few static choices have been embeded which need to be removed
+    at some time.
+    """
+
     def __init__(self, request, model, qs, view_url):
         try:
             self.page_num = int(request.GET.get(PAGE_VAR, 0))
@@ -187,13 +216,14 @@ class SearchList(object):
         self.show_all = ALL_VAR in request.GET
 
         self.query = request.GET.get(SEARCH_VAR, '')
+        # assume the model has a Search class, with a list_display list
+        # property. default sorting uses the first entry in this list.
         self.order_field, self.order_type = model.Search.list_display[0], 'asc'
 
         full_result_count = len(qs)
 
         # Apply keyword searches.
         def construct_search(field_name):
-            print 'FIELD_NAME=%s' % field_name
             if field_name.startswith('^'):
                 return "%s__istartswith" % field_name[1:]
             elif field_name.startswith('='):
@@ -287,8 +317,7 @@ class SearchList(object):
             return '%s.%s' % (model._meta.get_field(s[0]).rel.to._meta.db_table, '__'.join(s[1:]))
 
     def get_real_field(self, model, field_name):
-        """
-        returns the real field, needed for cases where field being refered to is a 
+        """ Returns the real field, needed for cases where field being refered to is a 
         field from the foreign key's table
         """
         s = field_name.split('__')
@@ -369,22 +398,28 @@ class SearchList(object):
 
 
 class WorkflowList(SearchList):
+
+    """ A SearchList specific to Workflows
+    """
+
     def __init__(self, request, view_url):
-        #qs = Workflow._default_manager.get_query_set()
-        #qs = (qs.filter(public=True) | qs.filter(owner=request.user)) & qs.filter(deleted=False)
         qs = get_workflow_query_set(request.user)
         SearchList.__init__(self, request, Workflow, qs, view_url)
 
 class JobList(SearchList):
+
+    """ A SearchList specific to Jobs
+    """
+
     def __init__(self, request, view_url):
         qs = Job._default_manager.get_query_set()
         qs = qs.filter(owner=request.user)
         SearchList.__init__(self, request, Job, qs, view_url)
 
 def get_workflow_query_set(user):
-    """
-    does some funky messy creation of a complex filter, which selects all the workflows which a user has access to
-    as well as all the public workflows, and makes sure each one hasn't been deleted.
+    """ Does some funky messy creation of a complex filter, which
+    selects all the workflows which a user has access to as well as all
+    the public workflows, and makes sure each one hasn't been deleted.
     """
     qs = Q()
     for i in user.workflow_valid_users.all():
@@ -394,6 +429,9 @@ def get_workflow_query_set(user):
     return Workflow.objects.complex_filter(qs)
 
 def formfield_callback(field, **kwargs):
+    """ Used to assign the FilteredSelectMultiple widget for
+    ManyToManyField objects when generating a form.
+    """
     if isinstance(field, models.ManyToManyField):
         kwargs['widget'] = widgets.FilteredSelectMultiple(field.verbose_name, False)
     return field.formfield(**kwargs)

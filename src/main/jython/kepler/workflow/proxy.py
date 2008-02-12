@@ -83,9 +83,6 @@ class __array_based_attribute_proxy__(object):
         for i in range(t.length()):
             r.append(t.getElement(0))
 
-# lazy_proxy_assign tries to figure out the type of object
-# passed to it, and instantiate one of the above proxy
-# objects.
 def lazy_proxy_assign(obj):
     """ Tries to figure out the type of object passed to it and wraps
     it using either the WorkflowProxy or one of the above proxy objects.
@@ -213,7 +210,9 @@ class EntityProxy(object):
 
         parser = MoMLParser()
         parser.reset()
+        print 'PARSING MOML......'
         self.proxied_entity = parser.parse(moml)
+        print '......DONE!'
     
     # from_model attempts to takes in a model to proxy
     def from_entity(self, entity):

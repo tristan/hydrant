@@ -62,6 +62,9 @@ function set_properties() {
                 {% ifequal out.type 'TEXT' %}
                 {{ out.content|escape|linebreaks }}
                 {% endifequal %}
+		{% ifequal out.type 'XML' %}
+		{{ out.content }}
+		{% endifequal %}
                 {% ifequal out.type 'IMAGE' %}
                 <center>
                     <img src="{{ out.url }}"/>

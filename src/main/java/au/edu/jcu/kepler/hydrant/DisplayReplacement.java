@@ -13,6 +13,7 @@ import ptolemy.kernel.CompositeEntity;
 import ptolemy.kernel.util.IllegalActionException;
 import ptolemy.kernel.util.NameDuplicationException;
 import ptolemy.kernel.util.StringAttribute;
+import ptolemy.data.XMLToken;
 
 /**
  * Relplaces the Display actor in kepler workflows, 
@@ -63,6 +64,7 @@ public class DisplayReplacement extends TypedAtomicActor {
     public StringAttribute title;
 	
     private StringBuffer _output;
+    private String _type = "TEXT";
     
 	public void initialize() throws IllegalActionException {
 		// set up output source
@@ -75,6 +77,9 @@ public class DisplayReplacement extends TypedAtomicActor {
 		for (int i = 0; i < width; i++) {
 			if (input.hasToken(i)) {
 				Token token = input.get(i);
+				if (token instanceof XMLToken) {
+				    _type = "XML";
+				}
 				String value = token.toString();
 				if (token instanceof StringToken) {
 					value = ((StringToken)token).stringValue();
@@ -89,7 +94,7 @@ public class DisplayReplacement extends TypedAtomicActor {
 		ReplacementManager man = ReplacementUtils.getReplacementManager(this);
 		HashMap data_map = new HashMap();
 		data_map.put("name", getFullName());
-		data_map.put("type", "TEXT");
+		data_map.put("type", _type);
 		data_map.put("output", _output.toString());
 		man.writeData(data_map);
 	}
