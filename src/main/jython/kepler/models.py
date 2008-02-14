@@ -67,7 +67,7 @@ class Workflow(models.Model):
 
     class Search:
 
-        """ Class used by the kepler.portalviewshelper.SearchList class
+        """ Class used by the kepler.portalviewshelper.SearchList class.
         """
 
         list_display = ('name', 'description')
@@ -112,7 +112,18 @@ class WorkflowParameter(models.Model):
 
 class Job(models.Model):
 
-    """
+    """ A Job is a single execution of a Workflow.
+
+    workflow -- The Workflow which was executed for this Job.
+    owner -- The User whom submitted this Job.
+    status -- The Job's current status.
+    submission_date -- The date/time when the Job was submitted.
+    start_date -- The date/time when the Job's status changed from
+    QUEUED to RUNNING.
+    end_date -- The date/time when the Job's status changed from RUNNING
+    to either DONE or ERROR.
+    name -- An optional name for the Job.
+    description -- An optional description for the Job.
     """
 
     workflow = models.ForeignKey(Workflow)
@@ -125,9 +136,13 @@ class Job(models.Model):
     description = models.TextField(null=True)
 
     def get_job_inputs(self):
+        """ Returns all the JobInput objects associated with this Job.
+        """
         return JobInput.objects.filter(job=self)
 
     def get_job_outputs(self):
+        """ Returns all the JobOutput objects associated with this Job.
+        """
         return JobOutput.objects.filter(job=self)
 
     def __unicode__(self):
@@ -143,30 +158,39 @@ class Job(models.Model):
             status = 'Error'
         else:
             status = 'Unknown'
-        #return '%s job created on %s by %s' % (status, self.submission_date, self.owner)
         if self.name is None or self.name == '':
             return '%s Job' % self.workflow
         else:
             return self.name
 
     class Admin:
-        list_display = ('workflow', 'submission_date', 'start_date', 'end_date', 'status', 'owner')
+        list_display = ('workflow', 'submission_date', 'start_date',
+                        'end_date', 'status', 'owner')
         search_fields = ('workflow__name', 'status',)
         list_filter = ('status',)
         date_hierarchy = 'submission_date'
 
     class Search:
 
-        """
+        """ Class used by the kepler.portalviewshelper.SearchList class.
         """
 
-        list_display = ('name', 'workflow', 'status', 'submission_date', 'end_date')
+        list_display = ('name', 'workflow', 'status', 'submission_date',
+                        'end_date')
         search_fields = ('workflow__name', 'status', 'name', 'description')
         sortable = ('workflow__name',)
 
 class JobInput(models.Model):
 
-    """
+    """ When a Job is submitted, all the inputs that are assigned via
+    WorkflowParameter objects are saved as JobInputs. They exist solely
+    for record keeping purposes.
+
+    job -- The Job which this belongs to.
+    parameter -- the WorkflowParameter which this refers to.
+    type -- the type of parameter.
+    value -- the value which the WorkflowParameter was set to for the
+    Job.
     """
 
     job = models.ForeignKey(Job)
@@ -184,7 +208,16 @@ class JobInput(models.Model):
 
 class JobOutput(models.Model):
 
-    """
+    """ As a job runs, some actors may produce output. This output is
+    captured via ReplacementActors and stored in a file. A JobOutput is
+    a reference to this file with additional metadata.
+
+    job -- The Job which produced this output.
+    name -- The name of the output, generally the name of the Actor
+    which produced it.
+    type -- The type of output.
+    file -- The file which holds the output.
+    creation_date -- The date/time when the output was created.
     """
 
     job = models.ForeignKey(Job)
