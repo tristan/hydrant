@@ -19,8 +19,11 @@ from django.utils.text import capfirst
 from settings import STORAGE_ROOT
 
 def build_crumbs_from_path(current_name, path):
-    """
-    current_name
+    """ Builds a list of breadcrumbs for traversing through Workflows with Composite Actors.
+
+    Keyword arguments:
+    current_name -- the name to present as the current view's name.
+    path -- the path to the current view.
     """
     p = path.split('/')
     crumbs = []

@@ -1,4 +1,4 @@
-import time, md5, traceback, copy, array, shutil
+import time, md5, traceback, copy, array, shutil, random
 
 from django import oldforms #, template
 from django.template.context import RequestContext
@@ -26,6 +26,9 @@ from settings import STORAGE_ROOT, MEDIA_ROOT
 from django.newforms import form_for_model, form_for_instance
 from django.utils.safestring import mark_safe
 
+def intro(request):
+    return render_to_response('kepler/intro.html', {'pic_no':random.randint(0,10)}, context_instance=RequestContext(request))
+
 def hide_workflows(request, path):
     """ Used to hide the path to the workflow xml files from everyone
     """
@@ -52,10 +55,6 @@ def dashboard(request):
         request.session.set_test_cookie()
     return render_to_response('kepler/dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs, }, context_instance=RequestContext(request))
 dashboard = login_required(dashboard)
-
-def message(request):
-    print request.POST
-    return render_to_response('kepler/messages.html', context_instance=RequestContext(request))
 
 def upload_workflow(request):
     """ Handles uploading a Workflow. If a GET request is made, then

@@ -4,39 +4,97 @@ import widgets
 from workflow.proxy import EntityProxy
 
 class Workflow(models.Model):
+
+    """ Stores the MoML file for a workflow along with associated
+    metadata.
+
+    moml_file -- The MoML file,
+    name -- The verbose name of the Workflow,
+    owner -- The User whom uploaded the Workflow.
+    created -- The Date/Time which the Workflow was uploaded.
+    public -- Whether the Workflow is publically accessable or not.
+    description -- A long description of the Workflow.
+    deleted -- True if the workflow should be considered deleted.
+    valid_users -- Users who're able to access this Workflow in the case
+    that it is not public.
     """
-    a database representation of a model.
-    just stores metadata and URI to the workflow
-    """
-    moml_file = models.FileField(upload_to='workflows', verbose_name=_('Workflow file'))
+
+    moml_file = models.FileField(upload_to='workflows', 
+                                 verbose_name=_('Workflow file'))
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(User, related_name="worklow_owner",)
     created = models.DateTimeField('date submitted', auto_now_add=True)
     public = models.BooleanField(default=False)
     description = models.TextField()
     deleted = models.BooleanField(default=False,)
-    valid_users = models.ManyToManyField(User, verbose_name=_('valid users'), blank=True, filter_interface=models.HORIZONTAL, related_name="workflow_valid_users")
+    valid_users = models.ManyToManyField(User, verbose_name=_('valid users'), 
+                                         blank=True, 
+                                         filter_interface=models.HORIZONTAL, 
+                                         related_name='workflow_valid_users')
+
     def get_parameter(self, id):
+        """ Gets a WorkflowParameter object linked to this Workflow.
+        """
         return WorkflowParameter.objects.get(workflow=self, property_id=id);
+
     def get_all_parameters(self):
+        """ Returns a list of all WorkflowParameter objects linked to
+        this Workflow.
+        """
         return WorkflowParameter.objects.filter(workflow=self);
+
     def get_exposed_parameters(self):
-        return WorkflowParameter.objects.filter(workflow=self, expose_to_user=True);
+        """ Returns a list of all the WorkflowParameter objects linked
+        to this workflow which have expose_to_user equal to True.
+        """
+        return WorkflowParameter.objects.filter(workflow=self, 
+                                                expose_to_user=True);
+
     def __unicode__(self):
         return unicode(self.name)
+
     def get_proxy_object(self):
+        """ Returns a kepler.workflow.proxy.EntityProxy object which
+        proxies this Workflow.
+        """
         moml = open(self.get_moml_file_filename(), 'r').read()
         return EntityProxy(moml)
+
     class Admin:
         list_display = ('name', 'owner', 'created', 'public')
         search_fields = ('name', 'description')
         date_hierarchy = 'created'
+
     class Search:
+
+        """ Class used by the kepler.portalviewshelper.SearchList class
+        """
+
         list_display = ('name', 'description')
         search_fields = ('name', 'description')
         sortable = ('name',)
 
 class WorkflowParameter(models.Model):
+
+    """ Refers to an Actor property in a specific Workflow. Provides a
+    way to assign a different value to a property without changing the
+    original MoML file. Also specifies whether the property should be
+    exposed to the user via the job submission form, and provides a
+    verbose name and description to display on the form.
+
+    workflow -- The Workflow which this property belongs to.
+    property_id -- The unique reference used to access this property in
+    the workflow.
+    expse_to_user -- True if this property should be shown to the user
+    on the job submission form.
+    description -- A long description of this property.
+    name -- The verbose name for this property.
+    value -- The default value for this property.
+    type -- The type of property. The type refers to the type of
+    component used to present the property. The current supported types
+    are: SELECT, INPUT, TEXT, CHECKBOX and FILE.
+    """
+
     workflow = models.ForeignKey(Workflow)
     property_id = models.CharField(max_length=200, editable=False)
     expose_to_user = models.BooleanField()
@@ -44,12 +102,19 @@ class WorkflowParameter(models.Model):
     name = models.CharField(max_length=50)
     value = models.CharField(max_length=1000)
     type = models.CharField(max_length=50)
+
     def __unicode__(self):
-        return unicode('parameter "%s" for workflow "%s"' % (self.name, self.workflow.name))
+        return unicode('parameter "%s" for workflow "%s"' 
+                       % (self.name, self.workflow.name))
+
     class Admin:
         list_display = ('workflow', 'property_id', 'name')
 
 class Job(models.Model):
+
+    """
+    """
+
     workflow = models.ForeignKey(Workflow)
     owner = models.ForeignKey(User)
     status = models.CharField(max_length=200)
@@ -58,10 +123,13 @@ class Job(models.Model):
     end_date = models.DateTimeField(null=True)
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(null=True)
+
     def get_job_inputs(self):
         return JobInput.objects.filter(job=self)
+
     def get_job_outputs(self):
         return JobOutput.objects.filter(job=self)
+
     def __unicode__(self):
         if self.status == 'NEW':
             status = 'New'
@@ -80,17 +148,27 @@ class Job(models.Model):
             return '%s Job' % self.workflow
         else:
             return self.name
+
     class Admin:
         list_display = ('workflow', 'submission_date', 'start_date', 'end_date', 'status', 'owner')
         search_fields = ('workflow__name', 'status',)
         list_filter = ('status',)
         date_hierarchy = 'submission_date'
+
     class Search:
+
+        """
+        """
+
         list_display = ('name', 'workflow', 'status', 'submission_date', 'end_date')
         search_fields = ('workflow__name', 'status', 'name', 'description')
         sortable = ('workflow__name',)
 
 class JobInput(models.Model):
+
+    """
+    """
+
     job = models.ForeignKey(Job)
     parameter = models.ForeignKey(WorkflowParameter)
     type = models.CharField(max_length=50)
@@ -100,10 +178,15 @@ class JobInput(models.Model):
     #           CHECKBOX
     #           FILE
     value = models.TextField()
+
     class Admin:
         pass
 
 class JobOutput(models.Model):
+
+    """
+    """
+
     job = models.ForeignKey(Job)
     name = models.CharField(max_length=200)
     type = models.CharField(max_length=50)
@@ -114,6 +197,7 @@ class JobOutput(models.Model):
     #           FILE
     file = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
+
     class Admin:
         list_display = ('creation_date', 'job', 'name', 'type', 'file')
 

@@ -21,4 +21,5 @@ urlpatterns = patterns('kepler.portalviews',
     url(r'^job/([\w]+)/([\w]+)/$', 'job_media', name='serve_job_media'),
     url(r'^workflows/$', 'workflows', name='workflows'),
     url(r'^jobs/$', 'jobs', name='jobs'),
+    url(r'^intro/$', 'intro', name='intro'),
 )

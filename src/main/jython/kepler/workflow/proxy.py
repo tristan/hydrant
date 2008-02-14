@@ -210,9 +210,7 @@ class EntityProxy(object):
 
         parser = MoMLParser()
         parser.reset()
-        print 'PARSING MOML......'
         self.proxied_entity = parser.parse(moml)
-        print '......DONE!'
     
     # from_model attempts to takes in a model to proxy
     def from_entity(self, entity):
