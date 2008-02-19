@@ -2,28 +2,50 @@
 <head>
 <title>Hydrant</title>
 <style type="text/css">
+<!--
 body {
-color: white;
-background-color: black;
+color: black;
+background-color: #c3daf9;
+font-family: Verdana, Arial, Helvectica, sans-serif;
 }
-div {
-display: block;
+.intro {
+display: table;
 height: 100%;
-width: 100%
-margin: 0 auto;
-text-align: center;
+width: 100%;
 vertical-align: middle;
-font-family: Ariel;
+text-align: center;
+}
+.intro img {
+border: 1px solid #8db2e3;vertical-align: middle;
+}
+input {
+border: 1px solid #d7d7d7;
+}
+form {
+width: 800px;
+border: 1px solid #8db2e3;
 font-size: small;
 }
-img {
-margin: auto;
-}
+-->
 </style>
 </head>
 <body>
-<div>
-What is hydrant | Login<br/>
-<img src="{{ MEDIA_URL }}img/intro/intro{{ pic_no }}.jpg"/>
-</div>
+  <div class="intro">
+    <div align="center">
+      <form method="POST">
+      <p>Login to Hydrant</p>
+      <p>
+      <label for="id_username">Username:</label>
+      <input id="id_username" name="username"/>
+      <label for="id_password">Password:</label>
+      <input id="id_password" name="password" type="password"/>
+      &nbsp;&nbsp;
+      <input type="submit" value="Login"/>
+      </p>
+      </form>
+    </div>
+    <div>
+      <img src="{{ MEDIA_URL }}img/intro/intro{{ pic_no }}.jpg" alt="hydrant" width="800" height="600"/>
+    </div>
+  </div>
 </html>

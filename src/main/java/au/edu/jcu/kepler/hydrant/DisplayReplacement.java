@@ -16,14 +16,14 @@ import ptolemy.kernel.util.StringAttribute;
 import ptolemy.data.XMLToken;
 
 /**
- * Relplaces the Display actor in kepler workflows, 
+ * Replacment for ptolemy.actor.lib.gui.Display.
  * 
  **/
 public class DisplayReplacement extends TypedAtomicActor {
-	public DisplayReplacement(CompositeEntity container, String name)
-    throws IllegalActionException, NameDuplicationException {
-		super(container, name);
-		
+    public DisplayReplacement(CompositeEntity container, String name)
+	throws IllegalActionException, NameDuplicationException {
+	super(container, name);
+	
         input = new TypedIOPort(this, "input", true, false);
         input.setMultiport(true);
         input.setTypeEquals(BaseType.GENERAL);
@@ -39,7 +39,7 @@ public class DisplayReplacement extends TypedAtomicActor {
 
         title = new StringAttribute(this, "title");
         title.setExpression("");
-	}
+    }
 	
     /** The horizontal size of the display, in columns. This contains
      *  an integer, and defaults to 40.
@@ -66,36 +66,40 @@ public class DisplayReplacement extends TypedAtomicActor {
     private StringBuffer _output;
     private String _type = "TEXT";
     
-	public void initialize() throws IllegalActionException {
-		// set up output source
-		_output = new StringBuffer();
-	}
+    public void initialize() throws IllegalActionException {
+	// set up output source
+	_output = new StringBuffer();
+    }
 	
-	public boolean postfire() throws IllegalActionException {
-		// write tokens to the output source
-		int width = input.getWidth();
-		for (int i = 0; i < width; i++) {
-			if (input.hasToken(i)) {
-				Token token = input.get(i);
-				if (token instanceof XMLToken) {
-				    _type = "XML";
-				}
-				String value = token.toString();
-				if (token instanceof StringToken) {
-					value = ((StringToken)token).stringValue();
-				}
-				_output.append(value+"\n");
-			}
+    public boolean postfire() throws IllegalActionException {
+	// write tokens to the output source
+	int width = input.getWidth();
+	for (int i = 0; i < width; i++) {
+	    if (input.hasToken(i)) {
+		Token token = input.get(i);
+		if (token instanceof XMLToken) {
+		    _type = "XML";
 		}
-		return super.postfire();	
+		String value = token.toString();
+		if (token instanceof StringToken) {
+		    value = ((StringToken)token).stringValue();
+		}
+		_output.append(value+"\n");
+	    }
 	}
-	
-	public void wrapup() {
-		ReplacementManager man = ReplacementUtils.getReplacementManager(this);
-		HashMap data_map = new HashMap();
-		data_map.put("name", getFullName());
-		data_map.put("type", _type);
-		data_map.put("output", _output.toString());
-		man.writeData(data_map);
+	return super.postfire();	
+    }
+    
+    public void wrapup() {
+	ReplacementManager man = ReplacementUtils.getReplacementManager(this);
+	HashMap data_map = new HashMap();
+	String name = title.getExpression();
+	if (name == "") {
+	    name = getFullName();
 	}
+	data_map.put("name", name);
+	data_map.put("type", _type);
+	data_map.put("output", _output.toString());
+	man.writeData(data_map);
+    }
 }
