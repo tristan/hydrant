@@ -1,7 +1,7 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-PROJECT_HOME = '/home/tristan/projects/hydrant'
+PROJECT_HOME = '/home/tristan/projects/git/hydrant'
 MEDIA_ROOT = PROJECT_HOME + '/media'
 
 SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'

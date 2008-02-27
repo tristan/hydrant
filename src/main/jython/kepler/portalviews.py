@@ -13,9 +13,9 @@ from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.views.static import serve
 
-from pygments import highlight
-from pygments.lexers import XmlLexer
-from pygments.formatters import HtmlFormatter
+#from pygments import highlight
+#from pygments.lexers import XmlLexer
+#from pygments.formatters import HtmlFormatter
 
 from workflow.utils import validateMoML
 from workflow.cache import open_workflow, open_workflow_from_object
