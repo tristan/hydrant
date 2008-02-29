@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 import widgets
 from workflow.proxy import EntityProxy
 
+
 class Workflow(models.Model):
 
     """ Stores the MoML file for a workflow along with associated
@@ -20,14 +21,14 @@ class Workflow(models.Model):
     """
 
     moml_file = models.FileField(upload_to='workflows', 
-                                 verbose_name=_('Workflow file'))
+                                 verbose_name='Workflow file')
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(User, related_name="worklow_owner",)
     created = models.DateTimeField('date submitted', auto_now_add=True)
     public = models.BooleanField(default=False)
     description = models.TextField()
     deleted = models.BooleanField(default=False,)
-    valid_users = models.ManyToManyField(User, verbose_name=_('valid users'), 
+    valid_users = models.ManyToManyField(User, verbose_name='valid users', 
                                          blank=True, 
                                          filter_interface=models.HORIZONTAL, 
                                          related_name='workflow_valid_users')
