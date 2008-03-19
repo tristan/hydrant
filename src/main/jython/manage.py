@@ -19,9 +19,9 @@ def giveMeError(function):
         return e
 
 if __name__ == "__main__":
-    import sys
-    sys.path.append('/home/tristan/projects/jcu/WebPortal/src/test/java')
-    sys.path.append('/home/tristan/projects/jcu/WebPortal/src/test/jython')
-    from java.lang import System
-    System.setProperty('ptolemy.ptII.dir', '')
+#    import sys
+#    sys.path.append('/home/tristan/projects/jcu/WebPortal/src/test/java')
+#    sys.path.append('/home/tristan/projects/jcu/WebPortal/src/test/jython')
+#    from java.lang import System
+#    System.setProperty('ptolemy.ptII.dir', '')
     execute_manager(settings)
