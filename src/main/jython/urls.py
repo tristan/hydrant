@@ -13,5 +13,5 @@ urlpatterns = patterns('',
      {'template_name': 'kepler/logout.html'}, 'logout_view'),
     (r'^%sportal/' % ROOT_URL, include('jython.kepler.portalurls')),
     (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
-    (r'^%s/$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
+    (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
 )
