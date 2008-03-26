@@ -1,7 +1,9 @@
+import os
+
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-PROJECT_HOME = '/home/tristan/projects/git/hydrant'
+PROJECT_HOME = os.getcwd()
 MEDIA_ROOT = PROJECT_HOME + '/media'
 
 SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'
@@ -11,7 +13,7 @@ DATABASE_ENGINE = 'postgresql_zxjdbc'           # 'postgresql_psycopg2', 'postgr
 DATABASE_NAME = 'kepler'
 DATABASE_USER = 'kepler'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'k3pl3r'         # Not used with sqlite3.
-DATABASE_HOST = ''             # Set to empty string for localhost. Not used with sqlite3.
+DATABASE_HOST = 'kepler.hpc.jcu.edu.au'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 #TIME_ZONE = 'Brisbane/Australia'
@@ -43,7 +45,12 @@ TEMPLATE_DIRS = (
 ROOT_URL = ''
 MEDIA_URL = '/' + ROOT_URL + 'media/'
 
-LIB_DIRECTORY = PROJECT_HOME + '/lib'
+LIB_DIRECTORY = (
+    PROJECT_HOME + '/lib',
+    #'%s/lib/jar' % os.environ.get("KEPLER"),
+    #'%s/lib' % os.environ.get("PTII"),
+)
+
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 ROOT_URLCONF = 'jython.urls'
 
