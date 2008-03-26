@@ -189,19 +189,12 @@ class JobInput(models.Model):
 
     job -- The Job which this belongs to.
     parameter -- the WorkflowParameter which this refers to.
-    type -- the type of parameter.
     value -- the value which the WorkflowParameter was set to for the
     Job.
     """
 
     job = models.ForeignKey(Job)
     parameter = models.ForeignKey(WorkflowParameter)
-    type = models.CharField(max_length=50)
-    # types:    SELECT
-    #           INPUT
-    #           TEXT
-    #           CHECKBOX
-    #           FILE
     value = models.TextField()
 
     class Admin:

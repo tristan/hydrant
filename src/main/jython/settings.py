@@ -16,7 +16,7 @@ DATABASE_PASSWORD = 'k3pl3r'         # Not used with sqlite3.
 DATABASE_HOST = 'kepler.hpc.jcu.edu.au'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-TIME_ZONE = 'Brisbane/Australia'
+#TIME_ZONE = 'Brisbane/Australia'
 
 LANGUAGE_CODE = 'en-us'
 
