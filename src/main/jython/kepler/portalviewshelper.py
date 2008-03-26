@@ -99,6 +99,12 @@ def setup_job_parameters_from_post(job, post, files={}):
             value = filename
         else:
             value = p.value
+        if p.type == 'CHECKBOX':
+            # workaround to turn off checkboxes
+            if p.expose_to_user == True and p.property_id not in post.keys():
+                value = 'false'
+            elif value == 'on':
+                value = 'true'
         ji = JobInput(job=job, parameter=p, value=value)
         ji.save()
 

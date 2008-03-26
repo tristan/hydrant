@@ -4,7 +4,7 @@
   <groupId>au.edu.jcu.kepler</groupId>
   <artifactId>hydrant</artifactId>
   <name>Hydrant helper package</name>
-  <packaging>jar</packaging>
+  <packaging>war</packaging>
   <version>1.0-SNAPSHOT</version>
   <url>http://maven.apache.org</url>
   <dependencies>
@@ -99,6 +99,13 @@
 	<configuration>
 	  <source>1.5</source>
 	  <target>1.5</target>
+	</configuration>
+      </plugin>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-war-plugin</artifactId>
+	<configuration>
+	  <warName>${pom.artifactId}</warName>
 	</configuration>
       </plugin>
     </plugins>
