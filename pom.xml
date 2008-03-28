@@ -39,13 +39,13 @@
       <scope>compile</scope>
     </dependency>
 	<dependency>
-      <groupId>jfreechart</groupId>
+      <groupId>jfree</groupId>
       <artifactId>jfreechart</artifactId>
       <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>jcommon</groupId>
+      <groupId>jfree</groupId>
       <artifactId>jcommon</artifactId>
       <version>1.0.12</version>
       <scope>compile</scope>
@@ -66,9 +66,32 @@
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
+      <version>1.1.1</version>
       <scope>runtime</scope>
     </dependency>
+
+    <!-- WebService Actor requirements -->
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.4</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.8.1</version>
+      <scope>runtime</scope>
+    </dependency>
+
+
   </dependencies>
   <pluginRepositories>
     <pluginRepository>
@@ -91,6 +114,18 @@
 	<configuration>
 	  <contextPath>/</contextPath>
 	  <scanIntervalSeconds>0</scanIntervalSeconds>
+	  <connectors>
+	    <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+	      <port>8000</port>
+	    </connector>
+	  </connectors>
+	  <systemProperties>
+	    <!--systemProperty>
+	      <name>jetty.class.path</name>
+	      <value>${maven.dependency.classpath}</value>
+	    </systemProperty-->
+	  </systemProperties>
+	  <webApp>${basedir}/target/${pom.artifactId}.war</webApp>
 	</configuration>
       </plugin>
       <plugin>
