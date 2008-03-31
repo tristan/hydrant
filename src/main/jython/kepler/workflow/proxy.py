@@ -3,6 +3,7 @@ import traceback
 
 import java.lang.Class
 import java.lang.Object
+import java.lang.ExceptionInInitializerError
 import ptolemy.data.ArrayToken
 import ptolemy.data.DoubleToken
 import ptolemy.data.IntMatrixToken
@@ -210,7 +211,11 @@ class EntityProxy(object):
 
         parser = MoMLParser()
         parser.reset()
-        self.proxied_entity = parser.parse(moml)
+        try:
+            self.proxied_entity = parser.parse(moml)
+        except java.lang.ExceptionInInitializerError, e:
+            e.printStackTrace()
+            raise
     
     # from_model attempts to takes in a model to proxy
     def from_entity(self, entity):

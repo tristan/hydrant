@@ -13,6 +13,7 @@ public class WebServiceFilter implements MoMLFilter {
 	static {
 		_replacements = new HashMap();
 		_replacements.put("ptolemy.actor.lib.gui.Display", "au.edu.jcu.kepler.hydrant.DisplayReplacement");
+		_replacements.put("ptolemy.actor.lib.MonitorValue", "au.edu.jcu.kepler.hydrant.DisplayReplacement");
 		_replacements.put("ptolemy.actor.lib.gui.XYPlotter", "au.edu.jcu.kepler.hydrant.XYPlotterReplacement");
 		_replacements.put("ptolemy.actor.lib.gui.TimedPlotter", "au.edu.jcu.kepler.hydrant.TimedPlotterReplacement");
 		_replacements.put("util.ImageJActor", "au.edu.jcu.kepler.hydrant.ImageStorage");

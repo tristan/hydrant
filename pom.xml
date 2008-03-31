@@ -62,11 +62,24 @@
       <version>8.2-507.jdbc3</version>
       <scope>runtime</scope>
     </dependency>
+
     <!-- kepler specific -->
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
       <version>1.1.1</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>concurrent</groupId>
+      <artifactId>concurrent</artifactId>
+      <version>1.3.2</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
       <scope>runtime</scope>
     </dependency>
 
@@ -75,7 +88,7 @@
     <dependency>
       <groupId>axis</groupId>
       <artifactId>axis</artifactId>
-      <version>1.4</version>
+      <version>1.3</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -90,7 +103,6 @@
       <version>2.8.1</version>
       <scope>runtime</scope>
     </dependency>
-
 
   </dependencies>
   <pluginRepositories>
@@ -107,6 +119,24 @@
   </pluginRepositories>
   <build>
     <plugins>
+      <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>build-classpath</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>build-classpath</goal>
+	    </goals>
+	    <configuration>
+	      <outputFile>
+		${project.build.directory}/project.classpath
+	      </outputFile>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
       <plugin>
 	<groupId>org.mortbay.jetty</groupId>
 	<artifactId>maven-jetty-plugin</artifactId>
