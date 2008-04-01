@@ -30,16 +30,13 @@ function set_visibility(flag, obj) {
 }
 
 function set_parameters_to_none() {
-    //new Ajax.Updater('parameters-div', '{% url properties workflow.pk %}__none__', { method: 'get' });
     Element.Methods.update('parameters-div', '');
 }
 
 function set_parameters_to_loading() {
-    //new Ajax.Updater('parameters-div', '{% url properties workflow.pk %}__loading__', { method: 'get' });
     Element.Methods.update('parameters-div', '<table style="background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center;"><tr><td><h1 style="text-align: center;">LOADING</h1><h3 style="text-align: center;">Please wait</h3></td></tr></table>');
 }
 function set_parameters_to_saving() {
-    //new Ajax.Updater('parameters-div', '{% url properties workflow.pk %}__loading__', { method: 'get' });
     Element.Methods.update('parameters-div', '<table style="background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center;"><tr><td><h1 style="text-align: center;">SAVING</h1><h3 style="text-align: center;">Please wait</h3></td></tr></table>');
 }
 
@@ -53,8 +50,7 @@ function set_parameters(url, actor_name, doclose) {
         divid = 'parameters-div';
         set_parameters_to_saving();
     }
-    new Ajax.Updater(divid, url, {postBody:form_data.serialize()});
-    update_job_submission_form();
+    new Ajax.Updater(divid, url, {postBody:form_data.serialize(), onComplete: update_job_submission_form});
 }
 
 function set_description() {
