@@ -134,6 +134,7 @@ def generate_parameters_form(workflow, model, path_to_actor):
             property_description = ''
         field_list.append(('%s_name' % p['id'], forms.CharField(initial=p['name'], label='Name')))
         thistype = p.get('type', 'INPUT')
+        field_list.append(('%s_type' % p['id'], forms.ChoiceField(initial=thistype, label='Type', choices=(('INPUT','INPUT'),('TEXT','TEXT'),('FILE','FILE'),('CHECKBOX','CHECKBOX'),('SELECT','SELECT')))))
         if thistype == 'TEXT':
             field_list.append(('%s_value' % p['id'], forms.CharField(max_length=1000, initial=p['value'], label='Value', widget=forms.Textarea)))
         elif thistype == 'INPUT':
@@ -156,14 +157,15 @@ def generate_parameters_form(workflow, model, path_to_actor):
             print 'WARNING, UNKNOWN TYPE: %s' % thistype
         field_list.append(('%s_expose' % p['id'], forms.BooleanField(initial=expose_to_user, label='Expose to User')))
         field_list.append(('%s_description' % p['id'], forms.CharField(max_length=1000, initial=property_description, label='Description', widget=forms.Textarea)))
-        field_list.append(('%s_type' % p['id'], forms.CharField(initial=thistype, widget=forms.HiddenInput)))
     base_fields = SortedDict(field_list)
     return type(path_to_actor[-1] + 'Form', (BaseForm,), {'base_fields': base_fields,})
 
-def save_parameters_from_post(workflow, post):
+def save_parameters_from_post(workflow, post, files):
     """ Saves changes to the Workflow metadata stored in the Workflow
     model based of values passed in via a POST request.
     """
+    if files is not None:
+        print 'FILES! WOOOT!', files
     ids = []
     for k in post.keys():
         s = k.split('_name')

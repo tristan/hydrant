@@ -40,7 +40,28 @@ function set_parameters_to_saving() {
     Element.Methods.update('parameters-div', '<table style="background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center;"><tr><td><h1 style="text-align: center;">SAVING</h1><h3 style="text-align: center;">Please wait</h3></td></tr></table>');
 }
 
+/*
+Ajax.MultipartUpdater = function(divid, url, parameters) {
+    form_data = parameters.postBody
+    fields = form_data.getInputs();
+    var body = "";
+    var boundary = "proto" + Math.random();
+    var contenttype = 'multipart/form-data; boundary=' + boundary;
+    for (var i in fields) {
+        //console.log(i + ": " + fields[i]);
+        if (typeof fields[i] != 'function') {
+            body += "==" + boundary + "\nContent-Disposition: form-data;name=\"" + fields[i].name + "\"\n";
+            body += "\n";
+            body += fields[i].getValue() + "\n";
+            body += "\n";
+        }
+    }
+    body += "==" + boundary + "==";
+    return new Ajax.Updater(divid, url, {contentType: contenttype, postBody: body, onComplete: parameters.onComplete});
+}
+  */  
 function set_parameters(url, actor_name, doclose) {
+    console.log("$('" + actor_name + "_parameters_form');");
     var form_data = $(actor_name + '_parameters_form');
     var divid = '';
     if (doclose == 1) {
@@ -50,7 +71,8 @@ function set_parameters(url, actor_name, doclose) {
         divid = 'parameters-div';
         set_parameters_to_saving();
     }
-    new Ajax.Updater(divid, url, {postBody:form_data.serialize(), onComplete: update_job_submission_form});
+    new Ajax.Updater(divid, url, {postBody:form_data.serialize(true), onComplete: update_job_submission_form});
+    //Ajax.MultipartUpdater(divid, url, {postBody: form_data, onComplete: update_job_submission_form});
 }
 
 function set_description() {
@@ -91,7 +113,7 @@ function set_properties() {
 }
 
 function update_parameters(base_url, actor_name) {
-    new Ajax.Updater('parameters-div', base_url + actor_name, { method: 'get' });
+    new Ajax.Updater('parameters-div', base_url + actor_name, { method: 'get', evalScripts: true });
 }
 
 function update_job_submission_form() {

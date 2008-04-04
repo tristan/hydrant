@@ -165,7 +165,7 @@ def parameters(request, actor_path):
     if request.POST:
         try:
             form = ActorForm(request.POST)
-            save_parameters_from_post(workflow, request.POST)
+            save_parameters_from_post(workflow, request.POST, request.FILES)
         except:
             traceback.print_exc()
     else:
