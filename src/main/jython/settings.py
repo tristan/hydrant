@@ -47,6 +47,7 @@ MEDIA_URL = '/' + ROOT_URL + 'media/'
 
 LIB_DIRECTORY = (
     PROJECT_HOME + '/lib',
+    PROJECT_HOME + '/target/project.classpath',
     #'%s/lib/jar' % os.environ.get("KEPLER"),
     #'%s/lib' % os.environ.get("PTII"),
 )

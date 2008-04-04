@@ -39,13 +39,13 @@
       <scope>compile</scope>
     </dependency>
 	<dependency>
-      <groupId>jfreechart</groupId>
+      <groupId>jfree</groupId>
       <artifactId>jfreechart</artifactId>
       <version>1.0.9</version>
       <scope>compile</scope>
     </dependency>
     <dependency>
-      <groupId>jcommon</groupId>
+      <groupId>jfree</groupId>
       <artifactId>jcommon</artifactId>
       <version>1.0.12</version>
       <scope>compile</scope>
@@ -62,13 +62,48 @@
       <version>8.2-507.jdbc3</version>
       <scope>runtime</scope>
     </dependency>
+
     <!-- kepler specific -->
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
-      <version>1.1</version>
+      <version>1.1.1</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>concurrent</groupId>
+      <artifactId>concurrent</artifactId>
+      <version>1.3.2</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>hsqldb</groupId>
+      <artifactId>hsqldb</artifactId>
+      <version>1.8.0.7</version>
+      <scope>runtime</scope>
+    </dependency>
+
+    <!-- WebService Actor requirements -->
+
+    <dependency>
+      <groupId>axis</groupId>
+      <artifactId>axis</artifactId>
+      <version>1.3</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>xalan</groupId>
+      <artifactId>xalan</artifactId>
+      <version>2.7.0</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>xerces</groupId>
+      <artifactId>xercesImpl</artifactId>
+      <version>2.8.1</version>
+      <scope>runtime</scope>
+    </dependency>
+
   </dependencies>
   <pluginRepositories>
     <pluginRepository>
@@ -85,12 +120,42 @@
   <build>
     <plugins>
       <plugin>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-dependency-plugin</artifactId>
+	<executions>
+	  <execution>
+	    <id>build-classpath</id>
+	    <phase>package</phase>
+	    <goals>
+	      <goal>build-classpath</goal>
+	    </goals>
+	    <configuration>
+	      <outputFile>
+		${project.build.directory}/project.classpath
+	      </outputFile>
+	    </configuration>
+	  </execution>
+	</executions>
+      </plugin>
+      <plugin>
 	<groupId>org.mortbay.jetty</groupId>
 	<artifactId>maven-jetty-plugin</artifactId>
 	<version>6.1.8</version>
 	<configuration>
 	  <contextPath>/</contextPath>
 	  <scanIntervalSeconds>0</scanIntervalSeconds>
+	  <connectors>
+	    <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
+	      <port>8000</port>
+	    </connector>
+	  </connectors>
+	  <systemProperties>
+	    <!--systemProperty>
+	      <name>jetty.class.path</name>
+	      <value>${maven.dependency.classpath}</value>
+	    </systemProperty-->
+	  </systemProperties>
+	  <webApp>${basedir}/target/${pom.artifactId}.war</webApp>
 	</configuration>
       </plugin>
       <plugin>

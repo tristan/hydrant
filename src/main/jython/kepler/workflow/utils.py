@@ -50,7 +50,12 @@ def validateMoML(moml):
     # run the MoML filters over the class list
     momlfilters = MoMLParser.getMoMLFilters() or []
     for filter in momlfilters:
-        classnames = [classname for classname in classnames if filter.filterAttributeValue(None, None, None, classname) != None]
+        _classnames = []
+        for c in classnames:
+            fn = filter.filterAttributeValue(None, None, None, c)
+            if fn != None:
+               _classnames.append(fn)
+        classnames = _classnames
 
     # check each of the classes for errors
     for classname in classnames:

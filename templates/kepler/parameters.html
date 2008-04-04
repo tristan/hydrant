@@ -1,3 +1,4 @@
+{% load textutils %}
 <div>
     <table class="props"><tr><td>
     <h1>Parameters for {{ actor.name }}</h1>
@@ -6,27 +7,67 @@
     <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
     </td></tr><tr><td>
     {% endif %}
-    <form id="{{ actor.name }}_parameters_form" method="get" action="">
+    <form enctype="multipart/form-data" id="{{ actor.name }}_parameters_form" method="get" action="">
     <div>
         <table class="forms">
-            <th>Name</th><th>Value</th><th>Expose to user</th><th>Description</th>
+            <th>Name</th><th>Type</th><th>Value</th><th>Expose to user</th><th>Description</th>
             {% for field in form %}
             {% ifequal field.label 'Name' %}
             <tr><td>{{ field }}</td>
             {% else %}
-                {% ifequal field.label 'Value' %}
-                <td>{{ field }}</td>
-                {% else %}
-                    {% ifequal field.label 'Expose to User' %}
+	        {% ifequal field.label 'Type' %}
+	        <td>
+		  <select name="{{ field.name }}" id="id_{{ field.name }}" onchange="testf('{{ field.name }}', this.options[this.selectedIndex].value)">
+		    {% for cn,cv in field.field.choices %}
+		    <option {% ifequal cn field.field.initial %}selected="selected" {% endifequal %}value="{{ cv }}">{{ cn }}</option>
+		    {% endfor %}
+		  </select></td>
+		{% else %}
+                    {% ifequal field.label 'Value' %}
                     <td>{{ field }}</td>
                     {% else %}
-                        <td>{{ field }}</td></tr>
-                    {% endifequal %}
+                        {% ifequal field.label 'Expose to User' %}
+                        <td>{{ field }}</td>
+                        {% else %}
+                            <td>{{ field }}</td></tr>
+                        {% endifequal %}
+	            {% endifequal %}
                 {% endifequal %}
             {% endifequal %}
             {% endfor %}
         </table>
     </div>
+    <script type="text/javascript">
+
+    // default values
+    
+    defs = {
+    {% for f in form %}{% with f.name|split:"_"|last as t %}{% ifequal t 'value' %}'id_{{ f.name }}': {
+            'value': '{{ f.field.initial }}' {% if f.field.choices %}, 'choices': {
+                {% for n,v in f.field.choices %}'{{ n }}': '{{ v }}'{% if forloop.last %}{% else %},{% endif %}{% endfor %}}{% endif %}
+        }{% endifequal %}{% if forloop.last %}'_________end': {'end': 'end'}{% else %}{% ifequal t 'value' %},{% endifequal %}{% endif %}{% endwith %}{% endfor %}
+    };
+    
+    testf = function(name, value) {
+        name = name.replace('_type','_value');
+        id = 'id_' + name
+        if (value == 'TEXT') {
+            Element.replace(id, '<textarea id="' + id + '">' + defs[id].value + '</textarea>');
+        } else if (value == 'INPUT') {
+            Element.replace(id, '<input id="' + id + '" type="text" name="' + name + '" value="' + defs[id].value + '"/>');
+        } else if (value == 'CHECKBOX') {
+            var checked = (defs[id].value == 'True');
+            if (checked) {
+                checked = 'checked="checked"';
+            } else {
+                checked = '';
+            }
+            Element.replace(id, '<input id="' + id + '" type="checkbox" name="' + name + '"' + checked + '/>');
+        } else if (value == 'FILE') {
+           Element.replace(id, '<input id="' + id + '" type="file" name="' + name + '" value="' + defs[id].value + '"/>');
+        }
+    }
+    </script>
     <div style="border: 1px #CCC solid;" class="submit-row">
         <input type="button" value="Apply" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 0);"/>
         <input type="button" value="Save" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 1);"/>
