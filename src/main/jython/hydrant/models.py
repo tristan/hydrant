@@ -228,3 +228,30 @@ class JobOutput(models.Model):
     class Admin:
         list_display = ('creation_date', 'job', 'name', 'type', 'file')
 
+class UserMessages(models.Model):
+    """ This model stores all the messages sent to a user
+
+    user -- The user which the message if for.
+    date -- The date the message was created.
+    source -- The source of the message. i.e. Job or User
+    title -- The title of the message
+    text -- The contents of the message
+    
+    """
+
+    user = models.ForeignKey(User)
+    date = models.DateTimeField(auto_now_add=True)
+    source = models.CharField(max_length=200)
+    title = models.CharField(max_length=200)
+    text = models.TextField()
+
+class UserDetails(models.Model):
+
+    """ This model contains additional information about a User
+
+    user -- The user which this info relates to.
+    twitter -- The user's twitter id.
+    """
+
+    user = models.ForeignKey(User)
+    twitter = models.CharField(max_lenght=140)

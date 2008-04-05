@@ -1,4 +1,4 @@
-.annotation { position: absolute; }
+    .annotation { position: absolute; }
     .director { position: absolute; font-size: small; font-family: sans-serif; }
     .crumbs { font-size: small; font-family: sans-serif; }
     .actor { position: absolute; font-size: small; font-family: sans-serif; }

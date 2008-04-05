@@ -1,7 +1,20 @@
 {% extends "index.html" %}
 {% load rooturl %}
 
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/dashboard.css"/>
+{% endblock %}
+
 {% block content %}
+<div id="dashboard">
+  <div id="news">
+  </div>
+  <div id="small-jobs">
+  </div>
+  <div id="small-workflows">
+  </div>
+</div>
+{% endblock %}
 <div class="dashboard-block-container">
     <div>
     <div class="dashboard-block">
@@ -52,5 +65,3 @@
     </div>
 </div>
 </div>
-
-{% endblock %}

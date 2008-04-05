@@ -45,7 +45,15 @@ def home(request):
         jobs = Job.objects.filter(owner=request.user).order_by('-submission_date')
         if len(jobs) > 5:
             jobs = jobs[:5]
-        return render_to_response('dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs, }, context_instance=RequestContext(request))
+        messages = UserMessages.objects.filter(user=request.user).order_by('-date')
+        return render_to_response('dashboard.html',
+                                  {'next': reverse('dashboard'),
+                                   'title': _('Dashboard'),
+                                   'workflows': workflows,
+                                   'jobs': jobs,
+                                   'messages': messages
+                                   },
+                                  context_instance=RequestContext(request))
     else:
         # set the test cookie, so that if the user decides to log in the login form actually works
         request.session.set_test_cookie()

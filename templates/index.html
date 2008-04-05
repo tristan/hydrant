@@ -18,9 +18,9 @@
     <li>
     <a href="{% url logout_view %}">Log out</a>
     </li>
-    <li><a href="#">Profile</a></li>
-    <li><a href="#">Jobs</a></li>
-    <li><a href="#">Workflows</a></li>
+    {% block profilelink %}<li><a href="#">Profile</a></li>{% endblock %}
+    {% block jobslink %}<li><a href="#">Jobs</a></li>{% endblock %}
+    {% block workflowslink %}<li><a href="#">Workflows</a></li>{% endblock %}
     {% else %}
     <li>
     <a href="{% url login %}">Log in</a>
