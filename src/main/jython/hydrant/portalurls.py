@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
 from portalviews import *
 
-urlpatterns = patterns('kepler.portalviews',
+urlpatterns = patterns('hydrant.portalviews',
     # Example:
     # (r'^kepler/', include('kepler.foo.urls')),
 

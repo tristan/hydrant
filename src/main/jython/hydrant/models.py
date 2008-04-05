@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import widgets
-from workflow.proxy import EntityProxy
+from kepler.workflow.proxy import EntityProxy
 
 
 class Workflow(models.Model):

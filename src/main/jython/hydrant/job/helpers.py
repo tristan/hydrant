@@ -16,7 +16,7 @@ from ptolemy.actor.lib.io import LineWriter
 from org.geon import BinaryFileWriter
 
 from settings import STORAGE_ROOT
-from kepler.models import *
+from hydrant.models import *
 
 class TestRM(ReplacementManager):
     """

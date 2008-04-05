@@ -17,8 +17,8 @@ from django.views.static import serve
 #from pygments.lexers import XmlLexer
 #from pygments.formatters import HtmlFormatter
 
-from workflow.utils import validateMoML
-from workflow.cache import open_workflow, open_workflow_from_object
+from kepler.workflow.utils import validateMoML
+from kepler.workflow.cache import open_workflow, open_workflow_from_object
 from portalviewshelper import *
 from models import *
 from job import *
@@ -37,7 +37,7 @@ def hide_workflows(request, path):
 def welcome(request):
     """ Displays the welcome page
     """
-    return render_to_response('kepler/base_site.html', {'title': _('Welcome')}, context_instance=RequestContext(request))
+    return render_to_response('index.html', context_instance=RequestContext(request))
 
 def dashboard(request):
     """ Displays the users dashboard. Includes lists of the last five

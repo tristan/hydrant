@@ -1,5 +1,5 @@
 from proxy import *
-from kepler.models import *
+from hydrant.models import *
 from django.shortcuts import get_object_or_404
 
 workflow_cache = {}

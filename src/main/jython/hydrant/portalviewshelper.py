@@ -1,4 +1,4 @@
-from workflow.cache import *
+from kepler.workflow.cache import *
 from django.http import Http404
 from django.newforms import form_for_model
 from django.utils.encoding import force_unicode, smart_str
