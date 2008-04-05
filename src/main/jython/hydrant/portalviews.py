@@ -34,12 +34,7 @@ def hide_workflows(request, path):
     """
     raise Http404
 
-def welcome(request):
-    """ Displays the welcome page
-    """
-    return render_to_response('index.html', context_instance=RequestContext(request))
-
-def dashboard(request):
+def home(request):
     """ Displays the users dashboard. Includes lists of the last five
     uploaded Workflows and Jobs.
     """
@@ -50,11 +45,11 @@ def dashboard(request):
         jobs = Job.objects.filter(owner=request.user).order_by('-submission_date')
         if len(jobs) > 5:
             jobs = jobs[:5]
+        return render_to_response('dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs, }, context_instance=RequestContext(request))
     else:
         # set the test cookie, so that if the user decides to log in the login form actually works
         request.session.set_test_cookie()
-    return render_to_response('kepler/dashboard.html', {'next': reverse('dashboard'), 'title': _('Dashboard'), 'workflows': workflows, 'jobs': jobs, }, context_instance=RequestContext(request))
-dashboard = login_required(dashboard)
+        return render_to_response('index.html', context_instance=RequestContext(request))
 
 def upload_workflow(request):
     """ Handles uploading a Workflow. If a GET request is made, then

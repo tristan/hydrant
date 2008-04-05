@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/login.css"/>
+{% endblock %}
+
+{% block content %}
+<div class="login-box">
+  <form action="" method="post" id="login-form">
+  
+  <h1>Log in</h1>
+
+  {% if form.has_errors %}
+  <div class="errorbox">invalid username and/or password</div>
+  {% endif %}
+
+  <div id="login-fields">
+    <label for="id_username">Username<br/>{{ form.username }}</label>
+    <label for="id_password">Password<br/>{{ form.password }}</label>
+  </div>
+  <div id="login-buttons">
+    <label style="inline">
+    <input type="submit" value="Login" />
+    </label>
+  </div>
+  <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}{% url dashboard %}{% endif %}" />
+  
+  </form>
+</div>
+<script type="text/javascript">
+document.getElementById('id_username').focus()
+</script>
+{% endblock %}

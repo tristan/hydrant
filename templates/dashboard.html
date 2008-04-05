@@ -1,15 +1,6 @@
-{% extends "kepler/base_site.html" %}
+{% extends "index.html" %}
 {% load rooturl %}
 
-{% block object-tools %}
-    {% if user.is_staff %}
-    <ul>
-        <li style="width: 13em;">
-            <a href="{% url upload_workflow %}" class="addlink">Upload Workflow</a>
-        </li>
-    </ul>
-    {% endif %}
-{% endblock %}
 {% block content %}
 <div class="dashboard-block-container">
     <div>

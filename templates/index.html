@@ -1,9 +1,12 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+{% load gravatar %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-15">
 <title>Hydrant</title>
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/hydrant.css"/>
+{% block extrastyle %}{% endblock %}
 </head>
 
 <body class="site">
@@ -15,16 +18,52 @@
     <li>
     <a href="{% url logout_view %}">Log out</a>
     </li>
+    <li><a href="#">Profile</a></li>
+    <li><a href="#">Jobs</a></li>
+    <li><a href="#">Workflows</a></li>
     {% else %}
     <li>
-    <a href="{% url login_view %}">Log in</a>
+    <a href="{% url login %}">Log in</a>
     </li>
     {% endif %}
   </ul>
 </div>
 <div id="logo">
-  <img src="{{ MEDIA_URL }}/img/hydrant-logo-empty-w-cp.png"/>
+  <img src="{{ MEDIA_URL }}/img/hydrant-logo-empty-w-cp.png" alt="hydrant"/>
 </div>
+{% if user.is_authenticated %}
+<div id="userbox">
+  <div id="gravatar"
+    <a href="{% url home %}"><img src="{% gravatar_url user 48 %}" alt="gravatar"/></a>
+  </div>
+  <div id="username"><a href="{% url home %}">
+  {% if user.first_name %}
+  {{ user.first_name }}
+  {% else %}
+  {{ user.username }}
+  {% endif %}</a>
+  </div>
 </div>
-
-</body> </html>
+{% endif %}
+</div>
+<div id="content">
+  {% block content %}
+  {% endblock %}
+</div>
+<div class="seperator"></div>
+<div id="footer">
+<div class="copywrite">
+  Created By Tristan King<br/>
+  Copyright &copy; 1995 to 2007, James Cook University. All rights reserved.<br/>
+  <a href="http://www.jcu.edu.au/top/jcuprd_013723.html">Terms of use</a> | <a href="http://www.jcu.edu.au/privacy/">Privacy statement</a>
+</div>
+<table class="logos" style="margin-left: auto; margin-right: auto;">
+  <tr>
+    <td><a href="http://www.djangoproject.com"><img src="{{ MEDIA_URL}}img/logos/django-powered.png" alt="Django"/></a></td>
+    <td><a href="http://www.jython.org"><img src="{{ MEDIA_URL }}img/logos/jython-powered.png" alt="Jython"/></a></td>
+    <td><a href="http://www.kepler-project.org"><img src="{{ MEDIA_URL }}img/logos/kepler-powered.png" alt="Kepler"/></a></td>
+  </tr>
+</table>
+</div>
+</body>
+</html>

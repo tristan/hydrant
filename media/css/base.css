@@ -1,4 +1,4 @@
- body {
+body {
                 background: #FFFFFF;
                 margin: 0px;
                 padding: 0px;
@@ -25,7 +25,7 @@
                 background: #417690;
                 color: #FFFFCC;
 					 width: 100%;
-                /* overflow: hidden; */
+
             }
             #header a:link, #header a:visited {
                 color: white;
@@ -139,7 +139,7 @@
             #content h1 { font-size:18px; color:#666; padding:0 6px 0 0; margin:0 0 .2em 0; }
             input[type=text], input[type=password], textarea, select, .vTextField { border:1px solid #ccc; }
 
-            /*  FORM BUTTONS  */
+
             input[type=submit], input[type=button], .submit-row input {
                 background: white url(../img/kepler/nav-bg.gif) bottom repeat-x;
                 padding: 3px;

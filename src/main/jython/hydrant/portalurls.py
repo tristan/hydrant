@@ -6,8 +6,8 @@ urlpatterns = patterns('hydrant.portalviews',
     # (r'^kepler/', include('kepler.foo.urls')),
 
     # Uncomment this for admin:
-    url(r'^$', 'welcome', name='welcome'),
-    url(r'^dashboard/$', 'dashboard', name='dashboard'),
+    url(r'^$', 'home', name='home'),
+    url(r'^dashboard/$', 'home', name='dashboard'),
     url(r'^upload/$', 'upload_workflow', name='upload_workflow'),
     url(r'^workflow/delete/([\w]+)/$', 'delete_workflow', name='delete_workflow'),
     url(r'^workflow/copy/([\w]+)/$', 'duplicate_workflow', name='duplicate_workflow'),
