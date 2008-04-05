@@ -15,6 +15,7 @@ body {
           height: 6.88em;
 }
 #header #logo {
+                position: absolute;
                 float: left;
                 padding: 0.8em 0 0 0.7em;
                 font-size: xx-large;
@@ -23,6 +24,44 @@ body {
 #header #logo img {
                     width: 6.25em;
                     height: 1.84em;
+}
+
+#header #toolbar { 
+                   position: absolute;
+                   float: right;
+                   margin: 5.44em 0 0 0;
+                   height: 1.44em;
+                   background: #3e8a8b;
+                   width: 65.0em;
+                   font-family: sans-serif;
+                   font-weight: bold;
+}
+
+#header #toolbar ul {
+                      border: 0 none;
+                      margin: 0;
+                      list-style-type: none;
+}
+
+#header #toolbar li { 
+                      display: block;
+                      float: right;
+                      padding: 0.125em 1.0em 0.125em 0em;
+}
+
+#header #toolbar a {
+                     padding: 0.125em 0.25em 0.125em 0.25em;
+                     color: white;
+}
+#header #toolbar a:link, a:visited {
+                                     color: white;
+                                     font-weight: bold;
+                                     text-decoration: none;
+}
+#header #toolbar a:hover { 
+                           color: black;
+                           background: #FFF url(../img/bottom-of-header.png) repeat-x scroll 0pt 100% ;
+                           text-decoration: underline;
 }
 #header #userbox {
                    float: right;

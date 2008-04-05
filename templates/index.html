@@ -9,13 +9,22 @@
 <body class="site">
 
 <div id="header">
+<div id="toolbar">
+  <ul>
+    {% if user.is_authenticated %}
+    <li>
+    <a href="{% url logout_view %}">Log out</a>
+    </li>
+    {% else %}
+    <li>
+    <a href="{% url login_view %}">Log in</a>
+    </li>
+    {% endif %}
+  </ul>
+</div>
 <div id="logo">
   <img src="{{ MEDIA_URL }}/img/hydrant-logo-empty-w-cp.png"/>
 </div>
+</div>
 
-<div id="userbox">
-  <a href="{% url login_view %}">Log in</a>
-</div>
-</div>
-<div class="seperator"></div>
 </body> </html>
