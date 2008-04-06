@@ -12,7 +12,7 @@ try:
     (r'^%saccounts/login/$' % ROOT_URL, 'django.contrib.auth.views.login',
      {'template_name': 'login.html'}, 'login'),
     (r'^%saccounts/logout/$' % ROOT_URL, 'django.contrib.auth.views.logout',
-     {'template_name': 'kepler/logout.html'}, 'logout_view'),
+     {'next_page':'/%sportal/' % ROOT_URL}, 'logout'),
     (r'^%sportal/' % ROOT_URL, include('jython.hydrant.portalurls')),
     (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
     (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),

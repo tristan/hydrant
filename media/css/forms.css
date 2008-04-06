@@ -1,0 +1,86 @@
+.login-box { 
+             font-size: 1em;
+             border: #81abd4 1.2em solid;
+             width: 24em;
+             margin: 2.0em auto;
+             background: #eaf2f5;
+             padding: 1.0em 1.5em 0.5em 1.5em;
+}
+
+.errorbox {
+            background: #ffebe8;
+            border: 1px solid #dd3c10;
+            font-weight: bold;
+            padding: 1em;
+}
+
+label { 
+        display: block;
+        margin: 1em 0 0 0;
+        color: #666;
+}
+
+#login-fields input { 
+                padding: 0.4em;
+                width: 97.3%;
+                border:1px solid #ccc; 
+}
+
+#buttons { 
+           height: 2.0em;
+}
+
+#buttons input { 
+                 float: right;
+}
+
+#upload-wf-box { 
+             font-size: 1em;
+             border: #81abd4 1.2em solid;
+             width: 41em;
+             margin: 2.5em auto;
+             background: #eaf2f5;
+             padding: 1.0em 1.5em 0.5em 1.5em;
+}
+
+#upload-wf-box #fields #id_name, #id_moml_file { 
+                                                 padding: 0.4em 0.4em 0.4em 0.4em;
+                                                 width: 97.3%;
+                                                 border:1px solid #ccc;           
+}
+#upload-wf-box #fields #public { 
+                                 margin: 1em 0 0 0;
+                                 display: block;
+                                 color: #666;
+                                 padding: 0 0 1em 0;
+}
+#upload-wf-box #fields #public>span { 
+                                      font-size: 0.8em;
+}
+
+#upload-wf-box #fields #public>label {
+                                       margin: 0;
+                                       color: black;
+}
+
+#upload-wf-box #fields #public>label>input {
+                                             margin: 0 0.7em 0 0;
+}
+
+#upload-wf-box #fields #id_description { 
+                                         padding: 0.4em 0.4em 0.4em 0.4em;
+                                         width: 97.3%;
+                                         border:1px solid #ccc;           
+}
+
+.missing-field { 
+                 color: #a00;
+}
+.missing-field input { 
+                       border: 1px solid #a00 !important;
+                       background-color: #f2e1e1;
+}
+
+.error-text { 
+              font-style: italic;
+}

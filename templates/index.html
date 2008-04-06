@@ -16,7 +16,7 @@
   <ul>
     {% if user.is_authenticated %}
     <li>
-    <a href="{% url logout_view %}">Log out</a>
+    <a href="{% url logout %}">Log out</a>
     </li>
     {% block profilelink %}<li><a href="#">Profile</a></li>{% endblock %}
     {% block jobslink %}<li><a href="#">Jobs</a></li>{% endblock %}

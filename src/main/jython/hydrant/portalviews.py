@@ -23,7 +23,7 @@ from portalviewshelper import *
 from models import *
 from job import *
 from settings import STORAGE_ROOT, MEDIA_ROOT
-from django.newforms import form_for_model, form_for_instance
+from django.newforms import form_for_model, form_for_instance, widgets
 from django.utils.safestring import mark_safe
 
 def intro(request):
@@ -65,7 +65,13 @@ def upload_workflow(request):
     check the POST and FILES variables for Workflow details and store
     them.
     """
-    WorkflowForm = form_for_model(Workflow, fields=('moml_file','name','public','description','valid_users'), formfield_callback=formfield_callback)
+    WorkflowForm = form_for_model(Workflow,
+                                  fields=('moml_file',
+                                          'name',
+                                          'description',
+                                          'public'),
+                                  formfield_callback=upload_workflow_formfield_callback
+                                  )
     if request.method == 'POST':
         print request.POST
         form = WorkflowForm(request.POST, request.FILES)
@@ -79,9 +85,16 @@ def upload_workflow(request):
             for msg in messages:
                 request.user.message_set.create(message=msg)
             return HttpResponseRedirect(reverse('workflow_view', args=(workflow.pk,)))
+        else:
+            print 'form errors:', form.errors
     else:
         form = WorkflowForm()
-    return render_to_response('kepler/upload_workflow.html', {'title': _('Upload Workflow'), 'crumbs': [''], 'form': form.as_table() }, context_instance=RequestContext(request))
+    return render_to_response('upload_workflow.html',
+                              {'title': _('Upload Workflow'),
+                               'crumbs': [''],
+                               'form': form
+                               },
+                              context_instance=RequestContext(request))
 upload_workflow = login_required(upload_workflow)
 
 def workflow(request, id):

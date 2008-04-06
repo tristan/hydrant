@@ -32,34 +32,49 @@
 
 }
 
-.job { 
+.thing { 
        padding: 0 0 1.0em 1.0em;
 }
 
-.job .title { 
+.thing .title { 
               font-weight: bold;
               padding: 0 0 0.4em 0;
 }
 
-.job .details {
+.thing .details {
                 padding: 0 0 0 1.0em;
 }
 
-.job .details .icon {
+.thing .details .icon {
                       float: left;
 }
 
-.job .details .icon img { 
+.thing .details .icon img { 
                           border: 1px solid #d0d0d0;
                           padding: 2px;
                           width: 2.46em;
                           height: 2.46em;
 }
 
-.job .details .status { 
-                        margin: 0.2em 0 0 0;
-                        float: left;
-                        padding: 0 0 0 1.5em;
+#col-one .thing .details .status { 
+                          margin: 0.2em 0 0 0;
+                          float: left;
+                          padding: 0 0 0 1.5em;
+                          width: 36em;
+}
+
+#col-one .thing .details .larger-status { 
+                          margin: 0.2em 0 0 0;
+                          float: left;
+                          padding: 0 0 0 1.5em;
+                          width: 39.2em;
+}
+
+#col-two .thing .details .status { 
+                          margin: 0.2em 0 0 0;
+                          float: left;
+                          padding: 0 0 0 1.5em;
+                          width: 18em;
 }
 
 #dashboard a { 

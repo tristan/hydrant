@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block extrastyle %}
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/login.css"/>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
 {% endblock %}
 
 {% block content %}
@@ -18,7 +18,7 @@
     <label for="id_username">Username<br/>{{ form.username }}</label>
     <label for="id_password">Password<br/>{{ form.password }}</label>
   </div>
-  <div id="login-buttons">
+  <div id="buttons">
     <label style="inline">
     <input type="submit" value="Login" />
     </label>

@@ -25,13 +25,19 @@ class Workflow(models.Model):
     name = models.CharField(max_length=50)
     owner = models.ForeignKey(User, related_name="worklow_owner",)
     created = models.DateTimeField('date submitted', auto_now_add=True)
-    public = models.BooleanField(default=False)
-    description = models.TextField()
-    deleted = models.BooleanField(default=False,)
+    description = models.TextField(blank=True)
+    public = models.BooleanField(default=False,
+                              verbose_name='Who has access to this workflow?',
+                              choices=((True, 'Anyone'),
+                                       (False, 'Only the people I specify'),
+                                       )
+                              )
     valid_users = models.ManyToManyField(User, verbose_name='valid users', 
                                          blank=True, 
                                          filter_interface=models.HORIZONTAL, 
                                          related_name='workflow_valid_users')
+    deleted = models.BooleanField(default=False,)
+
 
     def get_parameter(self, id):
         """ Gets a WorkflowParameter object linked to this Workflow.

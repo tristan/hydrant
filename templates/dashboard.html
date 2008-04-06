@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% load rooturl %}
 {% load gravatar %}
+{% load textutils %}
 
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/dashboard.css"/>
@@ -11,23 +12,74 @@
   <div id="col-one">
   <div id="news">
     <h1>Messages</h1>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
-    <p>omg wtf</p>
+
+    <div class="thing">
+    <div class="title">
+      Job
+      <a href="#">jobname</a>
+      started by
+      <a href="#">{{ user.username }}</a>
+      on
+      {start_date}
+    </div>
+    <div class="details">
+    <div class="icon">
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+      <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
+    </div>
+    <div class="status">
+      Status: Running<br/>
+      ETA: Unknown
+    </div>
+    <div style="clear: both;"></div>
+    </div>
+    </div>
+
+    <div class="thing">
+    <div class="title">
+      Workflow
+      <a href="#">{workflow_name}</a>
+      uploaded by
+      <a href="#">{{ user.username }}</a>
+      on
+      {creation_date}
+    </div>
+    <div class="details">
+    <div class="icon">
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+      <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
+    </div>
+    <div class="status">
+      oh my god... what the hell!? oh my god... what the hell!?
+      oh my god... what the hell!? oh my god... what the hell!?
+      oh my god... what the hell!? oh my god...
+    </div>
+    <div style="clear: both;"></div>
+    </div>
+    </div>
+
+    <div class="thing">
+    <div class="title">
+      <a href="#">trystn</a>
+      commented on your job
+      <a href="#">{job_name}</a>
+    </div>
+    <div class="details">
+    <div class="icon">
+       <img src="{% gravatar_url 'tristan.king@gmail.com' 32 %}" alt="{{ user.username }}"/>
+    </div>
+    <div class="larger-status">
+      wow! that was one awesome job! filler filler filler filler filler filler
+      filler filler filler filler filler filler filler filler filler filler
+      filler filler filler
+      OH MY GOD! IE6 YOU ARE WORTHLESS!
+    </div>
+    <div style="clear: both;"></div>
+    </div>
+    </div>
+
+    
+    
   </div>
   </div>
   <div id="col-two">
@@ -35,9 +87,9 @@
     <h1>Your Recent Jobs</h1>
     {% for job in jobs %}
     {% endfor %}
-  <div class="job">
+  <div class="thing">
   <div class="title">
-    <a href="#">jobname</a>
+    <a href="#">{jobname}</a>
     started by
     <a href="#">{{ user.username }}</a>
     on
@@ -56,9 +108,9 @@
   </div>
   </div>
 
-  <div class="job">
+  <div class="thing">
   <div class="title">
-    <a href="#">jobname</a>
+    <a href="#">{jobname}</a>
     started by
     <a href="#">trystn</a>
     on
@@ -71,7 +123,7 @@
   </div>
   <div class="status">
     Status: Running<br/>
-    Eta: Unknown
+    ETA: Unknown
   </div>
   <div style="clear: both;"></div>
   </div>
@@ -80,6 +132,23 @@
   </div>
   <div id="small-workflows">
     <h1>Your Workflows <a href="{% url upload_workflow %}">(upload new)</a></h1>
+    {% for w in workflows %}
+    <div class="thing">
+      <div class="title">
+	<a href="#">{{ w.name }}</a>
+      </div>
+      <div class="details">
+	<div class="icon">
+	  <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler workflow"/>
+	  <img src="{% gravatar_url w.owner 32 %}" alt="{{ w.owner.username }}"/>
+	</div>
+	<div class="status">
+	  {{ w.description|truncate_to_len:140 }}
+	</div>
+	<div style="clear: both;"></div>
+      </div>
+    </div>
+    {% endfor %}
   </div>
   </div>
   <div style="clear: both;"></div>

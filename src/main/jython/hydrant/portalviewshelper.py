@@ -14,9 +14,10 @@ from django.core.paginator import ObjectPaginator
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models.query import Q
-import widgets
+from django.newforms import widgets
 from django.utils.text import capfirst
 from settings import STORAGE_ROOT
+from django.utils.safestring import mark_safe
 
 def build_crumbs_from_path(current_name, path):
     """ Builds a list of breadcrumbs for traversing through Workflows with Composite Actors.
@@ -439,11 +440,20 @@ def get_workflow_query_set(user):
     qs &= Q(deleted=False)
     return Workflow.objects.complex_filter(qs)
 
-def formfield_callback(field, **kwargs):
+class RadioFieldRenderer(widgets.RadioFieldRenderer):
+    def render(self):
+        return mark_safe(u'\n'.join([u'%s'
+                           % force_unicode(w) for w in self]))
+
+def upload_workflow_formfield_callback(field, **kwargs):
     """ Used to assign the FilteredSelectMultiple widget for
     ManyToManyField objects when generating a form.
     """
-    if isinstance(field, models.ManyToManyField):
-        kwargs['widget'] = widgets.FilteredSelectMultiple(field.verbose_name, False)
+    if field.name == 'public':
+        kwargs['widget'] = widgets.RadioSelect(choices=field.choices,
+                                               renderer=RadioFieldRenderer)
+    if field.name == 'description':
+        kwargs['widget'] = widgets.Textarea({'rows':5})
+
     return field.formfield(**kwargs)
 

@@ -9,3 +9,12 @@ register.filter('replace_spaces', replace_spaces)
 def split(str,splitter):
     return str.split(splitter)
 register.filter('split', split)
+
+def truncate_to_len(text, length):
+    result = ''
+    for i in text.split(' '):
+        if len(result) + len(i) > length:
+            return result + ' ...'
+        result += ' ' + i
+    return result
+register.filter('truncate_to_len', truncate_to_len)
