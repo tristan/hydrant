@@ -1,3 +1,81 @@
+
+#dashboard { 
+             font-size: 0.8em;
+             margin: 1.0em 0.4em 0 0.4em;
+}
+
+#dashboard h1 { 
+                border-bottom: 1px solid #d0d0d0;
+                padding-bottom: 0.2em;
+}
+
+#dashboard h1 a { 
+                  font-weight: normal;
+                  font-size: 0.8em;
+}
+
+#dashboard #col-one {
+                      float: left;
+                      width: 47em;
+}
+
+#dashboard #col-two {
+                      width: 28em;
+                      float: right;
+}
+
+#dashboard #news {
+
+}
+
+#dashboard #small-jobs {
+
+}
+
+.job { 
+       padding: 0 0 1.0em 1.0em;
+}
+
+.job .title { 
+              font-weight: bold;
+              padding: 0 0 0.4em 0;
+}
+
+.job .details {
+                padding: 0 0 0 1.0em;
+}
+
+.job .details .icon {
+                      float: left;
+}
+
+.job .details .icon img { 
+                          border: 1px solid #d0d0d0;
+                          padding: 2px;
+                          width: 2.46em;
+                          height: 2.46em;
+}
+
+.job .details .status { 
+                        margin: 0.2em 0 0 0;
+                        float: left;
+                        padding: 0 0 0 1.5em;
+}
+
+#dashboard a { 
+               color: #4183c4;
+               text-decoration: none;
+}
+
+#dashboard a:hover { 
+               text-decoration: underline;
+}
+
+#dashboard #small-workflows {
+}
+
+
+
     .annotation { position: absolute; }
     .director { position: absolute; font-size: small; font-family: sans-serif; }
     .crumbs { font-size: small; font-family: sans-serif; }

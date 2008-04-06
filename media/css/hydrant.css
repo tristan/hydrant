@@ -1,6 +1,14 @@
 body {
+       font-size: 1em;
        margin: 0 0 0 0;
        font-family: helvetica,arial,clean,sans-serif;
+       background: #ddddff;
+}
+
+h1 {
+     font-size: 1.5em;
+     margin: 0em 0em 0.5em 0em;
+     padding: 0;
 }
 
 a img { 
@@ -10,7 +18,8 @@ a img {
 .site { 
         margin: 0pt auto;
         text-align: left;
-        width: 65.00em;
+        width: 62.00em;
+        background: #fff;
         border-left: 1px solid #999;
         border-right: 1px solid #999;
 }
@@ -21,9 +30,8 @@ a img {
 }
 #header #logo {
                 position: absolute;
-                float: left;
                 padding: 0.8em 0 0 0.7em;
-                font-size: xx-large;
+                font-size: 2em;
                 font-family: Fantasy;
 }
 #header #logo img {
@@ -33,11 +41,10 @@ a img {
 
 #header #toolbar { 
                    position: absolute;
-                   float: right;
                    margin: 5.44em 0 0 0;
                    height: 1.44em;
                    background: #3e5a8b;
-                   width: 65.0em;
+                   width: 62.0em;
                    font-family: sans-serif;
                    font-weight: bold;
 }
@@ -70,21 +77,21 @@ a img {
 }
 #header #userbox {
                    float: right;
-                   padding: 0.0em 0.0em 0.0em 0.0em;
-                   margin: 0.5em 2.0em 0 0;
                    height: 6.0em;
                    font-family: sans-serif;
-                   font-size: small;
                    text-align: center;
+                   font-size: 0.8em;
+                   margin: 0.5em 1.0em 0 0;
 }
-#header #userbox #gravatar {
-                             width: 3.69em;
-                             height: 3.69em;
-                             padding: 2px;
-                             margin: 0 auto;
-                             border: 1px solid #d0d0d0;
+#header #userbox #gravatar img {
+                                 margin: 0 auto;
+                                 width: 3.69em;
+                                 height: 3.69em;
+                                 padding: 2px;
+                                 border: 1px solid #d0d0d0;
 }
 #header #userbox #username {
+
 }
                             
 #header #userbox a:link, a:visited {
@@ -105,7 +112,7 @@ a img {
 
 #content { 
            border: 0;
-           width: 65em;
+           width: 62em;
            height: 80%;
 }
 
@@ -119,7 +126,7 @@ a img {
           padding: 1em 0 1em 0;
           text-align: center;
           display: block;
-          font-size: x-small;
+          font-size: 0.55em;
           color: #666;
 }
 

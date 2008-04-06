@@ -1,5 +1,6 @@
 from django.template import Library
-import md5
+import md5, traceback
+from django.contrib.auth.models import User
 register = Library()
 
 def gravatar_url(user, size=64, secure=True):
@@ -11,7 +12,10 @@ def gravatar_url(user, size=64, secure=True):
     else:
         u = 'http://www.gravatar.com/avatar/'
     try:
-        u += md5.md5(user.email).hexdigest()
+        if isinstance(user, (str, unicode)):
+            u += md5.md5(user).hexdigest()
+        elif isinstance(user, User):
+            u += md5.md5(user.email).hexdigest()
     except:
         # if we have an error just ignore it. (may want to log it)
         pass

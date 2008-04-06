@@ -254,4 +254,4 @@ class UserDetails(models.Model):
     """
 
     user = models.ForeignKey(User)
-    twitter = models.CharField(max_lenght=140)
+    twitter = models.CharField(max_length=140)

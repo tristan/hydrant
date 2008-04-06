@@ -9,8 +9,8 @@
 {% block extrastyle %}{% endblock %}
 </head>
 
-<body class="site">
-
+<body>
+<div class="site">
 <div id="header">
 <div id="toolbar">
   <ul>
@@ -33,15 +33,19 @@
 </div>
 {% if user.is_authenticated %}
 <div id="userbox">
-  <div id="gravatar"
-    <a href="{% url home %}"><img src="{% gravatar_url user 48 %}" alt="gravatar"/></a>
+  <div id="gravatar">
+    <a href="{% url home %}">
+    <img src="{% gravatar_url user 48 %}" alt="gravatar"/>
+    </a>
   </div>
-  <div id="username"><a href="{% url home %}">
-  {% if user.first_name %}
-  {{ user.first_name }}
-  {% else %}
-  {{ user.username }}
-  {% endif %}</a>
+  <div id="username">
+    <a href="{% url home %}">
+    {% if user.first_name %}
+    {{ user.first_name }} {{ user.last_name }}
+    {% else %}
+    {{ user.username }}
+    {% endif %}
+    </a>
   </div>
 </div>
 {% endif %}
@@ -64,6 +68,7 @@
     <td><a href="http://www.kepler-project.org"><img src="{{ MEDIA_URL }}img/logos/kepler-powered.png" alt="Kepler"/></a></td>
   </tr>
 </table>
+</div>
 </div>
 </body>
 </html>

@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% load rooturl %}
+{% load gravatar %}
 
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/dashboard.css"/>
@@ -7,12 +8,81 @@
 
 {% block content %}
 <div id="dashboard">
+  <div id="col-one">
   <div id="news">
+    <h1>Messages</h1>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
+    <p>omg wtf</p>
   </div>
+  </div>
+  <div id="col-two">
   <div id="small-jobs">
+    <h1>Your Recent Jobs</h1>
+    {% for job in jobs %}
+    {% endfor %}
+  <div class="job">
+  <div class="title">
+    <a href="#">jobname</a>
+    started by
+    <a href="#">{{ user.username }}</a>
+    on
+    {start_date}
+  </div>
+  <div class="details">
+  <div class="icon">
+    <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+    <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
+  </div>
+  <div class="status">
+    Status: Running<br/>
+    ETA: Unknown
+  </div>
+  <div style="clear: both;"></div>
+  </div>
+  </div>
+
+  <div class="job">
+  <div class="title">
+    <a href="#">jobname</a>
+    started by
+    <a href="#">trystn</a>
+    on
+    {start_date}
+  </div>
+  <div class="details">
+  <div class="icon">
+    <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+    <img src="{% gravatar_url 'tristan.king@gmail.com' 32 %}" alt="trystn"/>
+  </div>
+  <div class="status">
+    Status: Running<br/>
+    Eta: Unknown
+  </div>
+  <div style="clear: both;"></div>
+  </div>
+  </div>
+  
   </div>
   <div id="small-workflows">
+    <h1>Your Workflows <a href="{% url upload_workflow %}">(upload new)</a></h1>
   </div>
+  </div>
+  <div style="clear: both;"></div>
 </div>
 {% endblock %}
 <div class="dashboard-block-container">
