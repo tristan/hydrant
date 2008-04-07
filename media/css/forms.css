@@ -84,3 +84,39 @@ label {
 .error-text { 
               font-style: italic;
 }
+
+#wf-p table { 
+              margin: 0 auto;
+              border-top: 1px solid #ccc;
+              border-left: 1px solid #ccc;
+              border-bottom: 1px solid #ccc;
+}
+
+#wf-p .forms tr { 
+                  border-bottom: 1px solid #ccc;
+}
+
+#wf-p .forms th, #wf-p .forms td { 
+                  border-right: 1px solid #ccc;
+}
+
+#wf-p .forms th, #wf-p .forms th, #wf-p .forms td { 
+                                                    padding: 0.5em;
+                                                    text-align: center;
+}
+
+#wf-p input { 
+              border: 1px solid #ccc;
+              padding: 0.2em;
+}
+
+#wf-p textarea { 
+                 border: 1px solid #ccc;
+                 padding: 0.2em;
+                 height: 4em;
+}
+
+#wf-p .submit-row { 
+                    text-align: right;
+                    padding: 1em;
+ }

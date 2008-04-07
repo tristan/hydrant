@@ -1,4 +1,5 @@
 {% load textutils %}
+<!--
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
 <html>
@@ -14,13 +15,14 @@
     <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
   </td></tr><tr><td>
     {% endif %}
-    <form enctype="multipart/form-data" id="{{ actor.name }}_parameters_form" method="get" action="">
+-->
+    <form enctype="multipart/form-data" id="{{ actor.name }}_parameters_form" method="post" action="">
       <div>
-	<table class="forms">
+	<table class="forms" cellspacing="0">
 	  <th>Name</th><th>Type</th><th>Value</th><th>Expose to user</th><th>Description</th>
 	  {% for field in form %}
 	  {% ifequal field.label 'Name' %}
-	  <tr><td>{{ field }}</td>
+	  <tr><td class="name">{{ field }}</td>
 	  {% else %}
 	  {% ifequal field.label 'Type' %}
 	  <td>
@@ -75,13 +77,14 @@
         }
     }
       </script>
-      <div style="border: 1px #CCC solid;" class="submit-row">
-	<input type="button" value="Apply" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 0);"/>
-	<input type="button" value="Save" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 1);"/>
-	<input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'parameters-div');set_parameters_to_none();"/>
+      <div class="submit-row">
+	<input type="button" value="Save"/>
+	<input type="button" value="Cancel"/>
       </div>
     </form>
   </td></tr></table>
+<!--
 </div>
 </body>
 </html>
+-->

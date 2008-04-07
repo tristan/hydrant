@@ -3,7 +3,17 @@
 {% load gravatar %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/workflow.css"/>
+{% if model %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/js-graph-it.css"/>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/canvas.css"/>
+<script type="text/javascript" src="{{ MEDIA_URL }}/js/js-graph-it.js"></script>
+{% endif %}
+{% if form %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
+{% endif %}
+<script type="text/javascript" src="{{ MEDIA_URL }}/js/prototype.js"></script>
 {% endblock %}
+{% block bodyattrs %}{% if model %}onload="initPageObjects();"{% endif %}{% endblock %}
 {% block extrahead %}
 <script type="text/javascript">
 <!--
@@ -174,12 +184,30 @@ function delete_workflow() {
   </div>
 
   <div id="workflow">
+    <div id="crumbs">
+      {% for c in crumbs %}
+      <div id="crumb"><a href="{{ c.url }}">{{ c.name }}</a></div>
+      <div id="sep">/</div>
+      {% endfor %}
+      <div id="crumb-this">{{ name }}</div>
+      <div style="clear: both;"></div>
+    </div>
+  {% if model %}
+    <!--
     <iframe id="workflow-frame"
             name="workflow-frame"
             src="{% url workflow_canvas workflow.pk %}"
             onload="resize_iframe();">
     Your browser does not support iframes
     </iframe>
+    -->
+    {% include 'workflow_canvas.html' %}
+    {% endif %}
+    {% if form %}
+    <div id="wf-p">
+    {% include 'kepler/parameters.html' %}
+    </div>
+    {% endif %}
   </div>
 
   <div id="users"></div>

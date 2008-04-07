@@ -97,7 +97,7 @@ def upload_workflow(request):
                               context_instance=RequestContext(request))
 upload_workflow = login_required(upload_workflow)
 
-def workflow(request, id):
+def workflow(request, id, path=''):
     """ If a GET request, returns the page which displays a Workflow. If
     a POST request, checks the POST variables for Workflow metadata
     values and stores them for the specified workflow.
@@ -127,17 +127,32 @@ def workflow(request, id):
             pform = PropertiesForm()
         else:
             pform = None
+    spath = path.split('/')
+    po = workflow.get_proxy_object()
+    name = workflow.name
+    for i in spath:
+        if i != '':
+            po = po.get(i)
+            name = po.name
+    crumbs = []
+    if len(spath) > 0 and spath[0] != '':
+        crumbs.append({'name': workflow.name, 'url': reverse('workflow', args=(id,))})
+        for i in range(len(spath[:-1])):
+            crumbs.append({'name': spath[i], 'url': reverse('workflow', args=(id,'/'.join(spath[:i])))})
+    stuff = {'crumbs': crumbs,
+             'editable': request.user.is_staff,
+             'name': name,
+             'workflow': workflow,
+             'properties_form': pform is None and '' or pform
+             }
+    if po.is_actor():
+        ActorForm = generate_parameters_form(workflow, po, [])
+        stuff['form'] = ActorForm()
+    else:
+        stuff['model'] = workflow.get_proxy_object().get_as_dict()
+
     return render_to_response('view_workflow.html',
-                              {'crumbs':
-                               [{'name': 'Workflows',
-                                 'path': reverse('workflows')},
-                                ],
-                               'editable': request.user.is_staff,
-                               'next': reverse('workflow', args=(id,)),
-                               'title': _(workflow.name),
-                               'workflow': workflow,
-                               'properties_form': pform is None and '' or pform
-                               },
+                              stuff,
                               context_instance=RequestContext(request))
 
 def canvas(request, path):

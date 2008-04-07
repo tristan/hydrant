@@ -667,7 +667,7 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                     traceback.print_exc()
         return properties
 
-    def is_actor(self, path):
+    def is_actor(self, path=None):
         """ Returns true if this entity is an actor, false for composite
         actors and anything else.
         

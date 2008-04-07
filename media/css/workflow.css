@@ -54,13 +54,30 @@
                           width: 65.0em;
 }
 
+#crumbs {
+          padding: 0.7em;
+}
+
+#crumb { 
+         float: left;
+}
+
+#crumbs #sep { 
+               float: left;
+               padding: 0 0.5em;
+               font-size: 1.4em;
+}
+
+#crumbs #crumb-this { 
+                      float: left;
+                      font-weight: bold;
+}
+
 #workflow {
             height: 100%;
-            text-align: center;
+            width: 100%;
+            border: 1px solid #bedce7;
 }
 
 #workflow #workflow-frame { 
-                            height: 30em;
-                            width: 100%;
-                            border: 1px solid #bedce7;
 }

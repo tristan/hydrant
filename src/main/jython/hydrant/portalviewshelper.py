@@ -159,7 +159,7 @@ def generate_parameters_form(workflow, model, path_to_actor):
         field_list.append(('%s_expose' % p['id'], forms.BooleanField(initial=expose_to_user, label='Expose to User')))
         field_list.append(('%s_description' % p['id'], forms.CharField(max_length=1000, initial=property_description, label='Description', widget=forms.Textarea)))
     base_fields = SortedDict(field_list)
-    return type(path_to_actor[-1] + 'Form', (BaseForm,), {'base_fields': base_fields,})
+    return type(model.name + 'Form', (BaseForm,), {'base_fields': base_fields,})
 
 def save_parameters_from_post(workflow, post, files):
     """ Saves changes to the Workflow metadata stored in the Workflow
