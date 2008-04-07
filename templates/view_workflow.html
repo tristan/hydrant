@@ -1,12 +1,10 @@
-{% extends "kepler/base_site.html" %}
+{% extends "index.html" %}
 {% load textutils %}
+{% load gravatar %}
 {% block extrastyle %}
-    
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/workflow.css"/>
 {% endblock %}
 {% block extrahead %}
-<script type="text/javascript" src="{{ MEDIA_URL }}js/js-graph-it.js"></script>
-<script type="text/javascript" src="{{ MEDIA_URL }}js/prototype.js"></script>
-<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}css/js-graph-it.css"/>
 <script type="text/javascript">
 <!--
 // stolen from http://www.quirksmode.org/js/cross_dhtml.html
@@ -146,7 +144,59 @@ function delete_workflow() {
         {% endif %}
     {% endif %}
 {% endblock %}
+
 {% block content %}
+<div id="workflow-content">
+  <div id="details">
+  <div class="title">
+    <div class="name">
+      <a href="#">{{ workflow.name }}</a>
+    </div>
+    <div class="tools">
+      <a href="{% url download_workflow workflow.pk %}" class="addlink">Download</a>
+      |
+      <a href="{% url duplicate_workflow workflow.pk %}" class="addlink">Duplicate</a>
+      |
+      <a href="#" onClick="delete_workflow();" class="xlink">Delete</a>
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+  <div class="details">
+  <div class="icon">
+    <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+    <img src="{% gravatar_url workflow.owner 32 %}" alt="{{ workflow.owner.username}}"/>
+  </div>
+  <div class="status">
+    {{ workflow.description }}
+  </div>
+  <div style="clear: both;"></div>
+  </div>
+  </div>
+
+  <div id="workflow">
+    <iframe id="workflow-frame"
+            name="workflow-frame"
+            src="{% url workflow_canvas workflow.pk %}"
+            onload="resize_iframe();">
+    Your browser does not support iframes
+    </iframe>
+  </div>
+
+  <div id="users"></div>
+  <script>
+  <!--
+  function resize_iframe(){
+  //document.getElementById("workflow-frame").width=100
+  //document.getElementById("workflow-frame").width=window.frames["workflow-frame"].document.body.scrollWidth
+  }
+  // -->
+  </script>
+  
+</div>
+
+{% endblock %}
+	
+{% block oldcontent %}
 <div class="dashboard-block-container">
     <div>
     <div class="dashboard-block">

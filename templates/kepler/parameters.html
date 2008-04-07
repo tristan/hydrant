@@ -1,44 +1,51 @@
 {% load textutils %}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"
+<html>
+<head>
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
+</head>
+<body>
 <div>
-    <table class="props"><tr><td>
+  <table class="props"><tr><td>
     <h1>Parameters for {{ actor.name }}</h1>
-    </td></tr><tr><td>
+  </td></tr><tr><td>
     {% if messages %}
     <ul class="messagelist">{% for message in messages %}<li>{{ message|escape }}</li>{% endfor %}</ul>
-    </td></tr><tr><td>
+  </td></tr><tr><td>
     {% endif %}
     <form enctype="multipart/form-data" id="{{ actor.name }}_parameters_form" method="get" action="">
-    <div>
-        <table class="forms">
-            <th>Name</th><th>Type</th><th>Value</th><th>Expose to user</th><th>Description</th>
-            {% for field in form %}
-            {% ifequal field.label 'Name' %}
-            <tr><td>{{ field }}</td>
-            {% else %}
-	        {% ifequal field.label 'Type' %}
-	        <td>
-		  <select name="{{ field.name }}" id="id_{{ field.name }}" onchange="testf('{{ field.name }}', this.options[this.selectedIndex].value)">
-		    {% for cn,cv in field.field.choices %}
-		    <option {% ifequal cn field.field.initial %}selected="selected" {% endifequal %}value="{{ cv }}">{{ cn }}</option>
-		    {% endfor %}
-		  </select></td>
-		{% else %}
-                    {% ifequal field.label 'Value' %}
-                    <td>{{ field }}</td>
-                    {% else %}
-                        {% ifequal field.label 'Expose to User' %}
-                        <td>{{ field }}</td>
-                        {% else %}
-                            <td>{{ field }}</td></tr>
-                        {% endifequal %}
-	            {% endifequal %}
-                {% endifequal %}
-            {% endifequal %}
-            {% endfor %}
-        </table>
-    </div>
-    <script type="text/javascript">
-
+      <div>
+	<table class="forms">
+	  <th>Name</th><th>Type</th><th>Value</th><th>Expose to user</th><th>Description</th>
+	  {% for field in form %}
+	  {% ifequal field.label 'Name' %}
+	  <tr><td>{{ field }}</td>
+	  {% else %}
+	  {% ifequal field.label 'Type' %}
+	  <td>
+	    <select name="{{ field.name }}" id="id_{{ field.name }}" onchange="testf('{{ field.name }}', this.options[this.selectedIndex].value)">
+	      {% for cn,cv in field.field.choices %}
+	      <option {% ifequal cn field.field.initial %}selected="selected" {% endifequal %}value="{{ cv }}">{{ cn }}</option>
+		{% endfor %}
+	    </select></td>
+	    {% else %}
+	    {% ifequal field.label 'Value' %}
+	    <td>{{ field }}</td>
+	    {% else %}
+	    {% ifequal field.label 'Expose to User' %}
+	    <td>{{ field }}</td>
+	    {% else %}
+	    <td>{{ field }}</td></tr>
+	    {% endifequal %}
+	    {% endifequal %}
+	    {% endifequal %}
+	    {% endifequal %}
+	    {% endfor %}
+	  </table>
+      </div>
+      <script type="text/javascript">
+	
     // default values
     
     defs = {
@@ -67,12 +74,14 @@
            Element.replace(id, '<input id="' + id + '" type="file" name="' + name + '" value="' + defs[id].value + '"/>');
         }
     }
-    </script>
-    <div style="border: 1px #CCC solid;" class="submit-row">
-        <input type="button" value="Apply" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 0);"/>
-        <input type="button" value="Save" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 1);"/>
-        <input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'parameters-div');set_parameters_to_none();"/>
-    </div>
+      </script>
+      <div style="border: 1px #CCC solid;" class="submit-row">
+	<input type="button" value="Apply" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 0);"/>
+	<input type="button" value="Save" class="default[type='submit']" onClick="set_parameters('{{ url }}', '{{ actor.name }}', 1);"/>
+	<input type="button" value="Close" class="default[type='submit']" onClick="set_visibility(0, 'parameters-div');set_parameters_to_none();"/>
+      </div>
     </form>
-    </td></tr></table>
+  </td></tr></table>
 </div>
+</body>
+</html>

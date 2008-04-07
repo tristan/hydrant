@@ -1,0 +1,66 @@
+#workflow-content { 
+           font-size: 0.8em;
+           margin: 1.0em 1.0em 1.0em 1.0em;
+}
+
+#workflow-content a { 
+               color: #4183c4;
+               text-decoration: none;
+}
+
+#workflow-content a:hover { 
+               text-decoration: underline;
+}
+
+#details { 
+           padding: 0.3em;
+           margin: 0 0 1.0em 0;
+           border: 1px solid #d8d8d8;
+           background-color: #f0f0f0;
+}
+
+#details .title { 
+              font-weight: bold;
+              padding: 0 0 0.4em 0;
+}
+
+#details .title .name { 
+                        float: left;
+}
+
+#details .title .tools {
+                         float: right;
+}
+
+#details .details {
+                padding: 0 0 0 1.0em;
+}
+
+#details .details .icon {
+                      float: left;
+}
+
+#details .details .icon img { 
+                          border: 1px solid #d0d0d0;
+                          padding: 2px;
+                          width: 2.46em;
+                          height: 2.46em;
+}
+
+#details .details .status { 
+                          margin: 0.2em 0 0 0;
+                          float: left;
+                          padding: 0 0 0 1.5em;
+                          width: 65.0em;
+}
+
+#workflow {
+            height: 100%;
+            text-align: center;
+}
+
+#workflow #workflow-frame { 
+                            height: 30em;
+                            width: 100%;
+                            border: 1px solid #bedce7;
+}

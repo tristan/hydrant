@@ -106,7 +106,10 @@ def workflow(request, id):
     # check permissions
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
-    PropertiesForm = form_for_instance(workflow, fields=('name','public','description','valid_users'), formfield_callback=formfield_callback)
+    PropertiesForm = form_for_instance(workflow,
+                                       fields=('name','public','description'),
+                                       formfield_callback=upload_workflow_formfield_callback
+                                       )
     if request.method == 'POST':
         pform = PropertiesForm(request.POST)
         if pform.is_valid():
@@ -124,9 +127,20 @@ def workflow(request, id):
             pform = PropertiesForm()
         else:
             pform = None
-    return render_to_response('kepler/view_workflow.html', {'crumbs': [{'name': 'Workflows', 'path': reverse('workflows')},], 'editable': request.user.is_staff, 'next': reverse('workflow_view', args=(id,)), 'title': _(workflow.name), 'workflow': workflow, 'properties_form': pform is None and '' or pform}, context_instance=RequestContext(request))
+    return render_to_response('view_workflow.html',
+                              {'crumbs':
+                               [{'name': 'Workflows',
+                                 'path': reverse('workflows')},
+                                ],
+                               'editable': request.user.is_staff,
+                               'next': reverse('workflow', args=(id,)),
+                               'title': _(workflow.name),
+                               'workflow': workflow,
+                               'properties_form': pform is None and '' or pform
+                               },
+                              context_instance=RequestContext(request))
 
-def model(request, path):
+def canvas(request, path):
     """ Retrieves the dict representation of the entity refered to by
     path, and returns a web page which uses that dict to display a graph
     of the specified entity. Generally used by the Workflow view as an
@@ -144,7 +158,16 @@ def model(request, path):
     else:
         name = workflow.name
     props = reverse('parameters', args=(path,))
-    return render_to_response('kepler/workflow_canvas.html', {'crumbs': crumbs, 'editable': request.GET.get('editable', False), 'next': reverse('model_view', args=(path,)), 'title': _(name), 'workflow': workflow, 'model': model.get_as_dict(p[1:]), 'parameters_url_base': props}, context_instance=RequestContext(request))
+    return render_to_response('workflow_canvas.html',
+                              {'crumbs': crumbs,
+                               'editable': request.GET.get('editable', False),
+                               'next': reverse('workflow_canvas', args=(path,)),
+                               'title': _(name),
+                               'workflow': workflow,
+                               'model': model.get_as_dict(p[1:]),
+                               'parameters_url_base': props
+                               },
+                              context_instance=RequestContext(request))
 
 def job_form(request, id):
     """ Returns a page displaying the Job Submission Form
@@ -156,13 +179,6 @@ def job_form(request, id):
     else:
         params = None
     return render_to_response('kepler/parameters_form.html', { 'workflow': workflow, 'parameters': params }, context_instance=RequestContext(request))
-
-def properties(request, id):
-    """ Not used......
-    """
-    PropertiesForm = form_for_model(Workflow, fields=('name','public','description','valid_users'), formfield_callback=formfield_callback)
-    if request.user.is_staff:
-        form = PropertiesForm(workflow)
 
 def parameters(request, actor_path):
     """ If a GET request, generate a form for the requested actors
@@ -188,7 +204,11 @@ def parameters(request, actor_path):
         form = ActorForm()
         pass
     actor = {'name':path[-1], 'properties':properties, 'path':actor_path}
-    return render_to_response('kepler/parameters.html', {'form': form, 'url': url, 'actor': actor}, context_instance=RequestContext(request))
+    return render_to_response('kepler/parameters.html',
+                              {'form': form,
+                               'url': url,
+                               'actor': actor},
+                              context_instance=RequestContext(request))
 
 def delete_workflow(request, id):
     """ Handles deleting a workflow. If a GET request then display a

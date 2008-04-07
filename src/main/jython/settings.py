@@ -45,7 +45,7 @@ TEMPLATE_DIRS = (
 )
 
 ROOT_URL = 'hydrant/'
-MEDIA_URL = '/' + ROOT_URL + 'media/'
+MEDIA_URL = '/' + ROOT_URL + 'media'
 
 LIB_DIRECTORY = (
     PROJECT_HOME + '/lib',

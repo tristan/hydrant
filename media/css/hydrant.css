@@ -36,8 +36,13 @@ a img {
                 font-size: 2em;
 }
 #header #logo img {
+                    /* 200 x 59 
                     width: 6.25em;
                     height: 1.84em;
+                       */
+                    /* 250 x 89 */
+                    width: 7.81;
+                    height: 2.78em;
 }
 
 #header #toolbar { 
@@ -125,12 +130,6 @@ a img {
            border: 0;
            width: 62em;
            height: 80%;
-}
-
-#content iframe {
-                  border: 0;
-                  width: 100%;
-                  height: 100%;
 }
 
 #footer { 

@@ -1,0 +1,20 @@
+body { 
+       width: 100%;
+}
+
+#mainCanvas_innerDiv { 
+                       /*border: black 1px solid !important;*/
+}
+
+.annotation { position: absolute; width: 125%; }
+.director { position: absolute; font-size: small; font-family: sans-serif; }
+.crumbs { font-size: small; font-family: sans-serif; }
+.actor { position: absolute; font-size: small; font-family: sans-serif; }
+.compactor { position: absolute; font-size: small; font-family: sans-serif; }
+a img { border: 0; }
+.vertex { position: absolute; }
+.port { position: absolute; font-size: small; font-family: sans-serif; }
+
+div.small { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table; vertical-align: middle; }
+div.smalltr { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-row; vertical-align: middle; }
+div.smalltd { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-cell; vertical-align: middle; }

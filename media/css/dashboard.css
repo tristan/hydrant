@@ -91,18 +91,6 @@
 
 
 
-    .annotation { position: absolute; }
-    .director { position: absolute; font-size: small; font-family: sans-serif; }
-    .crumbs { font-size: small; font-family: sans-serif; }
-    .actor { position: absolute; font-size: small; font-family: sans-serif; }
-    .compactor { position: absolute; font-size: small; font-family: sans-serif; }
-    a img { border: 0; }
-    .vertex { position: absolute; }
-    .port { position: absolute; font-size: small; font-family: sans-serif; }
-
-    div.small { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table; vertical-align: middle; }
-    div.smalltr { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-row; vertical-align: middle; }
-    div.smalltd { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-cell; vertical-align: middle; }
 
     /*.properties { visibility:hidden; position: absolute; border: 1px solid #9DA3B3; background-color: #FFFFFF; padding: 10px; left: 100px; top: 50px; z-index: 100; width: 300px; height:240px; }
 */

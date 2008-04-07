@@ -231,6 +231,10 @@ class EntityProxy(object):
         else:
             raise Exception('%s : %s' % (type(entity), self.proxied_entity.__class__))
 
+    def _build_entity_map(self):
+        for o in proxied_entity.containedObjectsIterator():
+            pass
+
     def __getitem__(self, x):
         """ The implementation of __getitem__ attemtps to return a proxy
         object of the attribute named x. x could be an attribute of the
