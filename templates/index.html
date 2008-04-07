@@ -13,20 +13,20 @@
 <div class="site">
 <div id="header">
 <div id="toolbar">
-  <ul>
+  <div class="tools">
     {% if user.is_authenticated %}
-    <li>
+    <div class="toollink">
     <a href="{% url logout %}">Log out</a>
-    </li>
-    {% block profilelink %}<li><a href="#">Profile</a></li>{% endblock %}
-    {% block jobslink %}<li><a href="#">Jobs</a></li>{% endblock %}
-    {% block workflowslink %}<li><a href="#">Workflows</a></li>{% endblock %}
+    </div>
+    {% block profilelink %}<div class="toollink"><a href="#">Profile</a></div>{% endblock %}
+    {% block jobslink %}<div class="toollink"><a href="#">Jobs</a></div>{% endblock %}
+    {% block workflowslink %}<div class="toollink"><a href="#">Workflows</a></div>{% endblock %}
     {% else %}
-    <li>
+    <div class="toollink">
     <a href="{% url login %}">Log in</a>
-    </li>
+    </div>
     {% endif %}
-  </ul>
+  </div>
 </div>
 <div id="logo">
   <img src="{{ MEDIA_URL }}/img/hydrant-logo-empty-w-cp.png" alt="hydrant"/>

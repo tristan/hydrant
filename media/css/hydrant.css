@@ -1,4 +1,5 @@
 body {
+       line-height: 1.0em;
        font-size: 1em;
        margin: 0 0 0 0;
        font-family: helvetica,arial,clean,sans-serif;
@@ -25,14 +26,14 @@ a img {
 }
 
 #header {
-          background: url(../img/header.png) repeat-x scroll 0pt 100%;
+          background-image: url(../img/header.png);
+          background-position: 100% 6.88em;
           height: 6.88em;
 }
 #header #logo {
                 position: absolute;
                 padding: 0.8em 0 0 0.7em;
                 font-size: 2em;
-                font-family: Fantasy;
 }
 #header #logo img {
                     width: 6.25em;
@@ -45,25 +46,33 @@ a img {
                    height: 1.44em;
                    background: #3e5a8b;
                    width: 62.0em;
-                   font-family: sans-serif;
                    font-weight: bold;
 }
 
 #header #toolbar ul {
                       border: 0 none;
-                      margin: 0;
+                      margin: 0 0 0 0;
                       list-style-type: none;
 }
 
 #header #toolbar li { 
                       display: block;
                       float: right;
-                      padding: 0.125em 1.0em 0.125em 0em;
+                      padding: 0 1.0em 0 0;
 }
 
-#header #toolbar a {
-                     padding: 0.125em 0.25em 0.125em 0.25em;
-                     color: white;
+#header #toolbar .tools { 
+                          margin: 0.20em;
+}
+
+#header #toolbar .toollink { 
+                             float: right;
+}
+
+#header #toolbar .toollink a {
+                               padding: 0.13em 1.0em 0.16em 1.0em;
+                               height: 1.44em;
+                               color: white;
 }
 #header #toolbar a:link, a:visited {
                                      color: white;
@@ -72,7 +81,9 @@ a img {
 }
 #header #toolbar a:hover { 
                            color: black;
-                           background: #FFF url(../img/bottom-of-header.png) repeat-x scroll 0pt 100% ;
+                           height: 1.44em;
+                           background-position: 100% 1.44em;
+                           background-image: url(../img/bottom-of-header.png);
                            text-decoration: underline;
 }
 #header #userbox {
