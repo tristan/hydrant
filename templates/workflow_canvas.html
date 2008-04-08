@@ -13,11 +13,11 @@
 -->
 {% if model %}
 
-<div class="canvas" id="mainCanvas" style="width: {{ model.canvas.x }}px; height: {{ model.canvas.y }}px;">
+<div class="canvas" id="mainCanvas" style="width: {{ model.canvas.x|px_to_em }}em; height: {{ model.canvas.y|px_to_em }}em;">
   <div style="display: table-cell; vertical-align: top;">
   {% if model.director %}
   {% with model.director as director %}
-  <div class="director notdraggable" style="left: {{ director.location.x }}px; top: {{ director.location.y }}px">
+  <div class="director notdraggable" style="left: {{ director.location.x|px_to_em }}em; top: {{ director.location.y|px_to_em }}em;">
     <div>{{ director.name }}</div>
     <a href="{{ director.name }}/">
     <img alt="{{ director.name }}" id="{{ director.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/director.png"/>
@@ -31,14 +31,14 @@
   {% endfor %}
 
   {% for port in model.ports %}
-  <div class="port notdraggable" style="left: {{ port.location.x }}px; top: {{ port.location.y }}px">
+  <div class="port notdraggable" style="left: {{ port.location.x|px_to_em }}em; top: {{ port.location.y|px_to_em }}em">
     <div style="overflow: auto">{{ port.name }}</div>
     <img alt="{{ port.name }}" class="block" id="{{ port.id|replace_spaces }}" src="{{ MEDIA_URL }}/images/in-port.png"/>
   </div>
   {% endfor %}
 
   {% for vertex in model.vertices %}
-  <div class="vertex notdraggable" style="left: {{ vertex.location.x }}px; top: {{ vertex.location.y }}px">
+  <div class="vertex notdraggable" style="left: {{ vertex.location.x|px_to_em }}em; top: {{ vertex.location.y|px_to_em }}em;">
     <img alt="" class="block" id="{{ vertex.name|replace_spaces }}" src="{{ MEDIA_URL }}/images/vertex.png"/>
   </div>
   {% endfor %}
@@ -49,15 +49,15 @@
 
   {% for annotation in model.annotations %}
   <div class="annotation notdraggable"
-    style="left: {{ annotation.location.x }}px;
-    top: {{ annotation.location.y }}px;
+    style="left: {{ annotation.location.x|px_to_em }}em;
+    top: {{ annotation.location.y|px_to_em }}em;
     color: #{{ annotation.text_color }};
     font-family: {{ annotation.font_family }};
-    font-size: {{ annotation.text_size }}pt;
+    font-size: {{ annotation.text_size|px_to_em }}em;
     {% ifequal annotation.bold 'true' %}font-weight: bold;{% endifequal %}
     {% ifequal annotation.italic 'true' %}font-style: italic;{% endifequal %}
-    width: {{ annotation.width }}px;
-    height: {{ annotation.height }}px;
+    width: {{ annotation.width|px_to_em }}em;
+    height: {{ annotation.height|px_to_em }}em;
     ">{{ annotation.text|linebreaksbr }}
   </div>
   {% endfor %}

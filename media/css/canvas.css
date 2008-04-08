@@ -7,13 +7,25 @@ body {
 }
 
 .annotation { position: absolute; width: 100%; }
-.director { position: absolute; font-size: small; font-family: sans-serif; }
-.crumbs { font-size: small; font-family: sans-serif; }
-.actor { position: absolute; font-size: small; font-family: sans-serif; }
+.director { position: absolute; font-size: 1.0em; font-family: sans-serif; }
+.director img { 
+                width: 5.468em;
+                height: 3.125em;
+}
+.crumbs { font-size: 0.8em; font-family: sans-serif; }
+.actor { position: absolute; font-size: 1.0em; font-family: sans-serif; }
+.actor img { 
+             width: 4.844em;
+             height: 3.281em;
+}
+.actor .smalltr img { 
+            width: 0.781em;
+            height: 0.781em;
+}
 .compactor { position: absolute; font-size: small; font-family: sans-serif; }
 a img { border: 0; }
 .vertex { position: absolute; }
-.port { position: absolute; font-size: small; font-family: sans-serif; }
+.port { position: absolute; font-size: 1.0em; font-family: sans-serif; }
 
 div.small { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table; vertical-align: middle; }
 div.smalltr { border-width: 0px; border-spacing: 0px; border-padding: 0px; display: table-row; vertical-align: middle; }

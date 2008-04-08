@@ -136,7 +136,7 @@ a img {
           padding: 1em 0 1em 0;
           text-align: center;
           display: block;
-          font-size: 0.55em;
+          font-size: 0.7em;
           color: #666;
 }
 
@@ -147,4 +147,10 @@ a img {
 
 #footer a:hover {
                   color: #036;
+}
+
+#footer img {
+              padding: 0.3em 0 0 0;
+              width: 7.13em;
+              height: 1.33em;
 }

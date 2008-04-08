@@ -18,3 +18,7 @@ def truncate_to_len(text, length):
         result += ' ' + i
     return result
 register.filter('truncate_to_len', truncate_to_len)
+
+def px_to_em(px, fontsize=12.8):
+    return float(px)/float(fontsize)
+register.filter('px_to_em', px_to_em)

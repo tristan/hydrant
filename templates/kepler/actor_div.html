@@ -1,7 +1,7 @@
 {% load textutils %}
 {% if actor %}
 <div class="actor notdraggable down_start down_end"  
-    style="left: {{ actor.location.x }}px; top: {{ actor.location.y }}px">
+    style="left: {{ actor.location.x|px_to_em }}em; top: {{ actor.location.y|px_to_em }}em">
   <div style="overflow: auto;">{{ actor.name }}</div>
   <div style="display: table;">
     <div class="smalltd">

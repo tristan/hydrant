@@ -186,22 +186,6 @@ function delete_workflow() {
   <div style="clear: both;"></div>
   </div>
   </div>
-  {% if jobform %}
-  <div id="jobpreview">
-    <div id="title">
-      <a href="#">{{ workflow.name }}</a> job submit preview
-    </div>
-    <div id="jobform">
-      {% for f in jobform %}
-      <div id="field">
-	<label for="id_{{ f.name }}">{{ f.label }}<br/>{{ f }}</label>
-	<div id="help-text">{{ f.help_text }}</div>
-	<div style="clear: both;"></div>
-      </div>
-      {% endfor %}
-    </div>
-  </div>
-  {% endif %}
   <div id="workflow">
     <div id="crumbs">
       {% for c in crumbs %}
@@ -230,7 +214,27 @@ function delete_workflow() {
     </div>
     {% endif %}
   </div>
-
+  {% if jobform %}
+  <div id="jobpreview">
+    <div id="title">
+      <div class="name">
+	<a href="#">{{ workflow.name }}</a> job submit preview
+      </div>
+      <div class="tools">
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div id="jobform">
+      {% for f in jobform %}
+      <div id="field">
+	<label for="id_{{ f.name }}">{{ f.label }}<br/>{{ f }}</label>
+	<div id="help-text">{{ f.help_text }}</div>
+	<div style="clear: both;"></div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
   <div id="users"></div>
   <script>
   <!--

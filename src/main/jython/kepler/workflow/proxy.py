@@ -595,8 +595,8 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                     min_y = float(loc['y'])
         # set the canvas width and height based on the max and min
         # locations of the contained entities including a bit of padding
-        rdic['canvas']['x'] = (max_x - min_x) + 50
-        rdic['canvas']['y'] = (max_y - min_y) + 50
+        rdic['canvas']['x'] = (max_x - min_x) + 130
+        rdic['canvas']['y'] = (max_y - min_y) + 90
 
         # the following is a bit of crazyness to try and normalize the
         # positions of all the contained entities. this is required

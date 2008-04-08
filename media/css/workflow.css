@@ -54,6 +54,26 @@
                           width: 65.0em;
 }
 
+#jobpreview { 
+              border: 1px solid #bedce7;
+              margin: 0 0 1.0em 0;
+              background: #eaf2f5;
+}
+
+#jobpreview #title { 
+                     padding: 0.7em;
+                     font-weight: bold;
+}
+
+#jobpreview #title .name { 
+                           float: left;
+}
+
+#jobpreview #title .tools { 
+                            float: right;
+}
+
+
 #crumbs {
           padding: 0.7em;
 }
@@ -77,11 +97,12 @@
             height: 100%;
             width: 100%;
             border: 1px solid #bedce7;
+            margin: 0 0 1.0em 0;
 }
 
 #workflow #workflow-frame { 
 }
 
 #workflow #wf-canvas { 
-                       padding: 2.5em;
+                       padding: 1em 2.5em 0em 2.5em;
 }
