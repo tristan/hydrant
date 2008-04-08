@@ -262,7 +262,7 @@ function Canvas(htmlElement)
 		}
 		this.htmlElement.appendChild(this.innerDiv);
 
-		//this.htmlElement.style.overflow = "auto";
+		this.htmlElement.style.overflow = "auto";
 		this.htmlElement.style.position = "relative";
 		this.innerDiv.id = this.id + "_innerDiv";
 		this.innerDiv.style.border = "none";
@@ -278,7 +278,7 @@ function Canvas(htmlElement)
 
 		// inspect canvas children to identify first level blocks
 		new DocumentScanner(this, true).scan(this.htmlElement);
-		
+
 		// now this.width and this.height are populated with minimum values needed for the inner
 		// blocks to fit, add 2 to avoid border overlap;
 		this.height += 2;
@@ -292,7 +292,7 @@ function Canvas(htmlElement)
 			visibleWidth -= SCROLLBARS_WIDTH;
 		if(this.width > visibleWidth)
 			visibleHeight -= SCROLLBARS_WIDTH;
-			
+
 		this.height = Math.max(this.height, visibleHeight);
 		this.width = Math.max(this.width, visibleWidth);
 		
@@ -314,7 +314,7 @@ function Canvas(htmlElement)
 		// check the element dimensions against the acutal size of the canvas
 		this.width = Math.max(this.width, calculateOffsetLeft(element) - this.offsetLeft + element.offsetWidth);
 		this.height = Math.max(this.height, calculateOffsetTop(element) - this.offsetTop + element.offsetHeight);
-		
+
 		if(isBlock(element))
 		{
 			// block found initialize it
@@ -1195,12 +1195,8 @@ function initPageObjects()
 		var i;
 		for(i = 0; i < divs.length; i++)
 		{
-			if(isCanvas(divs[i]))
-            {
-                if(findCanvas(divs[i].id)) {
-                    /* added this so calls can be made using AJAX */
-                    removeCanvasFromArray(divs[i].id)
-                }
+			if(isCanvas(divs[i]) && !findCanvas(divs[i].id))
+			{
 				var newCanvas = new Canvas(divs[i]);
 				newCanvas.initCanvas();
 				canvases.push(newCanvas);
@@ -1214,20 +1210,6 @@ function initPageObjects()
  * Utility functions
  */
 
-/**
- * added to remove a canvas from the array so it can
- * be re-created. Needed for AJAX
- **/
-function removeCanvasFromArray(canvasId) {
-    var i;
-    var cid;
-    for (i = 0; i < canvases.length; i++)
-        if (canvases[i].id == canvasId)
-            cid = i;
-    if (cid != null) {
-        canvases.splice(cid, 1);
-    }
-}
 
 function findCanvas(canvasId)
 {	

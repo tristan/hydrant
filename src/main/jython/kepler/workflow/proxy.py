@@ -1,4 +1,5 @@
 import md5
+import copy
 import traceback
 
 import java.lang.Class
@@ -522,6 +523,9 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                 textsize = [p for p in aparams if p.getName() == 'textSize']
                 if textsize:
                     annotation['text_size'] = textsize[0].getToken().toString()
+                    textsize = int(annotation['text_size'])
+                else:
+                    textsize = 14
                 ff = [p for p in aparams if p.getName() == 'fontFamily']
                 if ff:
                     annotation['font_family'] = ff[0].getToken().stringValue()
@@ -539,9 +543,26 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                 if location:
                     loc = annotation['location'] = utils.locationToDict(
                         location[0].getValueAsString())
-                #    if style is not None:
-                #        loc['x'] += style.width.getToken().intValue()
-                #        loc['y'] += style.height.getToken().intValue()
+                    #    if style is not None:
+                    #        loc['x'] += style.width.getToken().intValue()
+                    #        loc['y'] += style.height.getToken().intValue()
+                    lines = 0
+                    ml = 0
+                    for i in annotation['text'].split('\n'):
+                        lines += 1
+                        if len(i) > ml:
+                            ml = len(i)
+                    r = ml * 10
+                    b = (lines * textsize) + (lines * 2)
+                    if min_x > float(loc['x']):
+                        min_x = float(loc['x'])
+                    if min_y > float(loc['y']):
+                        min_y = float(loc['y'])
+                    loc = {'x': loc['x'] + r, 'y': loc['y'] + b}
+                    annotation['width'] = r
+                    annotation['height'] = b
+                else:
+                    print 'NO LOCATION FOUND FOR ANNOTATION'
                 rdic['annotations'].append(annotation)
             elif isinstance(i, Port):
                 # handling ports, very simple.
@@ -574,18 +595,19 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                     min_y = float(loc['y'])
         # set the canvas width and height based on the max and min
         # locations of the contained entities including a bit of padding
-        rdic['canvas']['x'] = (max_x - min_x) + 200.0
-        rdic['canvas']['y'] = (max_y - min_y) + 200.0
+        rdic['canvas']['x'] = (max_x - min_x) + 50
+        rdic['canvas']['y'] = (max_y - min_y) + 50
 
         # the following is a bit of crazyness to try and normalize the
         # positions of all the contained entities. this is required
         # since the canvas size has been set to contain the workflow
         # only and remove excess white space, thus all the entity
         # locations will not match up to the canvas.
+        
         do_x_offset = lambda a: a['location'].__setitem__(
-            'x', a['location']['x'] - (min_x - 50))
+            'x', a['location']['x'] - (min_x))
         do_y_offset = lambda a: a['location'].__setitem__(
-            'y', a['location']['y'] - (min_y - 50))
+            'y', a['location']['y'] - (min_y))
         if rdic.has_key('director'):
             do_x_offset(rdic['director'])
             do_y_offset(rdic['director'])
@@ -601,6 +623,7 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
         for v in rdic['vertices']:
             do_x_offset(v)
             do_y_offset(v)
+            """"""
         return rdic
 
     def get_properties(self, path=[]):
@@ -677,7 +700,7 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
         if path:
             g = self.get(path[0])
             return g.is_actor(path[1:])
-        if isinstance(self.proxied_entity, Actor) and not isinstance(self.proxied_entity, CompositeActor):
+        if isinstance(self.proxied_entity, (Actor, Director)) and not isinstance(self.proxied_entity, CompositeActor):
             return True
         else:
             return False
@@ -690,3 +713,18 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
         """
         return self.proxied_entity.exportMoML()
 
+
+class _EntityProxyCache:
+    def __init__(self):
+        self._cache = {}
+    def get_proxy(self, workflow):
+        proxy = self._cache.get(workflow.id)
+        if proxy is None:
+            moml = open(workflow.get_moml_file_filename(), 'r').read()
+            proxy = EntityProxy(moml)
+            self._cache[workflow.id] = proxy
+        return proxy
+    def get_copy(self, workflow):
+        return copy.copy(self.get_proxy(workflow))
+
+EntityProxyCache = _EntityProxyCache()

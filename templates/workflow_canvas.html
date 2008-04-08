@@ -12,14 +12,16 @@
 <body onload="initPageObjects();">
 -->
 {% if model %}
-<div style="display: table-cell; vertical-align: top;">
+
 <div class="canvas" id="mainCanvas" style="width: {{ model.canvas.x }}px; height: {{ model.canvas.y }}px;">
+  <div style="display: table-cell; vertical-align: top;">
   {% if model.director %}
   {% with model.director as director %}
   <div class="director notdraggable" style="left: {{ director.location.x }}px; top: {{ director.location.y }}px">
     <div>{{ director.name }}</div>
-    <img alt="{{ director.name }}" id="{{ director.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/director.png"
-    {% if editable %}onDblClick="set_parameters_to_loading();update_parameters('{{ parameters_url_base }}', '{{ director.name }}'); set_visibility(1, 'parameters-div');"{% endif %}/>
+    <a href="{{ director.name }}/">
+    <img alt="{{ director.name }}" id="{{ director.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/director.png"/>
+    </a>
   </div>
   {% endwith %}
   {% endif %}
@@ -54,8 +56,9 @@
     font-size: {{ annotation.text_size }}pt;
     {% ifequal annotation.bold 'true' %}font-weight: bold;{% endifequal %}
     {% ifequal annotation.italic 'true' %}font-style: italic;{% endifequal %}
-    ">
-    {{ annotation.text|linebreaks }}
+    width: {{ annotation.width }}px;
+    height: {{ annotation.height }}px;
+    ">{{ annotation.text|linebreaksbr }}
   </div>
   {% endfor %}
   </div>

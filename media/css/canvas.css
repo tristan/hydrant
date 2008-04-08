@@ -6,7 +6,7 @@ body {
                        /*border: black 1px solid !important;*/
 }
 
-.annotation { position: absolute; width: 125%; }
+.annotation { position: absolute; width: 100%; }
 .director { position: absolute; font-size: small; font-family: sans-serif; }
 .crumbs { font-size: small; font-family: sans-serif; }
 .actor { position: absolute; font-size: small; font-family: sans-serif; }

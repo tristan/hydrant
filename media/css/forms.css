@@ -14,7 +14,7 @@
             padding: 1em;
 }
 
-label { 
+.login-box label { 
         display: block;
         margin: 1em 0 0 0;
         color: #666;
@@ -114,9 +114,57 @@ label {
                  border: 1px solid #ccc;
                  padding: 0.2em;
                  height: 4em;
+                 width: 20em;
 }
 
 #wf-p .submit-row { 
                     text-align: right;
                     padding: 1em;
  }
+
+#jobpreview { 
+              border: 1px solid #bedce7;
+              margin: 0 0 1.0em 0;
+              background: #eaf2f5;
+}
+
+#jobpreview #title { 
+                     padding: 0.7em;
+                     font-weight: bold;
+}
+
+#jobpreview #jobform { 
+                       padding: 0.7em 0.7em 1.5em 0.7em;
+}
+
+#jobpreview #jobform #field { 
+                              border-top: 1px solid #ccc;
+                              margin: 0.5em 0 0 0;
+                              padding: 0.5em 0 0 0;
+                              width: 100%;
+}
+
+#jobpreview #jobform label {
+                             color: #666;
+                             font-size: 1.2em;
+                             padding: 0em 1.5em 0.5em 0em;
+                             width: 26em;
+                             float: left;
+}
+
+#jobpreview #jobform #field #help-text {
+                                         padding: 0.5em 0 0.5em 0;
+}
+
+#jobpreview #jobform #field input {
+                                    width: 99%;
+                                    border: 1px solid #bedce7;
+                                    padding: 0.2em;
+}
+
+#jobpreview #jobform #field textarea { 
+                                       border: 1px solid #bedce7;
+                                       width: 100%;
+                                       height: 4em;
+                                       padding: 0.2em;
+}

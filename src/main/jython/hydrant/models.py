@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 import widgets
-from kepler.workflow.proxy import EntityProxy
-
+from kepler.workflow.proxy import EntityProxy, EntityProxyCache
 
 class Workflow(models.Model):
 
@@ -64,8 +63,9 @@ class Workflow(models.Model):
         """ Returns a kepler.workflow.proxy.EntityProxy object which
         proxies this Workflow.
         """
-        moml = open(self.get_moml_file_filename(), 'r').read()
-        return EntityProxy(moml)
+        return EntityProxyCache.get_proxy(self)
+        #moml = open(self.get_moml_file_filename(), 'r').read()
+        #return EntityProxy(moml)
 
     class Admin:
         list_display = ('name', 'owner', 'created', 'public')

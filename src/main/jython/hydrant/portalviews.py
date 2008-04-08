@@ -106,6 +106,7 @@ def workflow(request, id, path=''):
     # check permissions
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
+    """   
     PropertiesForm = form_for_instance(workflow,
                                        fields=('name','public','description'),
                                        formfield_callback=upload_workflow_formfield_callback
@@ -123,10 +124,13 @@ def workflow(request, id, path=''):
             request.user.message_set.create(message={'type':'MESSAGE', 'message':'This job has been submitted. You should take the time to fill out a name and description for this job.'})
             return HttpResponseRedirect(reverse('job_details_view', args=(job.pk,)))
     else:
-        if request.user.is_staff:
-            pform = PropertiesForm()
-        else:
-            pform = None
+    """
+    jobform = None
+    if len(workflow.get_exposed_parameters()) > 0:
+        JobSubmissionForm = generate_job_submission_form(workflow)
+        if JobSubmissionForm is not None:
+            jobform = JobSubmissionForm()
+
     spath = path.split('/')
     po = workflow.get_proxy_object()
     name = workflow.name
@@ -143,45 +147,26 @@ def workflow(request, id, path=''):
              'editable': request.user.is_staff,
              'name': name,
              'workflow': workflow,
-             'properties_form': pform is None and '' or pform
+             #'properties_form': pform is None and '' or pform
              }
+    if jobform is not None:
+        stuff['jobform'] = jobform
     if po.is_actor():
         ActorForm = generate_parameters_form(workflow, po, [])
+        if request.POST:
+            try:
+                #form = ActorForm(request.POST)
+                save_parameters_from_post(workflow, request.POST, request.FILES)
+            except:
+                traceback.print_exc();
+            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
+            
         stuff['form'] = ActorForm()
     else:
         stuff['model'] = workflow.get_proxy_object().get_as_dict()
 
     return render_to_response('view_workflow.html',
                               stuff,
-                              context_instance=RequestContext(request))
-
-def canvas(request, path):
-    """ Retrieves the dict representation of the entity refered to by
-    path, and returns a web page which uses that dict to display a graph
-    of the specified entity. Generally used by the Workflow view as an
-    Ajax call.
-    """
-    p = path.split('/')
-    w_id = p[0]
-    model, workflow = open_workflow(request.user, w_id)
-    # check permissions
-    if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
-        raise Http404
-    crumbs = build_crumbs_from_path(workflow.name, path)
-    if len(p) > 1:
-        name = p[-1]
-    else:
-        name = workflow.name
-    props = reverse('parameters', args=(path,))
-    return render_to_response('workflow_canvas.html',
-                              {'crumbs': crumbs,
-                               'editable': request.GET.get('editable', False),
-                               'next': reverse('workflow_canvas', args=(path,)),
-                               'title': _(name),
-                               'workflow': workflow,
-                               'model': model.get_as_dict(p[1:]),
-                               'parameters_url_base': props
-                               },
                               context_instance=RequestContext(request))
 
 def job_form(request, id):
@@ -193,7 +178,11 @@ def job_form(request, id):
         params = JobSubmissionForm()
     else:
         params = None
-    return render_to_response('kepler/parameters_form.html', { 'workflow': workflow, 'parameters': params }, context_instance=RequestContext(request))
+    return render_to_response('kepler/parameters_form.html',
+                              { 'workflow': workflow,
+                                'parameters': params
+                                },
+                              context_instance=RequestContext(request))
 
 def parameters(request, actor_path):
     """ If a GET request, generate a form for the requested actors

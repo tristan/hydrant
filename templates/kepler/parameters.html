@@ -18,7 +18,7 @@
 -->
     <form enctype="multipart/form-data" id="{{ actor.name }}_parameters_form" method="post" action="">
       <div>
-	<table class="forms" cellspacing="0">
+	<table class="forms" cellspacing="0"">
 	  <th>Name</th><th>Type</th><th>Value</th><th>Expose to user</th><th>Description</th>
 	  {% for field in form %}
 	  {% ifequal field.label 'Name' %}
@@ -52,8 +52,8 @@
     
     defs = {
     {% for f in form %}{% with f.name|split:"_"|last as t %}{% ifequal t 'value' %}'id_{{ f.name }}': {
-            'value': '{{ f.field.initial }}' {% if f.field.choices %}, 'choices': {
-                {% for n,v in f.field.choices %}'{{ n }}': '{{ v }}'{% if forloop.last %}{% else %},{% endif %}{% endfor %}}{% endif %}
+            'value': '{{ f.field.initial|escapejs }}' {% if f.field.choices %}, 'choices': {
+                {% for n,v in f.field.choices %}'{{ n }}': '{{ v|escapejs }}'{% if forloop.last %}{% else %},{% endif %}{% endfor %}}{% endif %}
         }{% endifequal %}{% if forloop.last %}'_________end': {'end': 'end'}{% else %}{% ifequal t 'value' %},{% endifequal %}{% endif %}{% endwith %}{% endfor %}
     };
     
@@ -78,8 +78,7 @@
     }
       </script>
       <div class="submit-row">
-	<input type="button" value="Save"/>
-	<input type="button" value="Cancel"/>
+	<input type="submit" value="Save"/>
       </div>
     </form>
   </td></tr></table>

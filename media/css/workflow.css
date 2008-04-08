@@ -81,3 +81,7 @@
 
 #workflow #workflow-frame { 
 }
+
+#workflow #wf-canvas { 
+                       padding: 2.5em;
+}

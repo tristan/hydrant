@@ -16,9 +16,9 @@
     <div class="smalltd">
       <a href="{{ parameters_url_base }}{{ actor.name }}/">
       {% if actor.composite %}
-      <img alt="{{ actor.name }}" style="cursor: pointer;" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/composite.png" onClick="update_workflow_div('{{ next }}{{ actor.name }}');"/>
+      <img alt="{{ actor.name }}" style="cursor: pointer;" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/composite.png"/>
       {% else %}
-      <img alt="{{ actor.name }}" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/basic-actor.png"
+      <img alt="{{ actor.name }}" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/basic-actor.png"/>
       {% endif %}
       </a>
     </div>
