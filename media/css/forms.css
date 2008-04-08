@@ -145,11 +145,16 @@
                                          padding: 0.5em 0 0.5em 0;
 }
 
-#jobpreview #jobform #field input[type=text] {
+#jobpreview #jobform #field input {
                                     width: 99%;
                                     border: 1px solid #bedce7;
                                     padding: 0.2em;
 }
+
+#jobpreview #jobform #field input[type=checkbox] {
+                                                   width: 1.3em;
+                                                   height: 1.3em;
+                                                   }
 
 #jobpreview #jobform #field textarea { 
                                        border: 1px solid #bedce7;

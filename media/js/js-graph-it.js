@@ -217,6 +217,8 @@ var START = 0;
 var END = 1;
 var SCROLLBARS_WIDTH = 18;
 
+var FONT_SIZE = 12.8;
+
 /**************
  * Inspectors *
  **************/
@@ -296,8 +298,8 @@ function Canvas(htmlElement)
 		this.height = Math.max(this.height, visibleHeight);
 		this.width = Math.max(this.width, visibleWidth);
 		
-		this.innerDiv.style.width = this.width + "px";
-		this.innerDiv.style.height = this.height + "px";
+		this.innerDiv.style.width = (this.width/FONT_SIZE) + "em";
+		this.innerDiv.style.height = (this.height/FONT_SIZE) + "em";
 		
 		// init connectors
 		for(i = 0; i < this.connectors.length; i++)
@@ -551,34 +553,34 @@ function Segment(id, parentElement)
 		switch(this.orientation)
 		{
 			case LEFT:
-				this.htmlElement.style.left = (this.startX - this.length) + "px";				
-				this.htmlElement.style.top = this.startY + "px";
-				this.htmlElement.style.width = this.length + "px";
-				this.htmlElement.style.height = this.thickness + "px";
+			    this.htmlElement.style.left = ((this.startX - this.length)/FONT_SIZE) + "em";				
+			    this.htmlElement.style.top = (this.startY/FONT_SIZE) + "em";
+			    this.htmlElement.style.width = (this.length/FONT_SIZE) + "em";
+			    this.htmlElement.style.height = (this.thickness/FONT_SIZE) + "em";
 				break;
 			case RIGHT:
-				this.htmlElement.style.left = this.startX + "px";
-				this.htmlElement.style.top = this.startY + "px";
+			    this.htmlElement.style.left = (this.startX/FONT_SIZE) + "em";
+			    this.htmlElement.style.top = (this.startY/FONT_SIZE) + "em";
 				if(this.nextSegment)
-					this.htmlElement.style.width = this.length + this.thickness + "px";
+				    this.htmlElement.style.width = ((this.length + this.thickness)/FONT_SIZE) + "em";
 				else
-					this.htmlElement.style.width = this.length + "px";
-				this.htmlElement.style.height = this.thickness + "px";
+				    this.htmlElement.style.width = (this.length/FONT_SIZE) + "em";
+				this.htmlElement.style.height = (this.thickness/FONT_SIZE) + "em";
 				break;
 			case UP:
-				this.htmlElement.style.left = this.startX + "px";
-				this.htmlElement.style.top = (this.startY - this.length) + "px";
-				this.htmlElement.style.width = this.thickness + "px";
-				this.htmlElement.style.height = this.length + "px";
+			    this.htmlElement.style.left = (this.startX/FONT_SIZE) + "em";
+			    this.htmlElement.style.top = ((this.startY - this.length)/FONT_SIZE) + "em";
+			    this.htmlElement.style.width = (this.thickness/FONT_SIZE) + "em";
+			    this.htmlElement.style.height = (this.length/FONT_SIZE) + "em";
 				break;
 			case DOWN:
-				this.htmlElement.style.left = this.startX + "px";
-				this.htmlElement.style.top = this.startY + "px";
-				this.htmlElement.style.width = this.thickness + "px";
+			    this.htmlElement.style.left = (this.startX/FONT_SIZE) + "em";
+			    this.htmlElement.style.top = (this.startY/FONT_SIZE) + "em";
+			    this.htmlElement.style.width = (this.thickness/FONT_SIZE) + "em";
 				if(this.nextSegment)
-					this.htmlElement.style.height = this.length + this.thickness + "px";
+				    this.htmlElement.style.height = ((this.length + this.thickness)/FONT_SIZE) + "em";
 				else
-					this.htmlElement.style.height = this.length + "px";
+				    this.htmlElement.style.height = (this.length/FONT_SIZE) + "em";
 				break;
 		}
 		
@@ -993,8 +995,8 @@ function ConnectorEnd(htmlElement, connector, side)
 				break;
 		}
 		
-		this.htmlElement.style.left = Math.ceil(left) + "px";
-		this.htmlElement.style.top = Math.ceil(top) + "px";
+		this.htmlElement.style.left = (Math.ceil(left)/FONT_SIZE) + "em";
+		this.htmlElement.style.top = (Math.ceil(top)/FONT_SIZE) + "em";
 		
 		if(this.htmlElement.tagName.toLowerCase() == "img" && this.orientation != orientation)
 		{
@@ -1061,8 +1063,8 @@ function SideConnectorLabel(connector, htmlElement, side)
 				left -= this.htmlElement.offsetWidth;
 		}
 		
-		this.htmlElement.style.left = Math.ceil(left) + "px";
-		this.htmlElement.style.top = Math.ceil(top) + "px";
+		this.htmlElement.style.left = (Math.ceil(left)/FONT_SIZE) + "em";
+		this.htmlElement.style.top = (Math.ceil(top)/FONT_SIZE) + "em";
 	}
 	
 	this.onMove = function()
@@ -1098,8 +1100,8 @@ function MiddleConnectorLabel(connector, htmlElement)
 			left = segment.htmlElement.offsetLeft + (segment.htmlElement.offsetWidth - this.htmlElement.offsetWidth) / 2;;
 		}
 		
-		this.htmlElement.style.left = Math.ceil(left) + "px";
-		this.htmlElement.style.top = Math.ceil(top) + "px";
+		this.htmlElement.style.left = (Math.ceil(left)/FONT_SIZE) + "em";
+		this.htmlElement.style.top = (Math.ceil(top)/FONT_SIZE) + "em";
 	}
 	
 	this.onMove = function()
