@@ -1,16 +1,8 @@
 from helpers import *
 from execution import default_job_manager
-from kepler.workflow.proxy import EntityProxy
-
-from au.edu.jcu.kepler.hydrant import WebServiceFilter
-
-
-def open_workflow_for_execution(user, w):
-    moml = open(w.get_moml_file_filename(), 'r').read()
-    return EntityProxy(moml, [WebServiceFilter()])
 
 def queue_new_job(job):
-    model = open_workflow_for_execution(job.owner, job.workflow)
+    model = job.workflow.get_proxy_object(True)
     pe = model.proxied_entity
     pe.workspace().getWriteAccess()
     for input in job.get_job_inputs():

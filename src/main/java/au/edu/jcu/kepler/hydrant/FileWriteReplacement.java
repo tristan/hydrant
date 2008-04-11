@@ -24,19 +24,19 @@ public class FileWriteReplacement extends FileWrite {
 
 	public FileWriteReplacement(CompositeEntity container, String name)
 			throws IllegalActionException, NameDuplicationException {
-		super(container, name);
+	    super(container, name);
 	}
 	
 	public void wrapup() throws IllegalActionException {
-		super.wrapup();
-		File f = new File(fileName.getExpression());
-        if (f.exists()) {
-	        ReplacementManager man = ReplacementUtils.getReplacementManager(this);
-			HashMap data_map = new HashMap();
-			data_map.put("name", getFullName());
-			data_map.put("type", "FILE");
-			data_map.put("filename", fileName.getExpression());
-			man.writeData(data_map);
-        }
+	    super.wrapup();
+	    File f = new File(fileName.getExpression());
+	    if (f.exists()) {
+		ReplacementManager man = ReplacementUtils.getReplacementManager(this);
+		HashMap data_map = new HashMap();
+		data_map.put("name", getFullName());
+		data_map.put("type", "FILE");
+		data_map.put("filename", fileName.getExpression());
+		man.writeData(data_map);
+	    }
 	}
 }

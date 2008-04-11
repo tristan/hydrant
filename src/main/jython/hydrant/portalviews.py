@@ -24,7 +24,7 @@ from models import *
 from job import *
 from settings import STORAGE_ROOT, MEDIA_ROOT
 from django.newforms import form_for_model, form_for_instance, widgets
-from django.utils.safestring import mark_safe
+from django.utils.safestring import mark_safe, mark_for_escaping
 
 def intro(request):
     return render_to_response('kepler/intro.html', {'pic_no':random.randint(0,10)}, context_instance=RequestContext(request))
@@ -42,10 +42,11 @@ def home(request):
     jobs = []
     if request.user.is_authenticated():
         workflows.extend([i for i in Workflow.objects.filter(owner=request.user,deleted=False) if i not in workflows])
-        jobs = Job.objects.filter(owner=request.user).order_by('-submission_date')
+        jobs = Job.objects.filter(owner=request.user)
         if len(jobs) > 5:
             jobs = jobs[:5]
-        messages = UserMessages.objects.filter(user=request.user).order_by('-date')
+        messages = get_all_messages_related_to_user(request.user).order_by('-date')
+        messages = messages[:10] #limit to the last ten messages
         return render_to_response('dashboard.html',
                                   {'next': reverse('dashboard'),
                                    'title': _('Dashboard'),
@@ -81,10 +82,15 @@ def upload_workflow(request):
             workflow.owner = request.user
             workflow.save()
             form.save_m2m()
-            messages.append({'type':'MESSAGE', 'message':'The workflow "%s" was uploaded successfully' % workflow.name})
-            for msg in messages:
-                request.user.message_set.create(message=msg)
-            return HttpResponseRedirect(reverse('workflow_view', args=(workflow.pk,)))
+
+            msg = Message(touser=get_system_user(),
+                          fromuser=request.user,
+                          verb='uploaded',
+                          text=workflow.description)
+            msg.save()
+            WorkflowMessage(workflow=workflow, message=msg).save()
+
+            return HttpResponseRedirect(reverse('workflow', args=(workflow.pk,)))
         else:
             print 'form errors:', form.errors
     else:
@@ -106,30 +112,12 @@ def workflow(request, id, path=''):
     # check permissions
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
-    """   
-    PropertiesForm = form_for_instance(workflow,
-                                       fields=('name','public','description'),
-                                       formfield_callback=upload_workflow_formfield_callback
-                                       )
-    if request.method == 'POST':
-        pform = PropertiesForm(request.POST)
-        if pform.is_valid():
-            workflow = pform.save()
-            return HttpResponse('')
-        else:
-            job = Job(workflow=workflow, owner=request.user, status='NEW')
-            job.save()
-            setup_job_parameters_from_post(job, request.POST, hasattr(request, 'FILES') and request.FILES or None)
-            queue_new_job(job)
-            request.user.message_set.create(message={'type':'MESSAGE', 'message':'This job has been submitted. You should take the time to fill out a name and description for this job.'})
-            return HttpResponseRedirect(reverse('job_details_view', args=(job.pk,)))
-    else:
-    """
+
     jobform = None
-    if len(workflow.get_exposed_parameters()) > 0:
-        JobSubmissionForm = generate_job_submission_form(workflow)
-        if JobSubmissionForm is not None:
-            jobform = JobSubmissionForm()
+    #    if len(workflow.get_exposed_parameters()) > 0:
+    JobSubmissionForm = generate_job_submission_form(workflow)
+    if JobSubmissionForm is not None:
+        jobform = JobSubmissionForm()
 
     spath = path.split('/')
     po = workflow.get_proxy_object()
@@ -163,55 +151,10 @@ def workflow(request, id, path=''):
             
         stuff['form'] = ActorForm()
     else:
-        stuff['model'] = workflow.get_proxy_object().get_as_dict()
+        stuff['model'] = po.get_as_dict()
 
     return render_to_response('view_workflow.html',
                               stuff,
-                              context_instance=RequestContext(request))
-
-def job_form(request, id):
-    """ Returns a page displaying the Job Submission Form
-    """
-    workflow = get_object_or_404(Workflow, pk=id)
-    JobSubmissionForm = generate_job_submission_form(workflow)
-    if JobSubmissionForm is not None:
-        params = JobSubmissionForm()
-    else:
-        params = None
-    return render_to_response('kepler/parameters_form.html',
-                              { 'workflow': workflow,
-                                'parameters': params
-                                },
-                              context_instance=RequestContext(request))
-
-def parameters(request, actor_path):
-    """ If a GET request, generate a form for the requested actors
-    properties and return a page displaying that form. If a POST
-    request, save the parameters passed via the POST variable.
-    """
-    path = actor_path.split('/')
-    w_id = path[0]
-    model, workflow = open_workflow(request.user, w_id)
-    # check permissions
-    if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
-        raise Http404
-    properties = model.get_properties(path[1:])
-    ActorForm = generate_parameters_form(workflow, model, path[1:])
-    url = reverse('parameters', args=(actor_path,))
-    if request.POST:
-        try:
-            form = ActorForm(request.POST)
-            save_parameters_from_post(workflow, request.POST, request.FILES)
-        except:
-            traceback.print_exc()
-    else:
-        form = ActorForm()
-        pass
-    actor = {'name':path[-1], 'properties':properties, 'path':actor_path}
-    return render_to_response('kepler/parameters.html',
-                              {'form': form,
-                               'url': url,
-                               'actor': actor},
                               context_instance=RequestContext(request))
 
 def delete_workflow(request, id):
@@ -235,25 +178,53 @@ def delete_workflow(request, id):
     return render_to_response('kepler/delete_confirmation.html', {'workflow': workflow}, context_instance=RequestContext(request))
 delete_workflow = login_required(delete_workflow)
 
-def job_details(request, job_id):
+def job_create(request, workflowid):
+    workflow=get_object_or_404(Workflow, pk=workflowid)
+    job = Job()
+    job.workflow = workflow
+    job.name = workflow.name + ' Job'
+    job.owner = request.user
+    job.save()
+    return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+
+def job(request, jobid):
     """ Handles displaying the details of a Job, including the
     properties form for specifying Job metadata (i.e. name and
     description).
     """
-    job = get_object_or_404(Job, pk=job_id)
+    job = get_object_or_404(Job, pk=jobid)
     outputs = []
-    PropertiesForm = form_for_instance(job, fields=('name','description'))
-    if request.method == 'POST':
-        form = PropertiesForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponse('')
+    if job.status == 'NEW':
+        if request.method == 'POST':
+            save_job_form(job, request.POST, request.FILES)
+            if request.POST.has_key('save_job'):
+                pass
+            elif request.POST.has_key('run_job'):
+                msg = Message(touser=get_system_user(), fromuser=request.user, verb='submitted', text=job.description)
+                msg.save()
+                JobMessage(job=job, message=msg).save()
+                queue_new_job(job)
+                return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+
+        JobSubmissionForm = generate_job_submission_form(job.workflow, job)
+        if JobSubmissionForm is not None:
+            jobform = JobSubmissionForm()
         else:
-            return HttpResponseServerError('')
+            jobform = None
+        return render_to_response('job.html',
+                                  {'jobform': jobform,
+                                   'job': job,
+                                   },
+                                  context_instance=RequestContext(request))
 
     for o in [j for j in job.get_job_outputs() if j.name != 'Provenance Data']:
         out = {'name': o.name, 'type': o.type }
-        print out
+
+        if o.type == 'URI':
+            if o.file.lower().startswith('file://'):
+                out['url'] = reverse('serve_job_media', args=(jobid, o.pk))
+            else:
+                out['url'] = o.file
         if o.type == 'XML':
             data = open(o.file, 'r').read()
             # highlight would be awesome, but it takes forever on jython
@@ -262,14 +233,16 @@ def job_details(request, job_id):
             out['type'] = 'TEXT'
         if o.type == 'TEXT':
             f = open(o.file, 'r')
-            out['content'] = mark_safe('<pre>%s</pre>' % f.read())
+            out['content'] = mark_for_escaping(f.read())
         elif o.type == 'IMAGE' or o.type == 'FILE':
-            out['url'] = reverse('serve_job_media', args=(job_id, o.pk))
+            out['url'] = reverse('serve_job_media', args=(jobid, o.pk))
         outputs.append(out)
-    if job.status == 'ERROR':
-        request.user.message_set.create(message={'type':'ERROR', 'message':'An error occured while running this job, see below for details'})
-    return render_to_response('kepler/job.html', {'crumbs': [{'name': 'Jobs', 'path': reverse('jobs')},], 'form': mark_safe(PropertiesForm().as_table().replace('\n','')), 'title': _(job), 'job': job, 'outputs': outputs}, context_instance=RequestContext(request))
-job_details = login_required(job_details)
+    return render_to_response('job.html',
+                              {'job': job,
+                               'outputs': outputs
+                               },
+                              context_instance=RequestContext(request))
+job = login_required(job)
 
 def job_media(request, job_id, output_id):
     """ Serves media from specific job runs.
@@ -278,7 +251,11 @@ def job_media(request, job_id, output_id):
     out = get_object_or_404(JobOutput, pk=output_id)
     # TODO: do check to make sure job_id == out.job.pk
     # the [1:] is to remove the / from the start of the filename
-    return serve(request, out.file[1:], '/')
+    if out.file.lower().startswith('file://'):
+        f = out.file[8:]
+    else:
+        f = out.file[1:]
+    return serve(request, f, '/')
 job_media = login_required(job_media)
 
 def workflows(request):

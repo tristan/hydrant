@@ -12,51 +12,46 @@
   <div id="col-one">
   <div id="news">
     <h1>Messages</h1>
-
+    {% for msg in messages %}
     <div class="thing">
     <div class="title">
+      {% if msg.is_job %}
       Job
-      <a href="#">jobname</a>
-      started by
-      <a href="#">{{ user.username }}</a>
-      on
-      {start_date}
-    </div>
-    <div class="details">
-    <div class="icon">
-      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
-      <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
-    </div>
-    <div class="status">
-      Status: Running<br/>
-      ETA: Unknown
-    </div>
-    <div style="clear: both;"></div>
-    </div>
-    </div>
-
-    <div class="thing">
-    <div class="title">
+      <a href="{% url job msg.job.pk %}">{{ msg.job.name }}</a>
+      {% else %}
+      {% if msg.is_workflow %}
       Workflow
-      <a href="#">{workflow_name}</a>
-      uploaded by
-      <a href="#">{{ user.username }}</a>
-      on
-      {creation_date}
+      <a href="{% url workflow msg.workflow.pk %}">{{ msg.workflow.name }}</a>
+      {% endif %}
+      {% endif %}
+      {{ msg.verb }}
+      {% ifequal msg.fromuser.username 'system' %}
+      {% else %}
+      by
+      <a href="#">{{ msg.fromuser.username }}</a>
+      {% endifequal %}
+      {{ msg.date|timesince }} ago.
     </div>
     <div class="details">
     <div class="icon">
-      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
-      <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
+      {% ifequal msg.fromuser.username 'system' %}
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="system"/>
+      {% else %}
+      <img src="{% gravatar_url msg.fromuser 32 %}" alt="{{ msg.fromuser.username }}"/>
+      {% endifequal %}
+      {% ifequal msg.touser.username 'system' %}
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="system"/>
+      {% else %}
+      <img src="{% gravatar_url msg.touser 32 %}" alt="{{ msg.touser.username }}"/>
+      {% endifequal %}
     </div>
     <div class="status">
-      oh my god... what the hell!? oh my god... what the hell!?
-      oh my god... what the hell!? oh my god... what the hell!?
-      oh my god... what the hell!? oh my god...
+      {{ msg.text|truncate_to_len:230 }}
     </div>
     <div style="clear: both;"></div>
     </div>
     </div>
+    {% endfor %}
 
     <div class="thing">
     <div class="title">
@@ -86,28 +81,41 @@
   <div id="small-jobs">
     <h1>Your Recent Jobs</h1>
     {% for job in jobs %}
+    <div class="thing">
+      <div class="title">
+	<a href="{% url job job.id %}">{{ job.name }}</a>
+	{% if job.end_date %}
+	ended {{ job.end_date|timesince }} ago.
+	{% else %}
+	{% if job.start_date %}
+	started {{ job.start_date|timesince }} ago.
+	{% else %}
+	{% if job.submission_date %}
+	submitted {{ job.submission_date|timesince }} ago.
+	{% else %}
+	created {{ job.creation_date|timesince }} ago.
+	{% endif %}
+	{% endif %}
+	{% endif %}
+      </div>
+      <div class="details">
+      <div class="icon">
+	<img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+	<img src="{% gravatar_url job.owner 32 %}" alt="{{ job.owner.username }}"/>
+      </div>
+      <div class="status">
+	Status: {{ job.status }}<br/>
+	{% ifequal job.status 'DONE' %}
+	{% else %}
+	ETA: Unknown
+	{% endifequal %}
+      </div>
+      <div style="clear: both;"></div>
+      </div>
+    </div>
     {% endfor %}
-  <div class="thing">
-  <div class="title">
-    <a href="#">{jobname}</a>
-    started by
-    <a href="#">{{ user.username }}</a>
-    on
-    {start_date}
-  </div>
-  <div class="details">
-  <div class="icon">
-    <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
-    <img src="{% gravatar_url user 32 %}" alt="{{ user.username }}"/>
-  </div>
-  <div class="status">
-    Status: Running<br/>
-    ETA: Unknown
-  </div>
-  <div style="clear: both;"></div>
-  </div>
-  </div>
 
+{% comment %}
   <div class="thing">
   <div class="title">
     <a href="#">{jobname}</a>
@@ -128,6 +136,7 @@
   <div style="clear: both;"></div>
   </div>
   </div>
+{% endcomment %}
   
   </div>
   <div id="small-workflows">
@@ -154,53 +163,3 @@
   <div style="clear: both;"></div>
 </div>
 {% endblock %}
-<div class="dashboard-block-container">
-    <div>
-    <div class="dashboard-block">
-        <div class="module">
-            <h2>Bookmarked Jobs</h2>
-            {% if recent_workflows %}
-                {% for workflow in recent_workflows %}
-                <p><a class="name" href="{% url workflow_view workflow.pk %}">{{ workflow.name }}</a></p>
-                {% endfor %}
-            {% else %}
-                <p>No Bookmarked Jobs</p>
-            {% endif %}
-        </div>
-        <div class="module">
-            <h2>Bookmarked Workflows</h2>
-            {% if workflows %}
-                {% for workflow in workflows %}
-                    <p><a class="name" href="{% url workflow_view workflow.pk %}">{{ workflow.name }}</a></p>
-                {% endfor %}
-            {% else %}
-                <p>No Bookmarked Workflows</p>
-            {% endif %}
-        </div>
-    </div>
-    <div class="dashboard-block">
-        <div class="module">
-            <h2>Recent Jobs</h2>
-            {% if jobs %}
-                {% for job in jobs %}
-                <p><a href="{% url job_details_view job.pk %}">{{ job.workflow.name }}</a><br/><small>submitted: {{ job.submission_date }} &nbsp; status: {{ job.status }}</small></p>
-                {% endfor %}
-            {% else %}
-                <p>You have no Jobs</p>
-            {% endif %}
-        </div>
-    </div>
-    <div class="dashboard-block">
-        <div class="module">
-            <h2>Notifications</h2>
-            {% if notifications %}
-                {% for note in notifications %}
-                     <p><a href="{% url job_view job.pk %}">{{ job.template.name }}</a></p>
-                {% endfor %}
-                {% else %}
-                <p>You have no notifications</p>
-            {% endif %}
-        </div>
-    </div>
-</div>
-</div>

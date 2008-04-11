@@ -20,6 +20,7 @@ public class WebServiceFilter implements MoMLFilter {
 		_replacements.put("ptolemy.actor.lib.io.LineWriter", "au.edu.jcu.kepler.hydrant.FileWriteReplacement");
 		_replacements.put("org.geon.FileWrite", "au.edu.jcu.kepler.hydrant.FileWriteReplacement");
 		_replacements.put("org.geon.BinaryFileWriter", "au.edu.jcu.kepler.hydrant.BinaryFileWriterReplacement");
+		_replacements.put("org.geon.BrowserDisplay", "au.edu.jcu.kepler.hydrant.BrowserDisplayReplacement");
 	}
 	
 	public String filterAttributeValue(NamedObj container, String element,

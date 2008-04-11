@@ -1,0 +1,6 @@
+#output .value pre { 
+                     overflow: auto;
+                     padding: 0 0 1em 0;
+                     margin: 0;
+                     width: 47.2em;
+}

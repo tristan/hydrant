@@ -59,13 +59,11 @@ class Workflow(models.Model):
     def __unicode__(self):
         return unicode(self.name)
 
-    def get_proxy_object(self):
+    def get_proxy_object(self, forexec=False):
         """ Returns a kepler.workflow.proxy.EntityProxy object which
         proxies this Workflow.
         """
-        return EntityProxyCache.get_proxy(self)
-        #moml = open(self.get_moml_file_filename(), 'r').read()
-        #return EntityProxy(moml)
+        return EntityProxyCache.get_proxy(self, forexec)
 
     class Admin:
         list_display = ('name', 'owner', 'created', 'public')
@@ -135,8 +133,9 @@ class Job(models.Model):
 
     workflow = models.ForeignKey(Workflow)
     owner = models.ForeignKey(User)
-    status = models.CharField(max_length=200)
-    submission_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=200,default='NEW')
+    creation_date = models.DateTimeField(auto_now_add=True)
+    submission_date = models.DateTimeField(null=True)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
     name = models.CharField(max_length=200, null=True)
@@ -171,11 +170,7 @@ class Job(models.Model):
             return self.name
 
     class Admin:
-        list_display = ('workflow', 'submission_date', 'start_date',
-                        'end_date', 'status', 'owner')
-        search_fields = ('workflow__name', 'status',)
-        list_filter = ('status',)
-        date_hierarchy = 'submission_date'
+        pass
 
     class Search:
 
@@ -228,13 +223,14 @@ class JobOutput(models.Model):
     #           XML
     #           IMAGE
     #           FILE
+    #           URI
     file = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
 
     class Admin:
         list_display = ('creation_date', 'job', 'name', 'type', 'file')
 
-class UserMessages(models.Model):
+class Message(models.Model):
     """ This model stores all the messages sent to a user
 
     user -- The user which the message if for.
@@ -245,13 +241,76 @@ class UserMessages(models.Model):
     
     """
 
-    user = models.ForeignKey(User)
+    fromuser = models.ForeignKey(User, related_name='fromuser')
+    touser = models.ForeignKey(User, related_name='touser')
     date = models.DateTimeField(auto_now_add=True)
-    source = models.CharField(max_length=200)
-    title = models.CharField(max_length=200)
+    verb = models.CharField(blank=True,max_length=200)
     text = models.TextField()
 
-class UserDetails(models.Model):
+    def workflow(self):
+        if self.is_workflow():
+            return self.workflowmessage.workflow
+        return None
+    def job(self):
+        if self.is_job():
+            return self.jobmessage.job
+
+    def is_workflow(self):
+        try:
+            self.workflowmessage
+            return True
+        except:
+            return False
+
+    def is_job(self):
+        try:
+            self.jobmessage
+            return True
+        except:
+            return False
+
+    class Admin:
+        pass
+    
+def get_all_messages():
+    msgs = Message.objects.all()
+    return msgs
+
+def get_all_messages_related_to_user(user):
+    return Message.objects.filter(touser=user) | Message.objects.filter(fromuser=user)
+
+def get_all_messages_for_user(user):
+    msgs = Message.objects.filter(touser=user)
+    return msgs
+
+def get_all_messages_from_user(user):
+    msgs = Message.objects.filter(fromuser=user)
+    return msgs
+
+class JobMessage(models.Model):
+    job = models.ForeignKey(Job)
+    message = models.OneToOneField(Message)
+    class Admin:
+        pass
+
+class WorkflowMessage(models.Model):
+    workflow = models.ForeignKey(Workflow)
+    message = models.OneToOneField(Message)
+    class Admin:
+        pass
+
+class Comment(models.Model):
+    fromuser = models.ForeignKey(User, related_name='commenton')
+    date = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+
+class JobComment(Comment):
+    job = models.ForeignKey(Job)
+
+class WorkflowComment(Comment):
+    workflow = models.ForeignKey(Workflow)
+    
+#class UserDetails(models.Model):
 
     """ This model contains additional information about a User
 
@@ -259,5 +318,15 @@ class UserDetails(models.Model):
     twitter -- The user's twitter id.
     """
 
-    user = models.ForeignKey(User)
-    twitter = models.CharField(max_length=140)
+#    user = models.ForeignKey(User)
+#    twitter = models.CharField(max_length=140)
+
+
+def get_system_user():
+    try:
+        u = User.objects.get(username='system')
+    except:
+        u = User(username='system')
+        u.is_active = 0
+        u.save()
+    return u

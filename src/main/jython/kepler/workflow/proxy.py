@@ -22,6 +22,8 @@ from ptolemy.kernel import Relation, Port, Entity
 from ptolemy.vergil.basic import KeplerDocumentationAttribute
 from ptolemy.vergil.kernel.attributes import TextAttribute
 
+from au.edu.jcu.kepler.hydrant import WebServiceFilter
+
 import utils
 
 # the following classes are getter and setter objects
@@ -717,14 +719,13 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
 class _EntityProxyCache:
     def __init__(self):
         self._cache = {}
-    def get_proxy(self, workflow):
-        proxy = self._cache.get(workflow.id)
+    def get_proxy(self, workflow, forexec=False):
+        proxy = not forexec and self._cache.get(workflow.id) or None
         if proxy is None:
             moml = open(workflow.get_moml_file_filename(), 'r').read()
-            proxy = EntityProxy(moml)
-            self._cache[workflow.id] = proxy
+            proxy = EntityProxy(moml, forexec and [WebServiceFilter()] or [])
+            if not forexec:
+                self._cache[workflow.id] = proxy
         return proxy
-    def get_copy(self, workflow):
-        return copy.copy(self.get_proxy(workflow))
 
 EntityProxyCache = _EntityProxyCache()

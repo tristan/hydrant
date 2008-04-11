@@ -1,0 +1,168 @@
+{% extends "index.html" %}
+{% load listutils %}
+{% load gravatar %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/job.css"/>
+<!--[if IE]><style type="text/css">@import "{{ MEDIA_URL }}/css/job_ie.css";</style><![endif]-->
+{% if jobform %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
+{% endif %}
+{% endblock %}
+
+{% block content %}
+<div id="job-content">
+<div id="details">
+  <div class="title">
+    <div class="name">
+      <a href="#">{{ job.name }}</a>
+      created from
+      <a href="{% url workflow job.workflow.pk %}">{{ job.workflow.name }}</a>
+    </div>
+    <div class="tools">
+
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+  <div class="details">
+    <div class="icon">
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+      <img src="{% gravatar_url job.owner 32 %}" alt="{{ job.owner.username}}"/>
+    </div>
+    <div class="status">
+      <b>created:</b> {{ job.creation_date }}<br/>
+      {% if job.submission_date %}<b>submitted:</b> {{ job.submission_date }}<br/>{% endif %}
+      {% if job.start_date %}<b>started:</b> {{ job.start_date }}<br/>
+      {% if job.end_date %}<b>ended:</b> {{ job.end_date }}<br/>
+      {% else %}
+      <b>ETA:</b> unknown
+      {% endif %}
+      {% endif %}
+    </div>
+    <div class="description">
+      {% if job.description %}
+      {{ job.description }}
+      {% endif %}
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+  </div>
+{% if jobform %}
+<div id="jobform">
+  <h1>Job Creation Form</h1>
+  <form {% if jobform and jobform.is_multipart %}
+      enctype="multipart/form-data"
+      {% endif %}
+      id="id_job_submission_form" action="" method="post">
+  {% for f in jobform %}
+    <div id="field">
+      <label for="id_{{ f.name }}">{{ f.label }}<br/>{{ f }}</label>
+      <div id="help-text">{{ f.help_text }}</div>
+      <div style="clear: both;"></div>
+    </div>
+  {% endfor %}
+    <div class="submit-row">
+      <input type="submit" name="save_job" value="Save for later"/>
+      <input type="submit" name="run_job" value="Run Job"/>
+  </form>
+</div>
+{% endif %}
+{% if outputs %}
+{% for o in outputs %}
+<div id="output">
+  <div class="title">
+    <div class="name">
+      Output from: <u>{{ o.name }}</u>
+    </div>
+  </div>
+  <div class="value">
+    {% ifequal o.type 'TEXT' %}
+    <pre>{{ o.content|escape|linebreaksbr }}</pre>
+    {% endifequal %}
+    {% ifequal o.type 'XML' %}
+    {{ o.content }}
+    {% endifequal %}
+    {% ifequal o.type 'IMAGE' %}
+    <center>
+    <img src="{{ o.url }}"/>
+    </center>
+    {% endifequal %}
+    {% ifequal o.type 'FILE' %}
+    <a href="{{ o.url }}">Download File</a>
+    {% endifequal %}
+    {% ifequal o.type 'URI' %}
+    <iframe src="{{ o.url }}"></iframe>
+    {% endifequal %}
+  </div>
+</div>  
+{% endfor %}
+{% endif %}
+</div>
+{% endblock %}
+{% comment %}
+<div class="dashboard-block-container">
+    <div>
+    <div class="dashboard-block">
+        <div class="module">
+            <h2>Job Details</h2>
+            <table summary="Job Details">
+            <tr>
+                 <th scope="row">Status</th>
+                 {% ifequal job.status 'DONE' %}
+                 <td style="color: green">
+                 {% else %}
+                 {% ifequal job.status 'ERROR' %}
+                 <td style="color: red">
+                 {% else %}
+                 <td>
+                 {% endifequal %}
+                 {% endifequal %}
+                 {{ job.status }}</td>
+            </tr>
+            <tr>
+                 <th scope="row">Submission Date</th>
+                 <td>{{ job.submission_date }}</td>
+            </tr>
+            <tr>
+                 <th scope="row">Start Date</th>
+                 <td>{{ job.start_date }}</td>
+            </tr>
+            <tr>
+                 <th scope="row">End Date</th>
+                 <td>{{ job.end_date }}</td>
+            </tr>
+            <tr>
+                <th scope="row">Workflow</th>
+                <td><a href="{% url workflow_view job.workflow.pk %}">{{ job.workflow }}</a></td>
+            </tr>
+            </table>
+        </div>
+    {% for output_list in outputs|split_list %}
+    {% cycle '' '</div><div class="dashboard-block"><div class="module"><h2>Job Properties</h2><form id="id_job_properties_form" action="" method="post"><table id="ident_table"></table></form><div class="submit-row"><input type="submit" value="Save" name="properties" onClick="set_properties();"/></div></div>' %}
+    {% for out in output_list %}
+        <div class="module">
+            <h2>{{ out.name }}</h2>
+            <table summary="{{ out.name }}">
+            <tr><td style="font-weight: normal;" scope="row">
+                {% ifequal out.type 'TEXT' %}
+                {{ out.content|escape|linebreaks }}
+                {% endifequal %}
+		{% ifequal out.type 'XML' %}
+		{{ out.content }}
+		{% endifequal %}
+                {% ifequal out.type 'IMAGE' %}
+                <center>
+                    <img src="{{ out.url }}"/>
+                </center>
+                {% endifequal %}
+                {% ifequal out.type 'FILE' %}
+                <a href="{{ out.url }}">Download File</a>
+                {% endifequal %}
+            </td></tr>
+            </table>
+        </div>
+    {% endfor %}
+    {% endfor %}
+    </div>
+    </div>
+</div>
+{% endcomment %}

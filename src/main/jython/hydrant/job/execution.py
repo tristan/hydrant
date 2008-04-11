@@ -5,6 +5,7 @@ import java.lang.Exception
 from ptolemy.actor import Manager
 from ptolemy.kernel.util import IllegalActionException, KernelException
 from helpers import *
+from hydrant.models import Message, JobMessage, get_system_user
 
 class KeplerJobManager(Thread):
     def __init__(self, max_active=2):
@@ -25,7 +26,7 @@ class KeplerJobManager(Thread):
             elif len(self.running) > 0:
                 # check all the running threads to see if they've completed
                 for t in self.running:
-                    if t._Thread__stopped:
+                    if not t.isAlive():
                         #self.complete.append(t)
                         self.running.remove(t)
                         print 'removed thread: %s' % t
@@ -63,6 +64,14 @@ class KeplerExecutionThread(Thread):
             self.job.status = 'RUNNING'
             self.job.start_date = datetime.datetime.now()
             self.job.save()
+
+            msg = Message(touser=self.job.owner,
+                          fromuser=get_system_user(),
+                          verb='started',
+                          text='')
+            msg.save()
+            JobMessage(job=self.job, message=msg).save()
+            
             self.manager.execute()
             self.job.status = 'DONE'
             error = None
@@ -73,6 +82,18 @@ class KeplerExecutionThread(Thread):
             self.replacement_manager.writePythonData(error)
         self.job.end_date = datetime.datetime.now()
         self.job.save()
+
+        msg = Message(touser=self.job.owner,
+                      fromuser=get_system_user(),
+                      verb='ended',
+                      text='')
+        if self.job.status == 'DONE':
+            msg.text = 'Job completed successfully'
+        else:
+            msg.text = 'Job ended with errors'
+        msg.save()
+        JobMessage(job=self.job, message=msg).save()
+        
         default_job_manager.boo()
     def get_state(self):
         return self.manager.getState().getDescription()

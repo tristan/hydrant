@@ -120,20 +120,20 @@
 #wf-p .submit-row { 
                     text-align: right;
                     padding: 1em;
- }
+}
 
-#jobpreview #jobform { 
+#jobform { 
                        padding: 0.7em 0.7em 1.5em 0.7em;
 }
 
-#jobpreview #jobform #field { 
+#jobform #field { 
                               border-top: 1px solid #ccc;
                               margin: 0.5em 0 0 0;
                               padding: 0.5em 0 0 0;
                               width: 100%;
 }
 
-#jobpreview #jobform label {
+#jobform label {
                              color: #666;
                              font-size: 1.2em;
                              padding: 0em 1.5em 0.5em 0em;
@@ -141,24 +141,28 @@
                              float: left;
 }
 
-#jobpreview #jobform #field #help-text {
+#jobform #field #help-text {
                                          padding: 0.5em 0 0.5em 0;
 }
 
-#jobpreview #jobform #field input {
+#jobform #field input {
                                     width: 99%;
                                     border: 1px solid #bedce7;
                                     padding: 0.2em;
 }
 
-#jobpreview #jobform #field input[type=checkbox] {
+#jobform #field input[type=checkbox] {
                                                    width: 1.3em;
                                                    height: 1.3em;
                                                    }
 
-#jobpreview #jobform #field textarea { 
+#jobform #field textarea { 
                                        border: 1px solid #bedce7;
                                        width: 100%;
                                        height: 4em;
                                        padding: 0.2em;
+}
+
+#jobform .submit-row { 
+                       text-align: right;
 }

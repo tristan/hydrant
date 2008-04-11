@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from django.db.models.query import Q
 from django.newforms import widgets
 from django.utils.text import capfirst
+from django.contrib.auth.models import User
 from settings import STORAGE_ROOT
 from django.utils.safestring import mark_safe
 
@@ -36,37 +37,59 @@ def build_crumbs_from_path(current_name, path):
             crumbs.append({'name': q[i], 'path': '%s/' % '/'.join(['..' for j in range(size-i)])})
     return crumbs or ['']
 
-def generate_job_submission_form(workflow):
+def generate_job_submission_form(workflow, job=None):
     """ Generates a Django newforms class which can be used to
     instantiate a Form containing all the exposed parameters linked
     to the specified workflow.
     """
     parameters = workflow.get_exposed_parameters()
     field_list = []
+    if job != None:
+        field_list.append(('id_name',
+                           forms.CharField(initial=job.name,
+                                           label='Job Name',
+                                           help_text='',
+                                           )))
+        field_list.append(('id_description',
+                           forms.CharField(initial=job.description,
+                                           label='Job Description',
+                                           help_text='',
+                                           widget=forms.Textarea)))
+        
     formfield_callback = lambda f, l, i, h: f.formfield(label=l, initial=i, help_text=h)
-    if len(parameters) == 0:
-        return None
-    for p in parameters:
-        if p.type == 'TEXT':
-            field_list.append(('%s' % p.property_id, forms.CharField(max_length=1000, initial=p.value, label=p.name, help_text=p.description, widget=forms.Textarea)))
-        elif p.type == 'CHECKBOX':
-            field_list.append(('%s' % p.property_id, forms.BooleanField(initial=eval(capfirst(p.value)), label=p.name, help_text=p.description)))
-        elif p.type == 'SELECT':
-            m = workflow.get_model()
-            actor = p.property_id.split('.')[2]
-            choices = tuple([(i, i) for i in [i for i in m.get_properties([actor]) if i['id'] == p.property_id][0]['choices']])
-            if '"' in p.value:
-                p.value = eval(p.value)
-            field_list.append(('%s' % p.property_id, forms.ChoiceField(initial=p.value, label=p.name, choices=choices, help_text=p.description)))
-        elif p.type == 'FILE':
-            field_list.append(('%s' % p.property_id, forms.FileField(initial=p.value, label=p.name, help_text=p.description)))
-        else:
-            field_list.append(('%s' % p.property_id, forms.CharField(initial=p.value, label=p.name, help_text=p.description)))
+    if len(parameters) != 0:
+        for p in parameters:
+            if job != None:
+                try:
+                    ji = JobInput.objects.get(job=job,parameter=p)
+                    p.value = ji.value
+                except:
+                    pass
+            if p.type == 'TEXT':
+                field_list.append(('%s' % p.property_id,
+                                   forms.CharField(max_length=1000,
+                                                   initial=p.value,
+                                                   label=p.name,
+                                                   help_text=p.description,
+                                                   widget=forms.Textarea)))
+            elif p.type == 'CHECKBOX':
+                field_list.append(('%s' % p.property_id, forms.BooleanField(initial=eval(capfirst(p.value)), label=p.name, help_text=p.description)))
+            elif p.type == 'SELECT':
+                m = workflow.get_model()
+                actor = p.property_id.split('.')[2]
+                choices = tuple([(i, i) for i in [i for i in m.get_properties([actor]) if i['id'] == p.property_id][0]['choices']])
+                if '"' in p.value:
+                    p.value = eval(p.value)
+                field_list.append(('%s' % p.property_id, forms.ChoiceField(initial=p.value, label=p.name, choices=choices, help_text=p.description)))
+            elif p.type == 'FILE':
+                field_list.append(('%s' % p.property_id, forms.FileField(initial=p.value, label=p.name, help_text=p.description)))
+            else:
+                field_list.append(('%s' % p.property_id, forms.CharField(initial=p.value, label=p.name, help_text=p.description)))
     base_fields = SortedDict(field_list)
     return type('ExposedParametersForm', (BaseForm,), {'base_fields': base_fields,})
 
 BINARY_CONTENT_TYPES = ['application', 'image']
-def setup_job_parameters_from_post(job, post, files={}):
+def save_job_form(job, post, files={}):
     """ Creates a number of JobInput entries based on the values
     submitted from a job submission form.
     """
@@ -106,8 +129,14 @@ def setup_job_parameters_from_post(job, post, files={}):
                 value = 'false'
             elif value == 'on':
                 value = 'true'
-        ji = JobInput(job=job, parameter=p, value=value)
+        ji, created = JobInput.objects.get_or_create(job=job, parameter=p)#JobInput(job=job, parameter=p, value=value)
+        ji.value = value
         ji.save()
+    if post.has_key('id_name'):
+        job.name = post.get('id_name')
+    if post.has_key('id_description'):
+        job.description = post.get('id_description')
+    job.save()
 
 def generate_parameters_form(workflow, model, path_to_actor):
     """ This generates a Django newforms class which can be used to
@@ -161,12 +190,29 @@ def generate_parameters_form(workflow, model, path_to_actor):
     base_fields = SortedDict(field_list)
     return type(model.name + 'Form', (BaseForm,), {'base_fields': base_fields,})
 
+def save_files(workflow, sfile):
+    storedir = '%s/workflows/%s/' % (STORAGE_ROOT, workflow.id)
+    fp = '%s%s' % (storedir , sfile['filename'])
+    i = 0
+    while os.path.exists(fp):
+        fp = '%s%s%s' % (storedir, i, sfile['filename'])
+        i += 1
+    os.makedirs(storedir)
+    f = open(fp, 'w')
+    for i in sfile['content']:
+        f.write(i)
+    f.close()
+    return fp
+
 def save_parameters_from_post(workflow, post, files):
     """ Saves changes to the Workflow metadata stored in the Workflow
     model based of values passed in via a POST request.
     """
+    f_value = None
     if files is not None:
-        print 'FILES! WOOOT!', files
+        for i in files:
+            print i
+            f_value = save_files(workflow, files[i])
     ids = []
     for k in post.keys():
         s = k.split('_name')
@@ -174,7 +220,10 @@ def save_parameters_from_post(workflow, post, files):
             ids.append(s[0])
     for id in ids:
         name = post.get('%s_name' % id, None)
-        value = post.get('%s_value' % id, None)
+        if f_value is None:
+            value = post.get('%s_value' % id, None)
+        else:
+            value = f_value
         expose = post.get('%s_expose' % id, False)
         description = post.get('%s_description' % id, '')
         typ = post.get('%s_type' % id, 'INPUT')
@@ -190,6 +239,11 @@ def save_parameters_from_post(workflow, post, files):
         wfp.description = description
         wfp.type = typ
         wfp.save()
+
+def new_message(fromuser, touser, title, details):
+    msg = Message(fromuser=fromuser, touser=touser, title=title, text=details)
+    msg.save()
+    return msg
 
 # Changelist settings
 ALL_VAR = 'all'

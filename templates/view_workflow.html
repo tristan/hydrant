@@ -18,146 +18,6 @@
 <script type="text/javascript" src="{{ MEDIA_URL }}/js/prototype.js"></script>
 {% endblock %}
 {% block bodyattrs %}{% if model %}onload="initPageObjects();"{% endif %}{% endblock %}
-{% block extrahead %}
-<script type="text/javascript">
-<!--
-// stolen from http://www.quirksmode.org/js/cross_dhtml.html
-var DHTML = (document.getElementById || document.all || document.layers);
-function get_element(name) {
-    if (document.getElementById) {
-        this.obj = document.getElementById(name);
-        this.style = document.getElementById(name).style;
-    } else if (document.all) {
-        this.obj = document.all[name];
-        this.style = document.all[name].style;
-    } else if (document.layers) {
-        this.obj = document.layers[name];
-        this.style = document.layers[name];
-    }
-}
-function set_visibility(flag, obj) {
-    if (!DHTML) return;
-    var x = new get_element(obj);
-    x.style.visibility = (flag) ? 'visible' : 'hidden';
-}
-
-function set_parameters_to_none() {
-    Element.Methods.update('parameters-div', '');
-}
-
-function set_parameters_to_loading() {
-    Element.Methods.update('parameters-div', '<table style="background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center;"><tr><td><h1 style="text-align: center;">LOADING</h1><h3 style="text-align: center;">Please wait</h3></td></tr></table>');
-}
-function set_parameters_to_saving() {
-    Element.Methods.update('parameters-div', '<table style="background: #FFF; border: 1px solid #CCC; padding: 10px; margin: 2px auto; text-align: center;"><tr><td><h1 style="text-align: center;">SAVING</h1><h3 style="text-align: center;">Please wait</h3></td></tr></table>');
-}
-
-/*
-Ajax.MultipartUpdater = function(divid, url, parameters) {
-    form_data = parameters.postBody
-    fields = form_data.getInputs();
-    var body = "";
-    var boundary = "proto" + Math.random();
-    var contenttype = 'multipart/form-data; boundary=' + boundary;
-    for (var i in fields) {
-        //console.log(i + ": " + fields[i]);
-        if (typeof fields[i] != 'function') {
-            body += "==" + boundary + "\nContent-Disposition: form-data;name=\"" + fields[i].name + "\"\n";
-            body += "\n";
-            body += fields[i].getValue() + "\n";
-            body += "\n";
-        }
-    }
-    body += "==" + boundary + "==";
-    return new Ajax.Updater(divid, url, {contentType: contenttype, postBody: body, onComplete: parameters.onComplete});
-}
-  */  
-function set_parameters(url, actor_name, doclose) {
-    console.log("$('" + actor_name + "_parameters_form');");
-    var form_data = $(actor_name + '_parameters_form');
-    var divid = '';
-    if (doclose == 1) {
-        set_visibility(0, 'parameters-div');
-        set_parameters_to_none();
-    } else {
-        divid = 'parameters-div';
-        set_parameters_to_saving();
-    }
-    new Ajax.Updater(divid, url, {postBody:form_data.serialize(true), onComplete: update_job_submission_form});
-    //Ajax.MultipartUpdater(divid, url, {postBody: form_data, onComplete: update_job_submission_form});
-}
-
-function set_description() {
-    var form_data = $('id_workflow_description_form');
-    new Ajax.Request('{% url description workflow.pk %}',
-            { method:'post',
-              postBody:form_data.serialize(),
-              onSuccess: function(transport){ append_message('Description Saved Sucessfully', 'good'); },
-              onFailure: function(){ append_message('Something went wrong...', 'bad'); }
-            }
-        );
-}
-
-function select_switch(id, select) {
-    var box = document.getElementById('id_valid_users_to');
-    select_str = ''
-    if (select == 1) {
-        select_str = 'selected';
-    }
-    for (var i = 0; i < box.options.length; i++) {
-        box.options[i].selected = select_str;
-    }
-
-}
-
-function set_properties() {
-    // the following is a hack to get valid users submission to work
-    select_switch('id_valid_users_to', 1);
-    var form_data = $('id_workflow_properties_form');
-    new Ajax.Request('{% url workflow_view workflow.pk %}',
-            { method:'post',
-              postBody:form_data.serialize(),
-              onSuccess: function(transport){ append_message('Description Saved Sucessfully', 'good'); },
-              onFailure: function(){ append_message('Something went wrong...', 'bad'); }
-            }
-            );
-    select_switch('id_valid_users_to', 0);
-}
-
-function update_parameters(base_url, actor_name) {
-    new Ajax.Updater('parameters-div', base_url + actor_name, { method: 'get', evalScripts: true });
-}
-
-function update_job_submission_form() {
-    new Ajax.Updater('job-submission-form-div', '{% url job_form_view workflow.pk %}', { method: 'get' });
-}
-
-function update_workflow_div(url) {
-    {% if editable %}
-    url = url + '?editable=True';
-    {% endif %}
-    new Ajax.Updater('workflow-div', url, { method: 'get', onComplete: function (request){initPageObjects()}});
-}
-
-function delete_workflow() {
-    set_parameters_to_loading();
-    set_visibility(1, 'parameters-div');
-    new Ajax.Updater('parameters-div', '{% url delete_workflow workflow.pk %}', { method: 'get' });
-}
--->
-</script>
-{% endblock %}
-{% block object-tools %}
-    {% if user.is_authenticated %}
-        {% if user.is_staff %}
-        <ul>
-            <li><a href="{% url download_workflow workflow.pk %}" class="addlink">Download</a></li>
-            <li><a href="{% url duplicate_workflow workflow.pk %}" class="addlink">Duplicate</a></li>
-            <li><a href="#" onClick="delete_workflow();" class="xlink">Delete</a></li>
-        </ul>
-        {% endif %}
-    {% endif %}
-{% endblock %}
 
 {% block content %}
 <div id="workflow-content">
@@ -167,6 +27,8 @@ function delete_workflow() {
       <a href="#">{{ workflow.name }}</a>
     </div>
     <div class="tools">
+      <a href="{% url job_create workflow.pk %}" class="runlink">Create Job</a>
+      |
       <a href="{% url download_workflow workflow.pk %}" class="addlink">Download</a>
       |
       <a href="{% url duplicate_workflow workflow.pk %}" class="addlink">Duplicate</a>
@@ -225,6 +87,12 @@ function delete_workflow() {
       <div style="clear: both;"></div>
     </div>
     <div id="jobform">
+{% comment %}      
+      <form {% if jobform and jobform.is_multipart %}
+      enctype="multipart/form-data"
+      {% endif %}
+      id="id_job_submission_form" action="" method="post">
+{% endcomment %}
       {% for f in jobform %}
       <div id="field">
 	<label for="id_{{ f.name }}">{{ f.label }}<br/>{{ f }}</label>
