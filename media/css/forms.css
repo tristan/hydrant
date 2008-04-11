@@ -166,3 +166,71 @@
 #jobform .submit-row { 
                        text-align: right;
 }
+
+#editform {
+            padding: 0.7em 0.7em 1.5em 0.7em;
+            margin: 0 0 1em 0;
+            border: 1px solid #bedce7;
+            background: #eaf2f5;
+}
+
+#editform #field { 
+                   margin: 0.5em 0 0 0;
+                   padding: 0.5em 0 0 0;
+                   width: 100%;
+}
+
+#editform label {
+                 color: #666;
+                 font-size: 1.2em;
+                 padding: 0em 1.5em 0.5em 0em;
+                 width: 26em;
+}
+
+#editform #field input {
+                         width: 99%;
+                         border: 1px solid #bedce7;
+                         padding: 0.2em;
+}
+
+#editform #field textarea { 
+                            border: 1px solid #bedce7;
+                            width: 99%;
+                            height: 4em;
+                            padding: 0.2em;
+}
+
+#editform #public {
+                           margin: 0.5em 0 0 0;
+                           padding: 0.5em 0 0 0;
+}
+
+#editform #public li { 
+                      margin: -1em 3em 0 -3em;
+                      display: block;
+                      float: left;
+                      }
+
+
+#usersform #adduserrow { 
+                         padding: 0.4em;
+                         color: #666;
+                         margin: 0.3em 0 0.3em 0;
+}
+
+#usersform label { 
+                               margin: 0 0 0 0;
+                               font-size: 1.2em;
+                               color: #666;
+}
+
+#usersform #adduserrow input { 
+                               border: 1px solid #bedce7;
+                               margin: 0 1em 0 0;
+                               padding: 0.2em;
+} 
+
+#usersform #submitrow { 
+                        padding: 0.4em;
+                        text-align: right;
+ }

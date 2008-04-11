@@ -25,18 +25,34 @@ class Workflow(models.Model):
     owner = models.ForeignKey(User, related_name="worklow_owner",)
     created = models.DateTimeField('date submitted', auto_now_add=True)
     description = models.TextField(blank=True)
-    public = models.BooleanField(default=False,
+    public = models.CharField(max_length=3, default='OFF',
                               verbose_name='Who has access to this workflow?',
-                              choices=((True, 'Anyone'),
-                                       (False, 'Only the people I specify'),
+                              choices=(('ON', 'Anyone'),
+                                       ('OFF', 'Only the people I specify'),
                                        )
                               )
-    valid_users = models.ManyToManyField(User, verbose_name='valid users', 
-                                         blank=True, 
-                                         filter_interface=models.HORIZONTAL, 
-                                         related_name='workflow_valid_users')
+    edit_permissions = models.ManyToManyField(User,
+                                              verbose_name='Users who have edit rights', 
+                                              blank=True, 
+                                              filter_interface=models.HORIZONTAL,
+                                              related_name='edit_permissions',
+                                              )
+    view_permissions = models.ManyToManyField(User,
+                                              verbose_name='Users who can view', 
+                                              blank=True, 
+                                              filter_interface=models.HORIZONTAL,
+                                              related_name='view_permissions',
+                                              )
     deleted = models.BooleanField(default=False,)
 
+    def all_permitted_users(self):
+        return self.edit_permissions.all() | self.view_permissions.all()
+
+    def has_view_permission(self, user):
+        return user in self.view_permissions.all()
+
+    def has_edit_permission(self, user):
+        return user in self.edit_permissions.all()
 
     def get_parameter(self, id):
         """ Gets a WorkflowParameter object linked to this Workflow.

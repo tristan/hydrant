@@ -511,3 +511,16 @@ def upload_workflow_formfield_callback(field, **kwargs):
 
     return field.formfield(**kwargs)
 
+def edit_workflow_formfield_callback(field, **kwargs):
+    """ Used to assign the FilteredSelectMultiple widget for
+    ManyToManyField objects when generating a form.
+    """
+    if field.name == 'public':
+        kwargs['widget'] = widgets.RadioSelect(
+                                               choices=field.choices,
+                                               renderer=RadioFieldRenderer)
+    if field.name == 'description':
+        kwargs['widget'] = widgets.Textarea({'rows':5})
+
+    return field.formfield(**kwargs)
+

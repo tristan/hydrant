@@ -2,7 +2,7 @@
 {% load rooturl %}
 {% load gravatar %}
 {% load textutils %}
-
+{% load messageprocessing %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/dashboard.css"/>
 {% endblock %}
@@ -15,20 +15,18 @@
     {% for msg in messages %}
     <div class="thing">
     <div class="title">
-      {% if msg.is_job %}
-      Job
-      <a href="{% url job msg.job.pk %}">{{ msg.job.name }}</a>
-      {% else %}
-      {% if msg.is_workflow %}
-      Workflow
-      <a href="{% url workflow msg.workflow.pk %}">{{ msg.workflow.name }}</a>
-      {% endif %}
-      {% endif %}
-      {{ msg.verb }}
       {% ifequal msg.fromuser.username 'system' %}
       {% else %}
-      by
       <a href="#">{{ msg.fromuser.username }}</a>
+      {% msgverb user msg %}
+      {% if msg.is_job %}
+      job
+      <a href="{% url job msg.job.pk %}">{{ msg.job.name }}</a>.
+      {% endif %}
+      {% if msg.is_workflow %}
+      workflow
+      <a href="{% url workflow msg.workflow.pk %}">{{ msg.workflow.name }}</a>.
+      {% endif %}
       {% endifequal %}
       {{ msg.date|timesince }} ago.
     </div>
@@ -46,7 +44,7 @@
       {% endifequal %}
     </div>
     <div class="status">
-      {{ msg.text|truncate_to_len:230 }}
+      {% msgtext user msg 230 %}
     </div>
     <div style="clear: both;"></div>
     </div>
