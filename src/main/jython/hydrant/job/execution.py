@@ -6,6 +6,7 @@ from ptolemy.actor import Manager
 from ptolemy.kernel.util import IllegalActionException, KernelException
 from helpers import *
 from hydrant.models import Message, JobMessage, get_system_user
+from hydrant.templatetags.textutils import timeuntil_with_secs
 
 class KeplerJobManager(Thread):
     def __init__(self, max_active=2):
@@ -68,7 +69,8 @@ class KeplerExecutionThread(Thread):
             msg = Message(touser=self.job.owner,
                           fromuser=get_system_user(),
                           verb='started',
-                          text='')
+                          text='Estimated time till completion: %s' % timeuntil_with_secs(self.job.get_eta())
+                          )
             msg.save()
             JobMessage(job=self.job, message=msg).save()
             

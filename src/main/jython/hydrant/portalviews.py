@@ -23,6 +23,7 @@ from portalviewshelper import *
 from models import *
 from forms import *
 from job import *
+from templatetags.textutils import timeuntil_with_secs
 from settings import STORAGE_ROOT, MEDIA_ROOT
 from django.newforms import form_for_model, form_for_instance, widgets
 from django.utils.safestring import mark_safe, mark_for_escaping
@@ -87,7 +88,9 @@ def upload_workflow(request):
             msg = Message(touser=get_system_user(),
                           fromuser=request.user,
                           verb='uploaded',
-                          text=workflow.description)
+                          text=workflow.description,
+                          private=workflow.public == 'OFF'
+                          )
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
 
@@ -111,15 +114,12 @@ def workflow(request, id, path=''):
     """
     workflow = get_object_or_404(Workflow, pk=id)
     # check permissions
-    if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
+    if not workflow.has_view_permission(request.user):
         raise Http404
 
-    editable = False
-    if workflow.owner == request.user:
-        editable = True
+    editable = workflow.has_edit_permission(request.user)
 
     jobform = None
-    #    if len(workflow.get_exposed_parameters()) > 0:
     JobSubmissionForm = generate_job_submission_form(workflow)
     if JobSubmissionForm is not None:
         jobform = JobSubmissionForm()
@@ -164,10 +164,14 @@ def workflow(request, id, path=''):
 
 def edit_workflow(request, id):
     w = get_object_or_404(Workflow, pk=id)
-    if request.user != w.owner:
+    if not w.has_edit_permission(request.user):
         raise Http404
 
     if request.method == 'POST':
+
+        ef = EditWorkflowForm(request.POST, instance=w)
+        ef.save()
+        
         for u in w.all_permitted_users():
             v_rmed = v_added = e_rmed = e_added = False
             has_edit = request.POST.get(u.username + '_edit', False)
@@ -222,12 +226,17 @@ def edit_workflow(request, id):
             WorkflowMessage(workflow=w, message=msg).save()
         except:
             pass
-                
+    else:
+        ef = EditWorkflowForm(instance=w)
+
+    # just because permissions can change during POST processing
+    if not w.has_edit_permission(request.user):
+        raise Http404
+           
     stuff = {'workflow': w,
              'adduserform': AddUserForm(),
+             'editform': ef,
              }
-    ef = EditWorkflowForm(instance=w)
-    stuff['editform'] = ef
     return render_to_response('view_workflow.html',
                               stuff,
                               context_instance=RequestContext(request))
@@ -275,7 +284,10 @@ def job(request, jobid):
             if request.POST.has_key('save_job'):
                 pass
             elif request.POST.has_key('run_job'):
-                msg = Message(touser=get_system_user(), fromuser=request.user, verb='submitted', text=job.description)
+                msg = Message(touser=get_system_user(),
+                              fromuser=request.user,
+                              verb='submitted',
+                              text=job.description)
                 msg.save()
                 JobMessage(job=job, message=msg).save()
                 queue_new_job(job)

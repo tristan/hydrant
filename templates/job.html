@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% load listutils %}
 {% load gravatar %}
+{% load textutils %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/job.css"/>
 <!--[if IE]><style type="text/css">@import "{{ MEDIA_URL }}/css/job_ie.css";</style><![endif]-->
@@ -34,7 +35,7 @@
       {% if job.start_date %}<b>started:</b> {{ job.start_date }}<br/>
       {% if job.end_date %}<b>ended:</b> {{ job.end_date }}<br/>
       {% else %}
-      <b>ETA:</b> unknown
+      <b>ETA:</b> {{ job.get_eta|timeuntil_with_secs }}
       {% endif %}
       {% endif %}
     </div>

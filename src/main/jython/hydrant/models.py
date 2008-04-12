@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 import widgets
 from kepler.workflow.proxy import EntityProxy, EntityProxyCache
+import datetime, time
 
 class Workflow(models.Model):
 
@@ -49,10 +50,15 @@ class Workflow(models.Model):
         return self.edit_permissions.all() | self.view_permissions.all()
 
     def has_view_permission(self, user):
-        return user in self.view_permissions.all()
+        return (user in self.view_permissions.all() or
+                user == self.owner or
+                self.public == 'ON'
+                )
 
     def has_edit_permission(self, user):
-        return user in self.edit_permissions.all()
+        return (user in self.edit_permissions.all() or
+                user == self.owner
+                )
 
     def get_parameter(self, id):
         """ Gets a WorkflowParameter object linked to this Workflow.
@@ -80,6 +86,19 @@ class Workflow(models.Model):
         proxies this Workflow.
         """
         return EntityProxyCache.get_proxy(self, forexec)
+
+    def get_average_run_time(self):
+        jobs = Job.objects.filter(workflow=self, status='DONE')
+        if len(jobs) > 0:
+            tm = 0
+            for j in jobs:
+                start = time.mktime(j.start_date.timetuple())
+                end = time.mktime(j.end_date.timetuple())
+                tm += (end - start)
+            tm = (tm / len(jobs))
+            return tm
+        else:
+            return None
 
     class Admin:
         list_display = ('name', 'owner', 'created', 'public')
@@ -156,6 +175,15 @@ class Job(models.Model):
     end_date = models.DateTimeField(null=True)
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(null=True)
+
+    def get_eta(self):
+        if not self.start_date:
+            return 'unknown'
+        avg = self.workflow.get_average_run_time()
+        if avg == None:
+            return 'unknown'
+        start = time.mktime(self.start_date.timetuple())
+        return datetime.datetime.fromtimestamp(start + avg)
 
     def get_job_inputs(self):
         """ Returns all the JobInput objects associated with this Job.
@@ -261,6 +289,7 @@ class Message(models.Model):
     touser = models.ForeignKey(User, related_name='touser')
     date = models.DateTimeField(auto_now_add=True)
     verb = models.CharField(blank=True,max_length=200)
+    private = models.BooleanField(default=True)
     text = models.TextField()
 
     def workflow(self):
@@ -293,7 +322,12 @@ def get_all_messages():
     return msgs
 
 def get_all_messages_related_to_user(user):
-    return Message.objects.filter(touser=user) | Message.objects.filter(fromuser=user)
+    return (
+        Message.objects.filter(touser=user) |
+        Message.objects.filter(fromuser=user) |
+        Message.objects.filter(touser=get_system_user(), private=False) |
+        Message.objects.filter(fromuser=get_system_user(), private=False)
+        )
 
 def get_all_messages_for_user(user):
     msgs = Message.objects.filter(touser=user)

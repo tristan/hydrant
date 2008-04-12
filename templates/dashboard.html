@@ -16,6 +16,10 @@
     <div class="thing">
     <div class="title">
       {% ifequal msg.fromuser.username 'system' %}
+      {% if msg.is_job %}
+      The job <a href="{% url job msg.job.pk %}">{{ msg.job.name }}</a>
+      {% msgverb user msg %}
+      {% endif %}
       {% else %}
       <a href="#">{{ msg.fromuser.username }}</a>
       {% msgverb user msg %}
@@ -105,7 +109,7 @@
 	Status: {{ job.status }}<br/>
 	{% ifequal job.status 'DONE' %}
 	{% else %}
-	ETA: Unknown
+	ETA: {{ job.get_eta|timeuntil_with_secs }}
 	{% endifequal %}
       </div>
       <div style="clear: both;"></div>
