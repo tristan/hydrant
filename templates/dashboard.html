@@ -84,29 +84,40 @@
     <h1>Your Recent Jobs</h1>
     {% for job in jobs %}
     <div class="thing">
-      <div class="title">
-	<a href="{% url job job.id %}">{{ job.name }}</a>
-	{% if job.end_date %}
-	ended {{ job.end_date|timesince }} ago.
-	{% else %}
-	{% if job.start_date %}
-	started {{ job.start_date|timesince }} ago.
-	{% else %}
-	{% if job.submission_date %}
-	submitted {{ job.submission_date|timesince }} ago.
-	{% else %}
-	created {{ job.creation_date|timesince }} ago.
-	{% endif %}
-	{% endif %}
-	{% endif %}
-      </div>
-      <div class="details">
       <div class="icon">
 	<img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
-	<img src="{% gravatar_url job.owner 32 %}" alt="{{ job.owner.username }}"/>
+	<img src="{% gravatar_url job.owner 16 %}" alt="{{ job.owner.username }}"/>
       </div>
+      <div class="title">
+	<a href="{% url job job.id %}">{{ job.name }}</a>
+      </div>
+      <div style="clear: both;"></div>
+      <div class="tools">
+	{% if not job.start_date %}
+	<a href="{% url job job.pk %}"><img src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
+	<a href="#"><img alt="cancel job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+	{% else %}
+	{% if not job.end_date %}
+	<a href="#"><img alt="stop job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+	{% endif %}
+	{% endif %}
+	<a href="{% url job_create job.workflow.pk %}"><img alt="create job" src="{{ MEDIA_URL }}/img/icons/reload-16x16.png"/></a>
+      </div>
+      <div class="details">
       <div class="status">
-	Status: {{ job.status }}<br/>
+	{% if job.end_date %}
+	Ended {{ job.end_date|timesince }} ago.<br/>
+	{% else %}
+	{% if job.start_date %}
+	Started {{ job.start_date|timesince }} ago.<br/>
+	{% else %}
+	{% if job.submission_date %}
+	Submitted {{ job.submission_date|timesince }} ago.<br/>
+	{% else %}
+	Created {{ job.creation_date|timesince }} ago.<br/>
+	{% endif %}
+	{% endif %}
+	{% endif %}
 	{% ifequal job.status 'DONE' %}
 	{% else %}
 	ETA: {{ job.get_eta|timeuntil_with_secs }}
@@ -116,48 +127,32 @@
       </div>
     </div>
     {% endfor %}
-
-{% comment %}
-  <div class="thing">
-  <div class="title">
-    <a href="#">{jobname}</a>
-    started by
-    <a href="#">trystn</a>
-    on
-    {start_date}
   </div>
-  <div class="details">
-  <div class="icon">
-    <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
-    <img src="{% gravatar_url 'tristan.king@gmail.com' 32 %}" alt="trystn"/>
-  </div>
-  <div class="status">
-    Status: Running<br/>
-    ETA: Unknown
-  </div>
-  <div style="clear: both;"></div>
-  </div>
-  </div>
-{% endcomment %}
   
-  </div>
   <div id="small-workflows">
     <h1>Your Workflows <a href="{% url upload_workflow %}">(upload new)</a></h1>
     {% for w in workflows %}
     <div class="thing">
+      <div class="icon">
+	<img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler workflow"/>
+	<img src="{% gravatar_url w.owner 16 %}" alt="{{ w.owner.username }}"/>
+      </div>
       <div class="title">
 	<a href="{% url workflow w.pk %}">{{ w.name }}</a>
       </div>
+      <div style="clear: both;"></div>
+      <div class="tools">
+	<a href="{% url job_create w.pk %}"><img alt="create job" src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
+	<a href="{% url workflow w.pk %}"><img alt="setup workflow" src="{{ MEDIA_URL }}/img/icons/prefs-16x16.png"/></a>
+	<a href="{% url edit_workflow w.pk %}"><img alt="edit preferences" src="{{ MEDIA_URL }}/img/icons/edit-16x16.png"/></a>
+	<a href="#"><img alt="delete workflow" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+      </div>
       <div class="details">
-	<div class="icon">
-	  <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler workflow"/>
-	  <img src="{% gravatar_url w.owner 32 %}" alt="{{ w.owner.username }}"/>
-	</div>
 	<div class="status">
 	  {{ w.description|truncate_to_len:140 }}
 	</div>
-	<div style="clear: both;"></div>
       </div>
+      <div style="clear: both;"></div>
     </div>
     {% endfor %}
   </div>

@@ -27,11 +27,17 @@ import time
 import datetime
 
 def timesince_with_secs(dt):
-    return _timesince(dt)
+    try:
+        return _timesince(dt)
+    except:
+        return u'unknown'
 register.filter('timesince_with_secs', timesince_with_secs)
 
 def timeuntil_with_secs(dt):
-    return _timeuntil(dt)
+    try:
+        return _timeuntil(dt)
+    except:
+        return u'unknown'
 register.filter('timeuntil_with_secs', timeuntil_with_secs)
 
 
