@@ -69,17 +69,11 @@ def upload_workflow(request):
     check the POST and FILES variables for Workflow details and store
     them.
     """
-    WorkflowForm = form_for_model(Workflow,
-                                  fields=('moml_file',
-                                          'name',
-                                          'description',
-                                          'public'),
-                                  formfield_callback=upload_workflow_formfield_callback
-                                  )
     if request.method == 'POST':
         print request.POST
-        form = WorkflowForm(request.POST, request.FILES)
-        if form.is_valid():
+        form = UploadWorkflowForm(request.POST, request.FILES)
+
+        if form.is_valid() and form.validate_moml():
             messages = []
             workflow = form.save(commit=False)
             workflow.owner = request.user
@@ -94,12 +88,13 @@ def upload_workflow(request):
                           )
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
-
+            
             return HttpResponseRedirect(reverse('workflow', args=(workflow.pk,)))
+            
         else:
-            print 'form errors:', form.errors
+            print form.errors
     else:
-        form = WorkflowForm()
+        form = UploadWorkflowForm()
     return render_to_response('upload_workflow.html',
                               {'title': _('Upload Workflow'),
                                'crumbs': [''],

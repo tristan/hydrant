@@ -19,7 +19,7 @@ a img {
 .site { 
         margin: 0pt auto;
         text-align: left;
-        width: 62.00em;
+        width: 62em;
         background: #fff;
         border-left: 1px solid #999;
         border-right: 1px solid #999;
@@ -50,7 +50,8 @@ a img {
                    margin: 5.44em 0 0 0;
                    height: 1.44em;
                    background: #3e5a8b;
-                   width: 62.0em;
+                   max-width: 62em;
+                   width: 100%;
                    font-weight: bold;
 }
 
@@ -153,4 +154,49 @@ a img {
               padding: 0.3em 0 0 0;
               width: 7.13em;
               height: 1.33em;
+}
+
+#content #indexview { 
+                      padding: 2em 2em 0 2em;
+}
+
+#content #indexview #text { 
+                            padding: 4em 0 0 0;
+                            float: left;
+                            width: 25em;
+                            vertical-align: middle;
+                            text-align: center;
+                            margin: 0 auto;
+}
+
+#content #indexview #text #title { 
+                                   margin: 0 auto;
+                                   width: 9em;
+}
+
+#content #indexview #text h1 { 
+                               color: #3e5a8b;
+                               font-size: 1.8em;
+                               text-decoration: underline;
+                               float: left;
+}
+
+#content #indexview #text span { 
+                                 font-size: 0.6em;
+                                 float: left;
+}
+
+#content #indexview #text h2 {
+                               margin: 0;
+                               color: #3e5a8b;
+                               font-size: 1.2em;
+                               font-weight: normal;
+}
+
+#content #indexview #text #intro { 
+                                   text-align: left;
+}
+
+#content #indexview img { 
+                            float: left;
 }

@@ -16,11 +16,11 @@
 
 #dashboard #col-one {
                       float: left;
-                      width: 47em;
+                      width: 60%;
 }
 
 #dashboard #col-two {
-                      width: 28em;
+                      width: 36%;
                       float: right;
 }
 
@@ -90,21 +90,14 @@
                           margin: 0.2em 0 0 0;
                           float: left;
                           padding: 0 0 0 1.5em;
-                          width: 36em;
-}
-
-#col-one .thing .details .larger-status { 
-                          margin: 0.2em 0 0 0;
-                          float: left;
-                          padding: 0 0 0 1.5em;
-                          width: 39.2em;
+                          width: 82%;
 }
 
 #col-two .thing .details .status { 
                           margin: 0.2em 0 0 0;
                           float: left;
                           padding: 0 0 0 1.5em;
-                          width: 18em;
+                          width: 70%;
 }
 
 #dashboard a { 

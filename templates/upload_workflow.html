@@ -1,6 +1,7 @@
 {% extends "index.html" %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
+<!--[if IE]><style type="text/css">@import "{{ MEDIA_URL }}/css/forms_ie.css";</style><![endif]-->
 {% endblock %}
 {% block content %}
 <div id="upload-wf-box">
@@ -21,7 +22,7 @@
     {{ field }}
     {% if field.errors %}<br/>
     <span class="error-text">{% for e in field.errors %}{{ e }}{% endfor %}</span>
-    {% endif %}
+    {% endif %}<br/>
     </label>
     {% endifequal %}
     {% endfor %}

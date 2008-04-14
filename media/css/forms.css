@@ -54,16 +54,26 @@
                                  color: #666;
                                  padding: 0 0 1em 0;
 }
-#upload-wf-box #fields #public>span { 
+#upload-wf-box #fields #public span { 
                                       font-size: 0.8em;
 }
 
-#upload-wf-box #fields #public>label {
+#upload-wf-box #fields #public label {
                                        margin: 0;
                                        color: black;
 }
 
-#upload-wf-box #fields #public>label>input {
+#upload-wf-box #fields #public ul {
+                                    margin: 0.3em 0 0 -1.8em;
+}
+
+#upload-wf-box #fields #public ul li { 
+                                       display: block;
+                                       float: left;
+                                       padding: 0 1em 0 0;
+                      }
+
+#upload-wf-box #fields #public label>input {
                                              margin: 0 0.7em 0 0;
 }
 

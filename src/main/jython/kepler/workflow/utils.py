@@ -4,6 +4,7 @@ from ptolemy.moml.filter import RemoveGraphicalClasses
 from java.lang import Class, Throwable, NoClassDefFoundError, NullPointerException
 from ptolemy.kernel.util import NamedObj
 import org.python.core.PyJavaPackage
+from ptolemy.moml import MoMLParser
 
 class ValidationError(Exception):
         def __init__(self, value):
@@ -81,6 +82,16 @@ def validateMoML(moml):
     # we just loaded a heap of classes into the default workspace, to avoid problems lets remove them
     NamedObj().workspace().removeAll()
     return messages
+
+def parse_moml(moml_str):
+    parser = MoMLParser()
+    parser.reset()
+    parser.parse(moml_str)
+
+def parse_moml_file(moml_file):
+    parser = MoMLParser()
+    parser.reset()
+    parser.parseFile(moml_file)
 
 re_class_attribs = re.compile(r'class=\"([\.\w]+)\"')
 def getAllClassesInMoML(moml):

@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 import widgets
 from kepler.workflow.proxy import EntityProxy, EntityProxyCache
-import datetime, time
+from kepler.workflow import utils
+import datetime, time, traceback
 
 class Workflow(models.Model):
 
@@ -80,6 +81,14 @@ class Workflow(models.Model):
 
     def __unicode__(self):
         return unicode(self.name)
+
+    def parse_moml(self):
+        try:
+            utils.parse_moml(self.get_moml_file_filename())
+            return True
+        except:
+            traceback.print_exc()
+            return False
 
     def get_proxy_object(self, forexec=False):
         """ Returns a kepler.workflow.proxy.EntityProxy object which

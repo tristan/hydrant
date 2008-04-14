@@ -3,6 +3,8 @@ from models import *
 from django.newforms import ModelForm, Form
 from django.newforms.fields import CharField, BooleanField, ChoiceField
 from django.newforms.widgets import RadioSelect, RadioFieldRenderer
+from kepler.workflow import utils
+import traceback
 
 class EditWorkflowForm(ModelForm):
     public = CharField(
@@ -12,9 +14,33 @@ class EditWorkflowForm(ModelForm):
         ),
         label='Who has access to this workflow?',
         )
+
     class Meta:
         model = Workflow
         fields=('name', 'description', 'public')
+
+class UploadWorkflowForm(ModelForm):
+    public = CharField(
+        widget=RadioSelect(
+        renderer=RadioFieldRenderer,
+        choices=Workflow._meta.get_field('public').choices,
+        ),
+        label='Who has access to this workflow?',
+        initial='OFF',
+        )
+
+    def validate_moml(self):
+        try:
+            utils.parse_moml(self['moml_file'].data['content'])
+            return True
+        except:
+            traceback.print_exc()
+            self.errors['moml_file'] = [u'Workflow validation failed.']
+            return False
+    
+    class Meta:
+        model = Workflow
+        fields=('moml_file', 'name', 'description', 'public')
 
 class AddUserForm(Form):
     username = CharField(label='Username')
