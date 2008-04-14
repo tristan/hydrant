@@ -41,14 +41,41 @@
       {{ obj.name }}</a>
     </div>
     <div id="tools">
+      {% if workflow %}
+      <a href="{% url job_create obj.pk %}" class="runlink">Create Job</a>
+      |{% if obj.user_can_edit %}
+      <a href="{% url edit_workflow obj.pk %}" class="editlink">Edit</a>
+      |
+      <a href="{% url workflow obj.pk %}" class="editlink">Actor Setup</a>
+      |{% endif %}
+      <a href="{% url download_workflow obj.pk %}" class="addlink">Download</a>
+      |
+      <a href="{% url duplicate_workflow obj.pk %}" class="addlink">Duplicate</a>
+      |
+      <a href="#" onClick="delete_workflow();" class="xlink">Delete</a>
+      {% endif %}
+      {% if job %}
+      {% if not obj.start_date %}
+      <a href="{% url job obj.pk %}">Edit</a>
+      |
+      <a href="#">Cancel Job</a>
+      |
+      {% else %}
+      {% if not obj.end_date %}
+      <a href="#">Stop Job</a>
+      |
+      {% endif %}
+      {% endif %}
+      <a href="{% url job_create obj.workflow.pk %}">Create New Job</a>
+      {% endif %}
     </div>
     <div style="clear: both;"></div>
     <div id="icons">
       <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="system"/>
       <img src="{% gravatar_url obj.owner 32 %}" alt="{{ obj.owner.username }}"/>
     </div>
+    {% if job %}
     <div id="details">
-      {% if job %}
       <span id="label">Workflow:</span>
       <a href="{% url workflow obj.workflow.pk %}">{{ obj.workflow.name }}</a><br/>
       <span id="label">created:</span> {{ obj.creation_date }}<br/>
@@ -59,12 +86,9 @@
       <span id="label">ETA:</b> {{ job.get_eta|timeuntil_with_secs }}
       {% endif %}
       {% endif %}
-      {% endif %}
     </div>
-    <div id="description">
-      {% if job %}
-   
-      {% endif %}
+    {% endif %}
+    <div id="description{% if workflow %}-workflow{% endif %}">
       {{ obj.description|truncate_to_len:430 }}<br/>
       {% if job %}
       {% if obj.end_date %}
@@ -72,7 +96,6 @@
 	{% else %}
 	{% if obj.start_date %}
 	Started {{ obj.start_date|timesince }} ago.<br/>
-	<span id="label">ETA:</span> {{ obj.get_eta|timeuntil_with_secs }}
 	{% else %}
 	{% if obj.submission_date %}
 	Submitted {{ obj.submission_date|timesince }} ago.<br/>
@@ -84,11 +107,12 @@
 	{% ifequal obj.status 'DONE' %}
 	{% else %}
 	{% endifequal %}
-      	{% endif %}
+      {% endif %}
     </div>
     <div style="clear: both;"></div>
     </div>
     {% endfor %}
+    {% ifnotequal page.paginator.num_pages 1 %}
     <div id="pages">
       {% for p in page|paginate %}
       {% if forloop.first %}
@@ -114,6 +138,7 @@
       {% endif %}
       {% endfor %}
     </div>
+    {% endifnotequal %}
   </div>
   <div style="clear: both;"></div>
   {% else %}

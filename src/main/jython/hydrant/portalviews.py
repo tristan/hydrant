@@ -350,22 +350,34 @@ def workflows(request):
     """ Handles displaying the view of a searchable list of all the
     workflows on the system.
     """
-    
-    c = RequestContext(request,
-            { 'title': _('Workflows'),
-              'results': results.result_list,
-              'result_headers': results.result_headers,
-              'query': results.query,
-              'search_var': SEARCH_VAR,
-              'pagination_required': results.pagination_required,
-              'pages': results.pages,
-              'page_count': len(results.pages),
-              'result_count': len(results.result_list),
-              'show_result_count': len(results.result_list) != results.full_result_count and results.query != '',
-              'full_result_count': results.full_result_count,
-              'crumbs': [''],
-            })
-    return render_to_response('kepler/workflow_list.html', context_instance=c)
+    if request.GET.has_key('search_term'):
+        form = WorkflowSearchForm(request.GET)
+        results = form.get_results()
+        prefix = form.get_url()
+    else:
+        form = WorkflowSearchForm()
+        results = Workflow.objects.all()
+        prefix = '?'
+    permission_based_results = []
+    for w in results:
+        if w.has_view_permission(request.user):
+            if w.has_edit_permission(request.user):
+                w.user_can_edit = True
+            permission_based_results.append(w)
+        
+    results = permission_based_results
+    paginator = Paginator(results, 8)
+    try:
+        page = paginator.page(int(request.GET.get('p', 1)))
+    except:
+        page = paginator.page(1)
+    return render_to_response('list.html',
+                              {'page':page,
+                               'workflow': True,
+                               'form': form,
+                               'prefix': prefix,
+                               },
+                              context_instance=RequestContext(request))
 
 def jobs(request):
     """ Handles displaying the view of a searchable list of all the jobs

@@ -20,7 +20,7 @@
     </div>
     {% block profilelink %}<div class="toollink"><a href="#">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
-    {% block workflowslink %}<div class="toollink"><a href="#">Workflows</a></div>{% endblock %}
+    {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}
     {% else %}
     <div class="toollink">
     <a href="{% url login %}">Log in</a>
