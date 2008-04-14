@@ -88,6 +88,7 @@ class JobSearchForm(SearchForm):
                 )
             )
         return results
+    
     def get_url(self):
         url = '?'
         url += 'search_term=%s' % self['search_term'].data

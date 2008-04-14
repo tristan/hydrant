@@ -379,6 +379,11 @@ def jobs(request):
         form = JobSearchForm()
         results = Job.objects.all()
         prefix = '?'
+    permission_based_results = []
+    for j in results:
+        if j.workflow.has_view_permission(request.user):
+            permission_based_results.append(j)
+    results = permission_based_results
     paginator = Paginator(results, 8)
     try:
         page = paginator.page(int(request.GET.get('p', 1)))
