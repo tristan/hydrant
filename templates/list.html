@@ -1,0 +1,126 @@
+{% extends "index.html" %}
+{% load gravatar %}
+{% load textutils %}
+{% load paginator %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/list.css"/>
+{% endblock %}
+{% block content %}
+<div id="list" class="{% if job %}jobsearch{% endif %}{% if workflow %}workflowsearch{% endif %}">
+  <div id="searchbox">
+    <h1>Search</h1>
+    <form method="GET" action="">
+    <div id="colone">
+    <div id="term">
+      {{ form.search_term }}<input id="search-submit" type="submit" value="Search"/>
+    </div>
+    <div style="clear: both;"></div>
+    <div id="includes">
+      <label>search in: </label>
+      <div id="name">names</div>{{ form.search_names }}
+      <div id="name">descriptions</div>{{ form.search_descriptions }}
+      <div id="name">comments</div>{{ form.search_comments }}
+      <div id="name">users</div>{{ form.search_users }}
+      <div style="clear: both;"></div>
+    </div>
+    </div>
+    <div id="coltwo">
+      <label for="id_sort_by">sort by: {{ form.sort_by }}</label>
+      {{ form.sort_order }}
+    </div>
+    <div style="clear: both;"></div>
+    <input type="hidden" name="p" value="{{ page.number }}"/>
+    </form>
+  </div>
+  {% ifnotequal page.paginator.count 0 %}
+  <h1>Page {{ page.number }} of {{ page.paginator.num_pages }}</h1>
+  {% for obj in page.object_list %}
+  <div id="listitem">
+    <div id="name">
+      <a href="{% if job %}{% url job obj.pk %}{% else %}{% url workflow obj.pk %}{% endif %}">
+      {{ obj.name }}</a>
+    </div>
+    <div id="tools">
+    </div>
+    <div style="clear: both;"></div>
+    <div id="icons">
+      <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="system"/>
+      <img src="{% gravatar_url obj.owner 32 %}" alt="{{ obj.owner.username }}"/>
+    </div>
+    <div id="details">
+      {% if job %}
+      <span id="label">Workflow:</span>
+      <a href="{% url workflow obj.workflow.pk %}">{{ obj.workflow.name }}</a><br/>
+      <span id="label">created:</span> {{ obj.creation_date }}<br/>
+      {% if obj.submission_date %}<span id="label">submitted:</span> {{ obj.submission_date }}<br/>{% endif %}
+      {% if obj.start_date %}<span id="label">started:</span> {{ obj.start_date }}<br/>
+      {% if obj.end_date %}<span id="label">ended:</span> {{ obj.end_date }}<br/>
+      {% else %}
+      <span id="label">ETA:</b> {{ job.get_eta|timeuntil_with_secs }}
+      {% endif %}
+      {% endif %}
+      {% endif %}
+    </div>
+    <div id="description">
+      {% if job %}
+   
+      {% endif %}
+      {{ obj.description|truncate_to_len:430 }}<br/>
+      {% if job %}
+      {% if obj.end_date %}
+	Ended {{ obj.end_date|timesince }} ago.<br/>
+	{% else %}
+	{% if obj.start_date %}
+	Started {{ obj.start_date|timesince }} ago.<br/>
+	<span id="label">ETA:</span> {{ obj.get_eta|timeuntil_with_secs }}
+	{% else %}
+	{% if obj.submission_date %}
+	Submitted {{ obj.submission_date|timesince }} ago.<br/>
+	{% else %}
+	Created {{ obj.creation_date|timesince }} ago.<br/>
+	{% endif %}
+	{% endif %}
+	{% endif %}
+	{% ifequal obj.status 'DONE' %}
+	{% else %}
+	{% endifequal %}
+      	{% endif %}
+    </div>
+    <div style="clear: both;"></div>
+    </div>
+    {% endfor %}
+    <div id="pages">
+      {% for p in page|paginate %}
+      {% if forloop.first %}
+        {% ifequal p page.number %}
+        {% else %}
+          {% ifnotequal p 1 %}
+          <a href="{{ prefix }}&p=1">&lt;&lt; first</a>
+          {% endifnotequal %}
+        {% endifequal %}
+      {% endif %}
+      {% ifequal p page.number %}
+      <b>{{ p }}</b>
+      {% else %}
+      <a href="{{ prefix }}&p={{ p }}">{{ p }}</a>
+      {% endifequal %}
+      {% if forloop.last %}
+        {% ifequal p page.number %}
+        {% else %}
+          {% ifnotequal p page.paginator.num_pages %}
+          <a href="{{ prefix }}&p={{ page.paginator.num_pages }}">last &gt;&gt;</a>
+          {% endifnotequal %}
+        {% endifequal %}
+      {% endif %}
+      {% endfor %}
+    </div>
+  </div>
+  <div style="clear: both;"></div>
+  {% else %}
+  <div id="pages">
+    <h1>... No Results ...</h1>
+  </div>
+  {% endifnotequal %}
+  
+
+{% endblock %}

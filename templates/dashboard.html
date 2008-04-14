@@ -54,29 +54,6 @@
     </div>
     </div>
     {% endfor %}
-
-    <div class="thing">
-    <div class="title">
-      <a href="#">trystn</a>
-      commented on your job
-      <a href="#">{job_name}</a>
-    </div>
-    <div class="details">
-    <div class="icon">
-       <img src="{% gravatar_url 'tristan.king@gmail.com' 32 %}" alt="{{ user.username }}"/>
-    </div>
-    <div class="larger-status">
-      wow! that was one awesome job! filler filler filler filler filler filler
-      filler filler filler filler filler filler filler filler filler filler
-      filler filler filler
-      OH MY GOD! IE6 YOU ARE WORTHLESS!
-    </div>
-    <div style="clear: both;"></div>
-    </div>
-    </div>
-
-    
-    
   </div>
   </div>
   <div id="col-two">
@@ -110,6 +87,7 @@
 	{% else %}
 	{% if job.start_date %}
 	Started {{ job.start_date|timesince }} ago.<br/>
+	ETA: {{ job.get_eta|timeuntil_with_secs }}
 	{% else %}
 	{% if job.submission_date %}
 	Submitted {{ job.submission_date|timesince }} ago.<br/>
@@ -120,7 +98,6 @@
 	{% endif %}
 	{% ifequal job.status 'DONE' %}
 	{% else %}
-	ETA: {{ job.get_eta|timeuntil_with_secs }}
 	{% endifequal %}
       </div>
       <div style="clear: both;"></div>

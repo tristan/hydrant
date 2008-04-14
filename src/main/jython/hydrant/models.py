@@ -216,15 +216,11 @@ class Job(models.Model):
     class Admin:
         pass
 
-    class Search:
+    class Meta:
 
         """ Class used by the kepler.portalviewshelper.SearchList class.
         """
-
-        list_display = ('name', 'workflow', 'status', 'submission_date',
-                        'end_date')
-        search_fields = ('workflow__name', 'status', 'name', 'description')
-        sortable = ('workflow__name',)
+        ordering = ('name',)
 
 class JobInput(models.Model):
 

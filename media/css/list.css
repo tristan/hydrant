@@ -1,0 +1,133 @@
+#list { 
+        font-size: 0.8em;
+        margin: 1.0em 1.0em 1.0em 1.0em;
+}
+
+#list a { 
+               color: #4183c4;
+               text-decoration: none;
+}
+
+#list a:hover { 
+               text-decoration: underline;
+}
+
+#searchbox { 
+             border: 1px solid #bedce7;
+             margin: 0 0 1.0em 0;
+             padding: 0.5em;
+             background: #eaf2f5;
+}
+
+#searchbox #colone {
+                     width: 49%;
+}
+
+#searchbox #includes label { 
+                             margin: 0.15em 0 0 0;
+                             float: left;
+}
+
+#searchbox #includes input { 
+                             float: left;
+}
+
+#searchbox #includes #name { 
+                             margin: 0.15em 0 0 0;
+                             float: left;
+}
+
+#searchbox #coltwo {
+                     width: 49%;
+}
+
+#searchbox label { 
+                   color: #888;
+}
+
+#searchbox #coltwo label {
+                           float: left;
+}
+
+#searchbox ul { 
+                margin: 0;
+                padding: 0;
+                float: left;
+}
+
+#searchbox li { 
+                display: block;
+                float: left;
+}
+
+#searchbox li>label { 
+                      color: #000;
+                      margin: 0 0.3em 0 0;
+}
+
+#searchbox li>label>input { 
+                            margin: 0.3em 0 0 0;
+}
+
+
+#searchbox #term input {
+                         float: left;
+}
+
+#searchbox #id_search_term { 
+                        border: 1px solid #ccc;
+                        margin: 0.02em 0.5em 0 0;
+                        padding: 0.18em;
+                        width: 20em;
+}
+
+#listitem { 
+            padding: 0.5em;
+            margin: 0 0 1.0em 0;
+            border: 1px solid #d8d8d8;
+            background-color: #f0f0f0;
+}
+
+#listitem #name {
+                  float: left;
+}
+
+#listitem #tools {
+                   float: right;
+}
+
+#listitem #icons { 
+                   margin: 0.3em 0 0 0.5em;
+                   float: left;
+}
+
+#listitem #icons img { 
+                          border: 1px solid #d0d0d0;
+                          padding: 2px;
+                          width: 2.46em;
+                          height: 2.46em;
+}
+
+#listitem #details {
+                     float: left;
+                     margin: 0.3em 0 0 0.5em;
+                     width: 23em;
+
+}
+
+#listitem #description {
+                         float: left;
+                         margin: 0.3em 0 0 0.5em;
+                         width: 42em;
+}
+
+#listitem #label {
+                            color: #888;
+}
+
+#pages { 
+}
+
+#pages #prev, #pages #next, #pages #thispage { 
+           float: left;
+}

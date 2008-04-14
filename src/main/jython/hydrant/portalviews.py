@@ -8,6 +8,7 @@ from django.utils.translation import ugettext as _
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
+from django.core.paginator import Paginator, InvalidPage
 from django.db import models
 from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
@@ -349,7 +350,7 @@ def workflows(request):
     """ Handles displaying the view of a searchable list of all the
     workflows on the system.
     """
-    results = WorkflowList(request, 'workflow_view')
+    
     c = RequestContext(request,
             { 'title': _('Workflows'),
               'results': results.result_list,
@@ -370,22 +371,26 @@ def jobs(request):
     """ Handles displaying the view of a searchable list of all the jobs
     on the system.
     """
-    results = JobList(request, 'job_details_view')
-    c = RequestContext(request,
-            { 'title': _('Jobs'),
-              'results': results.result_list,
-              'result_headers': results.result_headers,
-              'query': results.query,
-              'search_var': SEARCH_VAR,
-              'pagination_required': results.pagination_required,
-              'pages': results.pages,
-              'page_count': len(results.pages),
-              'result_count': len(results.result_list),
-              'show_result_count': len(results.result_list) != results.full_result_count and results.query != '',
-              'full_result_count': results.full_result_count,
-              'crumbs': [''],
-            })
-    return render_to_response('kepler/workflow_list.html', context_instance=c)
+    if request.GET.has_key('search_term'):
+        form = JobSearchForm(request.GET)
+        results = form.get_results()
+        prefix = form.get_url()
+    else:
+        form = JobSearchForm()
+        results = Job.objects.all()
+        prefix = '?'
+    paginator = Paginator(results, 8)
+    try:
+        page = paginator.page(int(request.GET.get('p', 1)))
+    except:
+        page = paginator.page(1)
+    return render_to_response('list.html',
+                              {'page':page,
+                               'job': True,
+                               'form': form,
+                               'prefix': prefix,
+                               },
+                              context_instance=RequestContext(request))
 jobs = login_required(jobs)
 
 def duplicate_workflow(request, id):
