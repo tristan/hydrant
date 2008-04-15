@@ -439,3 +439,25 @@ def download_workflow(request, id):
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
     return serve(request, workflow.moml_file, MEDIA_ROOT)
+
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    stuff = {'requested_user': user,}
+    profile, created = UserProfile.objects.get_or_create(user=user)
+
+    if request.method == 'POST' and request.POST.has_key('profile'):
+        infoform = UserInfoForm(request.POST, instance=profile)
+        profile = infoform.save()
+    else:
+        infoform = UserInfoForm(instance=profile)
+
+    if user == request.user:
+        stuff['infoform'] = infoform
+        # password change form
+    else:
+        stuff['profile'] = profile
+
+        
+    return render_to_response('profile.html',
+                              stuff,
+                              context_instance=RequestContext(request))

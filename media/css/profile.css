@@ -1,0 +1,45 @@
+#profile { 
+             font-size: 0.8em;
+             margin: 1.0em;
+}
+
+#infoform { 
+            padding: 1.0em 1.5em;
+            border: 1px solid #bedce7;
+            background: #eaf2f5;
+            width: 50%;
+            float: left;
+}
+
+#infoform #fields label {
+                 color: #666;
+                 font-size: 1.2em;
+                 padding: 0em 1.5em 0.5em 0em;
+                 width: 26em;
+}
+
+#infoform #fields input {
+                  border: 1px solid #bedce7;
+                  padding: 0.2em;
+                  width: 98%;
+}
+
+#infoform #submitrow { 
+                       padding: 1em 0 0 0;
+}
+
+#more { 
+        width: 43%;
+        padding: 1.0em 0 1em 1.5em;
+        float: left;
+}
+
+#profile a, #profile a:visited { 
+                                 color: #4183c4;
+                                 text-decoration: none;
+                                 font-weight: normal;
+}
+
+#profile a:hover { 
+               text-decoration: underline;
+}

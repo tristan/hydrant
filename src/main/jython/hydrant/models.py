@@ -365,7 +365,7 @@ class JobComment(Comment):
 class WorkflowComment(Comment):
     workflow = models.ForeignKey(Workflow)
     
-#class UserDetails(models.Model):
+class UserProfile(models.Model):
 
     """ This model contains additional information about a User
 
@@ -373,8 +373,11 @@ class WorkflowComment(Comment):
     twitter -- The user's twitter id.
     """
 
-#    user = models.ForeignKey(User)
-#    twitter = models.CharField(max_length=140)
+    user = models.ForeignKey(User)
+
+    company = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=200, blank=True)
+    country = models.CharField(max_length=200, blank=True)
 
 
 def get_system_user():

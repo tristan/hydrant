@@ -12,10 +12,11 @@ try:
     (r'^%saccounts/login/$' % ROOT_URL, 'django.contrib.auth.views.login',
      {'template_name': 'login.html'}, 'login'),
     (r'^%saccounts/logout/$' % ROOT_URL, 'django.contrib.auth.views.logout',
-     {'next_page':'/%sportal/' % ROOT_URL}, 'logout'),
-    (r'^%sportal/' % ROOT_URL, include('jython.hydrant.portalurls')),
+     {'next_page':'/%s' % ROOT_URL}, 'logout'),
     (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
-    (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
+#    (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
+    (r'^%s' % ROOT_URL, include('jython.hydrant.portalurls')),
+                        
  )
 except:
     traceback.print_exc()

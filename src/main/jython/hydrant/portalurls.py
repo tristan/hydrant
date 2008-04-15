@@ -20,4 +20,5 @@ urlpatterns = patterns('hydrant.portalviews',
     url(r'^workflows/$', 'workflows', name='workflows'),
     url(r'^jobs/$', 'jobs', name='jobs'),
     url(r'^intro/$', 'intro', name='intro'),
+    url(r'^([\w]+)/$', 'profile',name='profile'),
 )

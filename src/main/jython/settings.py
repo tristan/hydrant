@@ -58,3 +58,5 @@ ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 ROOT_URLCONF = 'jython.urls'
 
 STORAGE_ROOT = PROJECT_HOME + '/storage'
+
+AUTH_PROFILE_MODULE = 'hydrant.userprofile'

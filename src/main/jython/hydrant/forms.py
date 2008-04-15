@@ -1,7 +1,7 @@
 from django.db import models
 from models import *
 from django.newforms import ModelForm, Form
-from django.newforms.fields import CharField, BooleanField, ChoiceField
+from django.newforms.fields import CharField, BooleanField, ChoiceField, EmailField
 from django.newforms.widgets import RadioSelect, RadioFieldRenderer
 from kepler.workflow import utils
 import traceback
@@ -192,3 +192,35 @@ class WorkflowSearchForm(SearchForm):
         return url
         
         
+class UserInfoForm(ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        super(UserInfoForm, self).__init__(*args, **kwargs)
+        self.fields['first_name'] = CharField(max_length=50,
+                                              initial=self.instance.user.first_name)
+        self.fields['last_name'] = CharField(max_length=50,
+                                             initial=self.instance.user.last_name)
+        self.fields['email'] = EmailField(initial=self.instance.user.email)
+
+    def save(self, *args, **kwargs):
+        if kwargs.has_key('commit'):
+            commit = kwargs['commit']
+            kwargs['commit'] = False
+        else:
+            commit = True
+        print self['first_name'].data, self['last_name'].data, self['email'].data
+        profile = super(UserInfoForm, self).save(*args, **kwargs)
+        profile.user.first_name = self['first_name'].data
+        profile.user.last_name = self['last_name'].data
+        profile.user.email = self['email'].data
+        if commit:
+            profile.user.save()
+            profile.save()
+        return profile
+
+    class Meta:
+        model = UserProfile
+        fields=('company',
+                'city',
+                'country',
+                )
