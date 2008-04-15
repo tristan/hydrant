@@ -48,7 +48,7 @@ class Workflow(models.Model):
     deleted = models.BooleanField(default=False,)
 
     def all_permitted_users(self):
-        return self.edit_permissions.all() | self.view_permissions.all()
+        return (self.edit_permissions.all() | self.view_permissions.all()).distinct()
 
     def has_view_permission(self, user):
         return (user in self.view_permissions.all() or

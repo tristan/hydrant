@@ -25,11 +25,7 @@
     </div>
     <div class="tools">
       <a href="{% url job_create workflow.pk %}" class="runlink">Create Job</a>
-      |{% if editable %}
-      <a href="{% url edit_workflow workflow.pk %}" class="editlink">Edit</a>
-      |{% endif %}{% if editform %}
-      <a href="{% url workflow workflow.pk %}" class="editlink">Actor Setup</a>
-      |{% endif %}
+      |
       <a href="{% url download_workflow workflow.pk %}" class="addlink">Download</a>
       |
       <a href="{% url duplicate_workflow workflow.pk %}" class="addlink">Duplicate</a>
@@ -116,8 +112,7 @@
     {% endifequal %}
     {% endfor %}
   </div>
-  <div id="usersform"
-    {% ifequal workflow.public 'ON' %}style="display: none;"{% endifequal %}>
+  <div id="usersform">
     <div id="title">User Permissions</div>
     {% for u in workflow.all_permitted_users %}
     <div id="user">
@@ -147,7 +142,7 @@
 	checked="checked"
 	{% endifequal %}
 	{% endfor %}
-	/>
+	/></label>
       </div>
       <div style="clear: both;"></div>
     </div>
@@ -161,7 +156,7 @@
     </div>
   </div>
   <div id="submitrow">
-    <input type="submit" value="Save"/>
+    <input type="submit" name="details" value="Save"/>
   </div>
   </form>
   <script type="text/javascript">

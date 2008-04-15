@@ -43,11 +43,9 @@
     <div id="tools">
       {% if workflow %}
       <a href="{% url job_create obj.pk %}" class="runlink">Create Job</a>
-      |{% if obj.user_can_edit %}
-      <a href="{% url edit_workflow obj.pk %}" class="editlink">Edit</a>
       |
-      <a href="{% url workflow obj.pk %}" class="editlink">Actor Setup</a>
-      |{% endif %}
+      <a href="{% url workflow obj.pk %}" class="editlink">{% if obj.user_can_edit %}Configure{% else %}Preview{% endif %}</a>
+      |
       <a href="{% url download_workflow obj.pk %}" class="addlink">Download</a>
       |
       <a href="{% url duplicate_workflow obj.pk %}" class="addlink">Duplicate</a>

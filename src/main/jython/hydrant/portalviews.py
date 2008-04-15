@@ -132,57 +132,33 @@ def workflow(request, id, path=''):
         crumbs.append({'name': workflow.name, 'url': reverse('workflow', args=(id,))})
         for i in range(len(spath[:-1])):
             crumbs.append({'name': spath[i], 'url': reverse('workflow', args=(id,'/'.join(spath[:i])))})
+
     stuff = {'crumbs': crumbs,
              'name': name,
              'editable': editable,
              'workflow': workflow,
              #'properties_form': pform is None and '' or pform
              }
-    if jobform is not None:
-        stuff['jobform'] = jobform
-    if po.is_actor():
-        ActorForm = generate_parameters_form(workflow, po, [])
-        if request.POST:
-            try:
-                #form = ActorForm(request.POST)
-                save_parameters_from_post(workflow, request.POST, request.FILES)
-            except:
-                traceback.print_exc();
-            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
-            
-        stuff['form'] = ActorForm()
-    else:
-        stuff['model'] = po.get_as_dict()
 
-    return render_to_response('view_workflow.html',
-                              stuff,
-                              context_instance=RequestContext(request))
-
-def edit_workflow(request, id):
-    w = get_object_or_404(Workflow, pk=id)
-    if not w.has_edit_permission(request.user):
-        raise Http404
-
-    if request.method == 'POST':
-
-        ef = EditWorkflowForm(request.POST, instance=w)
+    if request.method == 'POST' and request.POST.has_key('details'):
+        ef = EditWorkflowForm(request.POST, instance=workflow)
         ef.save()
         
-        for u in w.all_permitted_users():
+        for u in workflow.all_permitted_users():
             v_rmed = v_added = e_rmed = e_added = False
             has_edit = request.POST.get(u.username + '_edit', False)
             has_view = request.POST.get(u.username + '_view', has_edit)
-            if not has_edit and w.has_edit_permission(u):
-                w.edit_permissions.remove(u)
+            if not has_edit and workflow.has_edit_permission(u):
+                workflow.edit_permissions.remove(u)
                 e_rmed = True
-            elif has_edit and not w.has_edit_permission(u):
-                w.edit_permissions.add(u)
+            elif has_edit and not workflow.has_edit_permission(u):
+                workflow.edit_permissions.add(u)
                 e_added = True
-            if not has_view and w.has_view_permission(u):
-                w.view_permissions.remove(u)
+            if not has_view and workflow.has_view_permission(u):
+                workflow.view_permissions.remove(u)
                 v_rmed = True
-            elif has_view and not w.has_view_permission(u):
-                w.view_permissions.add(u)
+            elif has_view and not workflow.has_view_permission(u):
+                workflow.view_permissions.add(u)
                 v_added = True
             msg_text = None
             if e_rmed or v_rmed:
@@ -199,15 +175,15 @@ def edit_workflow(request, id):
                               verb='changed {{ touser|plural }} permissions for',
                               text=msg_text)
                 msg.save()
-                WorkflowMessage(workflow=w, message=msg).save()
+                WorkflowMessage(workflow=workflow, message=msg).save()
         try:
             u = User.objects.get(username=request.POST['username'])
             has_edit = request.POST.get('has_edit', False)
             has_view = request.POST.get('has_view', has_edit)
             if has_view:
-                w.view_permissions.add(u)
+                workflow.view_permissions.add(u)
             if has_edit:
-                w.edit_permissions.add(u)
+                workflow.edit_permissions.add(u)
             if has_edit or has_view:
                 w.save()
 
@@ -219,20 +195,32 @@ def edit_workflow(request, id):
                           verb='gave {{ touser }} permissions to',
                           text=msg_text)
             msg.save()
-            WorkflowMessage(workflow=w, message=msg).save()
+            WorkflowMessage(workflow=workflow, message=msg).save()
         except:
             pass
-    else:
-        ef = EditWorkflowForm(instance=w)
+    elif editable:
+        ef = EditWorkflowForm(instance=workflow)
 
-    # just because permissions can change during POST processing
-    if not w.has_edit_permission(request.user):
-        raise Http404
-           
-    stuff = {'workflow': w,
-             'adduserform': AddUserForm(),
-             'editform': ef,
-             }
+    if editable:
+        stuff['editform'] = ef
+        stuff['adduserform'] = AddUserForm()
+    
+    if jobform is not None:
+        stuff['jobform'] = jobform
+    if po.is_actor():
+        ActorForm = generate_parameters_form(workflow, po, [])
+        if request.method == 'POST' and request.POST.has_key('parameters'):
+            try:
+                #form = ActorForm(request.POST)
+                save_parameters_from_post(workflow, request.POST, request.FILES)
+            except:
+                traceback.print_exc();
+            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
+            
+        stuff['form'] = ActorForm()
+    else:
+        stuff['model'] = po.get_as_dict()
+
     return render_to_response('view_workflow.html',
                               stuff,
                               context_instance=RequestContext(request))
