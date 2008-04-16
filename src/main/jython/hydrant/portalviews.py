@@ -13,6 +13,7 @@ from django.db import models
 from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.views.static import serve
+#from django.contrib.auth.forms import PasswordResetForm, PasswordChangeForm
 
 #from pygments import highlight
 #from pygments.lexers import XmlLexer
@@ -448,12 +449,22 @@ def profile(request, username):
     if request.method == 'POST' and request.POST.has_key('profile'):
         infoform = UserInfoForm(request.POST, instance=profile)
         profile = infoform.save()
+        stuff['profilesaved'] = True
     else:
         infoform = UserInfoForm(instance=profile)
 
+    if request.method == 'POST' and request.POST.has_key('password'):
+        pwcf = PasswordChangeForm(request.user, request.POST)
+        if pwcf.is_valid():
+            pwcf.save()
+            stuff['passwordsaved'] = True
+            pwcf = PasswordChangeForm(request.user)
+    else:
+        pwcf = PasswordChangeForm(request.user)
+
     if user == request.user:
         stuff['infoform'] = infoform
-        # password change form
+        stuff['passwordform'] = pwcf
     else:
         stuff['profile'] = profile
 

@@ -18,6 +18,9 @@
     <div class="toollink">
     <a href="{% url logout %}">Log out</a>
     </div>
+    {% if user.is_superuser %}
+    {% block adminlink %}<div class="toollink"><a href="#">Administration</a></div>{% endblock %}
+    {% endif %}
     {% block profilelink %}<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
     {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}

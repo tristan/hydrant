@@ -1,8 +1,8 @@
 from django.db import models
 from models import *
-from django.newforms import ModelForm, Form
-from django.newforms.fields import CharField, BooleanField, ChoiceField, EmailField
-from django.newforms.widgets import RadioSelect, RadioFieldRenderer
+from django.newforms import ModelForm, Form, ValidationError
+from django.newforms.fields import *
+from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput
 from kepler.workflow import utils
 import traceback
 
@@ -208,7 +208,6 @@ class UserInfoForm(ModelForm):
             kwargs['commit'] = False
         else:
             commit = True
-        print self['first_name'].data, self['last_name'].data, self['email'].data
         profile = super(UserInfoForm, self).save(*args, **kwargs)
         profile.user.first_name = self['first_name'].data
         profile.user.last_name = self['last_name'].data
@@ -224,3 +223,36 @@ class UserInfoForm(ModelForm):
                 'city',
                 'country',
                 )
+
+class PasswordChangeForm(Form):
+
+    old_password = CharField(label='Old password',
+                             max_length=200,
+                             widget=PasswordInput())
+    new_password1 = CharField(label='New password',
+                              max_length=200,
+                              widget=PasswordInput())
+    new_password2 = CharField(label='Confirm new password',
+                              max_length=200,
+                              widget=PasswordInput())
+
+    def __init__(self, user, *args, **kwargs):
+        super(PasswordChangeForm, self).__init__(*args, **kwargs)
+        self.user = user
+
+    def clean_old_password(self):
+        if not self.user.check_password(self.cleaned_data['old_password']):
+            raise ValidationError('password is incorrect')
+
+    def clean(self):
+        try:
+            if self.cleaned_data['new_password1'] != self.cleaned_data['new_password2']:
+                raise ValidationError('passwords don\'t match')
+        except KeyError:
+            pass
+        return self.cleaned_data
+
+    def save(self):
+        self.user.set_password(self.cleaned_data['new_password1'])
+        self.user.save()
+        return self.user

@@ -1,0 +1,98 @@
+{% extends "index.html" %}
+{% load textutils %}
+{% load gravatar %}
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/profile.css"/>
+<script type="text/javascript" src="{{ MEDIA_URL }}/js/prototype.js"></script>
+{% endblock %}
+
+{% block content %}
+<div id="profile">
+  {% ifequal user requested_user %}
+  <h1>Your Profile</h1>
+  {% else %}
+  <h1>Profile for {{ requested_user.get_full_name }}</h1>
+  {% endifequal %}
+
+  {% if infoform %}
+  <div id="infoform">
+    <form method="POST" action="">
+    <div id="fields">
+      <label for="{{ infoform.first_name.id }}">{{ infoform.first_name.label }}<br/>
+      {{ infoform.first_name }}</label><br/>
+      <label for="{{ infoform.last_name.id }}">{{ infoform.last_name.label }}<br/>
+      {{ infoform.last_name }}</label><br/>
+      <label for="{{ infoform.email.id }}">{{ infoform.email.label }}<br/>
+      {{ infoform.email }}</label><br/>
+      <label for="{{ infoform.company.id }}">Company/Institution<br/>
+      {{ infoform.company }}</label><br/>
+      <label for="{{ infoform.city.id }}">{{ infoform.city.label }}<br/>
+      {{ infoform.city }}</label><br/>
+      <label for="{{ infoform.country.id }}">{{ infoform.country.label }}<br/>
+      {{ infoform.country }}</label><br/>
+    </div>
+    <div id="submitrow">
+      <input type="submit" value="Save" name="profile"/>
+    </div>
+    <div id="saved">
+    {% if profilesaved %}
+      Saved Successfully
+    {% endif %}
+    </div>
+    <div style="clear: both;"></div>
+    </form>
+  </div>
+  <div id="more">
+    Hydrant uses <a href="http://www.gravatar.com">Gravatar</a> to display it's user avatars.
+    If you see a <img src="{% gravatar_url '' 12 %}" alt="gravatar"/> for your avatar, it means
+    you don't have a <a href="http://www.gravatar.com">Gravatar</a> for your specified email address.
+    You can get one for free from:
+    <a href="http://www.gravatar.com">http://www.gravatar.com</a>
+  </div>
+  {% if passwordform %}
+  <div id="passwordchange">
+    <form method="POST" action="">
+    <h1>Password Change</h1>
+    {% for f in passwordform %}
+    <div id="field" {% if f.errors %}
+      class="error"
+      {% else %}
+      {% ifequal f.name 'new_password1' %}
+      {% if passwordform.non_field_errors %}class="error"{% endif %}
+      {% endifequal %}
+      {% ifequal f.name 'new_password2' %}
+      {% if passwordform.non_field_errors %}class="error"{% endif %}
+      {% endifequal %}
+      {% endif %}>
+      <label for="{{ f.id }}">{{ f.label }}</label>
+      {{ f }}{% if f.errors %}<div style="clear: both;"></div><div id="errortext">
+      {% for e in f.errors %}{{ e }}{% endfor %}</div>
+      {% else %}
+      {% ifequal f.name 'new_password2' %}
+      {% if passwordform.non_field_errors %}<div style="clear: both;"></div><div id="errortext">
+      {% for e in passwordform.non_field_errors %}{{ e }}{% endfor %}</div>
+      {% endif %}
+      {% endifequal %}
+      {% endif %}
+      <div style="clear: both;"></div>
+    </div>
+    {% endfor %}
+    <div id="submitrow">
+      <input type="submit" name="password" value="Save"/>
+    </div>
+    <div id="saved">
+    {% if passwordsaved %}
+      Saved Successfully
+    {% endif %}
+    </div>
+    <div style="clear: both;"></div>
+    </form>
+  </div>
+  {% endif %}
+  <div style="clear: both;"></div>
+  {% else %}
+  
+  {% endif %}
+</div>
+  
+{% endblock %}

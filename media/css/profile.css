@@ -24,8 +24,17 @@
                   width: 98%;
 }
 
-#infoform #submitrow { 
+#submitrow { 
                        padding: 1em 0 0 0;
+                       float: left;
+                       width: 40%;
+}
+
+#saved { 
+                   padding: 1.5em 0 0 0;
+                   width: 40%;
+                   float: right;
+                   text-align: right;
 }
 
 #more { 
@@ -42,4 +51,42 @@
 
 #profile a:hover { 
                text-decoration: underline;
+}
+
+#passwordchange { 
+                  margin: 1em 0 0 1.5em;
+                  padding: 1em;
+                  border: 1px solid #bedce7;
+                  background: #eaf2f5;
+                  width: 40.5%;
+                  float: left;
+}
+
+#passwordchange #field { 
+                         padding: 0 0 0.2em 0;
+}
+
+#passwordchange .error { 
+                         color: #a00;
+}
+
+#passwordchange .error #errortext { 
+                                    float: right;
+                                    text-align: right;
+}
+
+#passwordchange .error input { 
+                               border: 1px solid #a00 !important;
+                               background-color: #f2e1e1;
+}
+
+#passwordchange #field label { 
+                               float: left;
+}
+
+#passwordchange #field input { 
+                               float: right;
+                               width: 60%;
+                               border: 1px solid #bedce7;
+                               padding: 0.2em;
 }
