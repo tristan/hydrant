@@ -209,6 +209,8 @@ def workflow(request, id, path=''):
     if jobform is not None:
         stuff['jobform'] = jobform
     if po.is_actor():
+        if not editable:
+            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
         ActorForm = generate_parameters_form(workflow, po, [])
         if request.method == 'POST' and request.POST.has_key('parameters'):
             try:
@@ -489,3 +491,4 @@ def profile(request, username):
     return render_to_response('profile.html',
                               stuff,
                               context_instance=RequestContext(request))
+profile = login_required(profile)

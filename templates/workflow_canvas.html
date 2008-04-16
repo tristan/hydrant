@@ -19,9 +19,9 @@
   {% with model.director as director %}
   <div class="director notdraggable" style="left: {{ director.location.x|px_to_em }}em; top: {{ director.location.y|px_to_em }}em;">
     <div>{{ director.name }}</div>
-    <a href="{{ director.name }}/">
+    {% if editable %}<a href="{{ director.name }}/">{% endif %}
     <img alt="{{ director.name }}" id="{{ director.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/director.png"/>
-    </a>
+    {% if editable %}</a>{% endif %}
   </div>
   {% endwith %}
   {% endif %}

@@ -11,25 +11,67 @@
   {% ifequal user requested_user %}
   <h1>Your Profile</h1>
   {% else %}
-  <h1>Profile for {{ requested_user.get_full_name }}</h1>
+  <div id="infoform">
+    <h1>Profile for {{ requested_user.get_full_name }}</h1>
+    <div id="avatar">
+      <img src="{% gravatar_url requested_user 48 %}" alt="{{ requested_user.username }}"/>
+    </div>
+    <div id="userdetails">
+      Name: {{ requested_user.get_full_name }}<br/>
+      Company/Institution: {{ profile.company }}<br/>
+      Location: {{ profile.city }}{% if profile.city %}, {% endif %}{{ profile.country }}<br/>
+    </div>
+  </div>
+  <div id="messagebox">
+    <h1>Send Message to {{ requested_user.first_name }}</h1>
+    <form method="POST" action="">
+    {% for f in messageform %}
+    <label for="{{ f.id }}">{{ f.label }}<br/>
+    {{ f }}</label><br/>
+    {% endfor %}
+    <div id="submitrow">
+      <input type="submit" value="Send" name="sendmessage"/>
+    </div>
+    <div id="sent">
+    {% if sent %}
+      Message Sent Successfully
+    {% endif %}
+    </div>
+    <div style="clear: both;"></div>
+    </form>
+  </div>
+  <div style="clear: both;"></div>
   {% endifequal %}
 
   {% if infoform %}
   <div id="infoform">
     <form method="POST" action="">
     <div id="fields">
-      <label for="{{ infoform.first_name.id }}">{{ infoform.first_name.label }}<br/>
-      {{ infoform.first_name }}</label><br/>
-      <label for="{{ infoform.last_name.id }}">{{ infoform.last_name.label }}<br/>
-      {{ infoform.last_name }}</label><br/>
-      <label for="{{ infoform.email.id }}">{{ infoform.email.label }}<br/>
-      {{ infoform.email }}</label><br/>
-      <label for="{{ infoform.company.id }}">Company/Institution<br/>
-      {{ infoform.company }}</label><br/>
-      <label for="{{ infoform.city.id }}">{{ infoform.city.label }}<br/>
-      {{ infoform.city }}</label><br/>
-      <label for="{{ infoform.country.id }}">{{ infoform.country.label }}<br/>
-      {{ infoform.country }}</label><br/>
+      <div id="textfields">
+	<label for="{{ infoform.first_name.id }}">{{ infoform.first_name.label }}<br/>
+	{{ infoform.first_name }}</label><br/>
+	<label for="{{ infoform.last_name.id }}">{{ infoform.last_name.label }}<br/>
+	{{ infoform.last_name }}</label><br/>
+	<label for="{{ infoform.email.id }}">{{ infoform.email.label }}<br/>
+	{{ infoform.email }}</label><br/>
+	<label for="{{ infoform.company.id }}">Company/Institution<br/>
+	{{ infoform.company }}</label><br/>
+	<label for="{{ infoform.city.id }}">{{ infoform.city.label }}<br/>
+	{{ infoform.city }}</label><br/>
+	<label for="{{ infoform.country.id }}">{{ infoform.country.label }}<br/>
+	{{ infoform.country }}</label><br/>
+      </div><br/>
+      <div id="emailfields">
+	<label>Enable email notifications for:</label><br/>
+	{{ infoform.email_job }}
+	<label for="{{ infoform.email_job.id }}">Job status changes</label><br/>
+	{{ infoform.email_workflow }}
+	<label for="{{ infoform.email_workflow.id }}">Workflow notices</label><br/>
+	{{ infoform.email_messages }}
+	<label for="{{ infoform.email_messages.id }}">Messages from other users</label><br/>
+	{{ infoform.email_comments }}
+	<label for="{{ infoform.email_comments.id }}">Comments left on your workflow and jobs</label><br/>
+      </div>
     </div>
     <div id="submitrow">
       <input type="submit" value="Save" name="profile"/>

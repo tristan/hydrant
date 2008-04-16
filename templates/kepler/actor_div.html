@@ -14,13 +14,13 @@
       </div>
     </div>
     <div class="smalltd">
-      <a href="{{ parameters_url_base }}{{ actor.name }}/">
+      {% if editable or actor.composite %}<a href="{{ parameters_url_base }}{{ actor.name }}/">{% endif %}
       {% if actor.composite %}
       <img alt="{{ actor.name }}" style="cursor: pointer;" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/composite.png"/>
       {% else %}
       <img alt="{{ actor.name }}" id="{{ actor.name|replace_spaces }}" class="block" src="{{ MEDIA_URL }}/images/basic-actor.png"/>
       {% endif %}
-      </a>
+      {% if editable or actor.composite %}</a>{% endif %}
     </div>
     <div class="smalltd">
       <div class="small">
