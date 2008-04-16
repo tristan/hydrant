@@ -18,7 +18,7 @@
                  width: 26em;
 }
 
-#infoform #fields input {
+#infoform #fields #textfields input, #messagebox>form>label>input, #messagebox>form>label>textarea {
                   border: 1px solid #bedce7;
                   padding: 0.2em;
                   width: 98%;
@@ -40,6 +40,7 @@
 #more { 
         width: 43%;
         padding: 1.0em 0 1em 1.5em;
+        margin: 0 0 1em 0;
         float: left;
 }
 
@@ -53,8 +54,8 @@
                text-decoration: underline;
 }
 
-#passwordchange { 
-                  margin: 1em 0 0 1.5em;
+#passwordchange, #messagebox { 
+                  margin: 0 0 0 1.5em;
                   padding: 1em;
                   border: 1px solid #bedce7;
                   background: #eaf2f5;
@@ -89,4 +90,19 @@
                                width: 60%;
                                border: 1px solid #bedce7;
                                padding: 0.2em;
+}
+
+#avatar { 
+          padding: 1em;
+          float: left;
+}
+
+#avatar img { 
+          border: 1px solid #ccc;
+          padding: 2px;
+              }
+
+#userdetails { 
+               padding: 1em;
+               float: left;
 }

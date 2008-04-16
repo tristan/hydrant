@@ -462,11 +462,28 @@ def profile(request, username):
     else:
         pwcf = PasswordChangeForm(request.user)
 
+    if request.method == 'POST' and request.POST.has_key('sendmessage'):
+        cf = CommentForm(request.POST)
+        if cf.is_valid():
+            msg = Message(touser=user,
+                          fromuser=request.user,
+                          verb='sent {{ touser }} a message',
+                          text=cf.cleaned_data['message'])
+            msg.save()
+            UserMessage(subject=cf.cleaned_data['subject'], message=msg).save()
+            stuff['sent'] = True
+            cf = CommentForm()
+        else:
+            print cf.errors
+    else:
+        cf = CommentForm()
+
     if user == request.user:
         stuff['infoform'] = infoform
         stuff['passwordform'] = pwcf
     else:
         stuff['profile'] = profile
+        stuff['messageform'] = cf
 
         
     return render_to_response('profile.html',

@@ -4,6 +4,7 @@ import widgets
 from kepler.workflow.proxy import EntityProxy, EntityProxyCache
 from kepler.workflow import utils
 import datetime, time, traceback
+from django.core.mail import send_mail
 
 class Workflow(models.Model):
 
@@ -305,6 +306,17 @@ class Message(models.Model):
         if self.is_job():
             return self.jobmessage.job
 
+    def subject(self):
+        if self.is_user():
+            return self.usermessage.subject
+
+    def is_user(self):
+        try:
+            self.usermessage
+            return True
+        except:
+            return False
+
     def is_workflow(self):
         try:
             self.workflowmessage
@@ -342,11 +354,39 @@ def get_all_messages_from_user(user):
     msgs = Message.objects.filter(fromuser=user)
     return msgs
 
+class UserMessage(models.Model):
+    subject = models.CharField(max_length=200)
+    message = models.OneToOneField(Message)
+
+    def save(self):
+        super(UserMessage, self).save()
+        profile, created = UserProfile.objects.get_or_create(user=self.message.touser)
+        if profile.email_messages == True:
+            try:
+                send_mail('%s send you a message' % (self.message.fromuser),
+                          'Subject: %s\n\n%s' % (self.subject, self.message.text),
+                          self.message.fromuser.email,
+                          [self.message.touser.email],)
+            except:
+                traceback.print_exc()
+    
 class JobMessage(models.Model):
     job = models.ForeignKey(Job)
     message = models.OneToOneField(Message)
     class Admin:
         pass
+
+    def save(self):
+        super(JobMessage, self).save()
+        profile, created = UserProfile.objects.get_or_create(user=self.message.touser)
+        if profile.email_job == True:
+            try:
+                send_mail('your job is now %s' % (self.job.status.lower()),
+                          self.message.text,
+                          'noreply@hydrant',
+                          [self.message.touser.email],)
+            except:
+                traceback.print_exc()
 
 class WorkflowMessage(models.Model):
     workflow = models.ForeignKey(Workflow)
@@ -378,6 +418,11 @@ class UserProfile(models.Model):
     company = models.CharField(max_length=200, blank=True)
     city = models.CharField(max_length=200, blank=True)
     country = models.CharField(max_length=200, blank=True)
+
+    email_job = models.BooleanField()
+    email_workflow = models.BooleanField()
+    email_messages = models.BooleanField()
+    email_comments = models.BooleanField()
 
 
 def get_system_user():

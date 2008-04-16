@@ -2,7 +2,7 @@ from django.db import models
 from models import *
 from django.newforms import ModelForm, Form, ValidationError
 from django.newforms.fields import *
-from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput
+from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
 from kepler.workflow import utils
 import traceback
 
@@ -222,6 +222,10 @@ class UserInfoForm(ModelForm):
         fields=('company',
                 'city',
                 'country',
+                'email_job',
+                'email_workflow',
+                'email_messages',
+                'email_comments',
                 )
 
 class PasswordChangeForm(Form):
@@ -256,3 +260,10 @@ class PasswordChangeForm(Form):
         self.user.set_password(self.cleaned_data['new_password1'])
         self.user.save()
         return self.user
+
+
+class CommentForm(Form):
+    subject = CharField(max_length=200)
+    message = CharField(max_length=2048,
+                        widget=Textarea(),
+                        )

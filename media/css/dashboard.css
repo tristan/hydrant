@@ -93,6 +93,11 @@
                           width: 82%;
 }
 
+#col-one .thing .details .status label { 
+                                         color: #aaa;
+                                         font-weight: bold;
+}
+
 #col-two .thing .details .status { 
                           margin: 0.2em 0 0 0;
                           float: left;

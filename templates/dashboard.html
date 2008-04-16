@@ -21,7 +21,7 @@
       {% msgverb user msg %}
       {% endif %}
       {% else %}
-      <a href="#">{{ msg.fromuser.username }}</a>
+      <a href="{% url profile msg.fromuser.username %}">{{ msg.fromuser.username }}</a>
       {% msgverb user msg %}
       {% if msg.is_job %}
       job
@@ -48,6 +48,9 @@
       {% endifequal %}
     </div>
     <div class="status">
+      {% if msg.is_user %}
+      <label>Subject:</label> {{ msg.subject }}<br/>
+      {% endif %}
       {% msgtext user msg 230 %}
     </div>
     <div style="clear: both;"></div>

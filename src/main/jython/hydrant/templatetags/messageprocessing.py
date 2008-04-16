@@ -1,14 +1,17 @@
 from django.template import Library
 from django.contrib.auth.models import User
 from textutils import truncate_to_len
+from django.core.urlresolvers import reverse
 
 register = Library()
 
 def _parse(touser, fromuser, user, text, link=False):
+    fromuserlink = reverse('profile', args=(fromuser.username,))
+    touserlink = reverse('profile', args=(touser.username,))
     text = text.replace(
         '{{ fromuser }}',
         fromuser == user and 'you' or (
-        '%s%s%s' % (link and '<a href="#">' or '',
+        '%s%s%s' % (link and '<a href="%s">' % fromuserlink or '',
                     fromuser.username,
                     link and '</a>' or ''
                     ))
@@ -16,7 +19,7 @@ def _parse(touser, fromuser, user, text, link=False):
     text = text.replace(
         '{{ touser }}',
         touser == user and 'you' or (
-        '%s%s%s' % (link and '<a href="#">' or '',
+        '%s%s%s' % (link and '<a href="%s">' % touserlink or '',
                     touser.username,
                     link and '</a>' or ''
                     ))
@@ -24,7 +27,7 @@ def _parse(touser, fromuser, user, text, link=False):
     text = text.replace(
         '{{ fromuser|plural }}',
         fromuser == user and 'your' or (
-        '%s%s\'s%s' % (link and '<a href="#">' or '',
+        '%s%s\'s%s' % (link and '<a href="%s">' % fromuserlink or '',
                     fromuser.username,
                     link and '</a>' or ''
                     ))
@@ -32,7 +35,7 @@ def _parse(touser, fromuser, user, text, link=False):
     text = text.replace(
         '{{ touser|plural }}',
         touser == user and 'your' or (
-        '%s%s\'s%s' % (link and '<a href="#">' or '',
+        '%s%s\'s%s' % (link and '<a href="%s">' % touserlink or '',
                     touser.username,
                     link and '</a>' or ''
                     ))

@@ -1,2 +1,2 @@
 #!/bin/sh
-jython -Dptolemy.ptII.dir=lib/ptolemy.jar src/main/jython/manage.py runserver 0.0.0.0:8001
+jython src/main/jython/manage.py runserver 0.0.0.0:8001
