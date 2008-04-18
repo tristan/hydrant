@@ -62,3 +62,8 @@ STORAGE_ROOT = PROJECT_HOME + '/storage'
 AUTH_PROFILE_MODULE = 'hydrant.userprofile'
 EMAIL_HOST = 'mail.cluster'
 EMAIL_SUBJECT_PREFIX = '[hydrant] '
+
+#TRAC_URL = 'https://dev.archer.edu.au/projects/kepler/'
+#TRAC_USER = ''
+#TRAC_PASSWORD = ''
+#JAVA_TRUSTSTORE = '%s/jssecacerts' % PROJECT_HOME

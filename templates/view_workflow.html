@@ -45,6 +45,37 @@
   <div style="clear: both;"></div>
   </div>
   </div>
+  {% if workflowerror %}
+  <div id="error">
+    <h1>Error</h1>
+    <div id="help">
+      An Error occured when trying to open this workflow.<br/>
+      The most common cause for this is that your workflow has dependencies on
+      actors or libraries that haven't yet been loaded into Hydrant.
+      If you have custom built actors specific to your workflow, you can
+      request to have these actors added by an Administrator.<br/><br/>
+      {% if not reported %}
+      <a href="#" id="reporterror_link">Report this to an administrator</a>
+      <div id="reporterror" style="display: none">
+	<form method="POST" action="">
+	<label for="{{ reporterrorform.message.id }}">Enter any details that may help resolve this issue. i.e. if any
+	custom libraries are being used and locations where the libraries can be found.
+	<br/>
+	{{ reporterrorform.message }}</label><br/>
+        <div id="submitrow">
+	  <input type="submit" value="Send" name="reporterror"/>
+        </div>
+	</form>
+      </div>
+      {% else %}
+      Report has been sent
+      {% endif %}
+    </div>
+    {% if user.is_superuser %}
+    <pre>{{ workflowerror }}</pre>
+    {% endif %}
+  </div>
+  {% endif %}
   {% if model or form %}
   <div id="workflow">
     <div id="crumbs">
@@ -183,6 +214,13 @@
   $('id_public_0').observe('click',
       function(event){
           $('usersform').hide();
+      }
+  )
+  $('reporterror_link').observe('click',
+      function(event){
+          $('reporterror').show();
+          $('id_subject').focus();
+          event.stop();
       }
   )
   // -->

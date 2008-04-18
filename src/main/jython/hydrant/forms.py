@@ -31,7 +31,7 @@ class UploadWorkflowForm(ModelForm):
 
     def validate_moml(self):
         try:
-            utils.parse_moml(self['moml_file'].data['content'])
+            utils.validate_moml(self['moml_file'].data['content'])
             return True
         except:
             traceback.print_exc()
@@ -267,3 +267,4 @@ class CommentForm(Form):
     message = CharField(max_length=2048,
                         widget=Textarea(),
                         )
+    

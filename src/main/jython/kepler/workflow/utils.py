@@ -1,4 +1,4 @@
-import re, sys
+import re, sys, traceback
 from ptolemy.moml import MoMLParser, Vertex
 from ptolemy.moml.filter import RemoveGraphicalClasses
 from java.lang import Class, Throwable, NoClassDefFoundError, NullPointerException
@@ -83,15 +83,54 @@ def validateMoML(moml):
     NamedObj().workspace().removeAll()
     return messages
 
-def parse_moml(moml_str):
+
+import org.xml.sax.ErrorHandler
+from javax.xml.parsers import DocumentBuilderFactory
+from java.io import ByteArrayInputStream
+from java.lang import String
+from javax.xml.transform.dom import DOMSource
+from javax.xml.transform import TransformerFactory
+from javax.xml.transform import OutputKeys
+from javax.xml.transform.stream import StreamSource
+from javax.xml.transform.stream import StreamResult
+
+class _ErrorHandler(org.xml.sax.ErrorHandler):
+    def fatalError(self, exception):
+        print 'FATAL (%s): %s' % (exception.getLineNumber(), exception.getMessage())
+    def error(self, exception):
+        print 'ERROR (%s): %s' % (exception.getLineNumber(), exception.getMessage())
+    def warning(self, exception):
+        print 'WARNING (%s): %s' % (exception.getLineNumber(), exception.getMessage())
+	
+def validate_moml(moml_str):
+    try:
+        factory = DocumentBuilderFactory.newInstance()
+	factory.setValidating(True)
+	builder = factory.newDocumentBuilder()
+	builder.setErrorHandler(_ErrorHandler())
+	xmlDocument = builder.parse(ByteArrayInputStream(String(moml_str).getBytes()))
+	return True
+    except:
+        traceback.print_exc()
+	return False
+
+def _get_parser():
+    rgc = RemoveGraphicalClasses()
+    rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
+    MoMLParser.setMoMLFilters([rgc])
     parser = MoMLParser()
     parser.reset()
-    parser.parse(moml_str)
+    return parser
+
+def parse_moml(moml_str):
+    _get_parser().parse(moml_str)
 
 def parse_moml_file(moml_file):
-    parser = MoMLParser()
-    parser.reset()
-    parser.parseFile(moml_file)
+    try:
+        _get_parser().parseFile(moml_file)
+    except Exception, e:
+        print e.getMessage()
+        raise
 
 re_class_attribs = re.compile(r'class=\"([\.\w]+)\"')
 def getAllClassesInMoML(moml):

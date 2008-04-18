@@ -95,7 +95,16 @@ class Workflow(models.Model):
         """ Returns a kepler.workflow.proxy.EntityProxy object which
         proxies this Workflow.
         """
-        return EntityProxyCache.get_proxy(self, forexec)
+        try:
+            return EntityProxyCache.get_proxy(self, forexec)
+        except:
+            import StringIO
+            f = StringIO.StringIO()
+            traceback.print_exc(file=f)
+            f.seek(0)
+            self.error = f.read()
+            f.close()
+            return None
 
     def get_average_run_time(self):
         jobs = Job.objects.filter(workflow=self, status='DONE')
@@ -423,7 +432,6 @@ class UserProfile(models.Model):
     email_workflow = models.BooleanField()
     email_messages = models.BooleanField()
     email_comments = models.BooleanField()
-
 
 def get_system_user():
     try:

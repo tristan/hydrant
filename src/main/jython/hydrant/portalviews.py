@@ -25,6 +25,7 @@ from portalviewshelper import *
 from models import *
 from forms import *
 from job import *
+from utils import *
 from templatetags.textutils import timeuntil_with_secs
 from settings import STORAGE_ROOT, MEDIA_ROOT
 from django.newforms import form_for_model, form_for_instance, widgets
@@ -124,6 +125,7 @@ def workflow(request, id, path=''):
     spath = path.split('/')
     po = workflow.get_proxy_object()
     name = workflow.name
+
     for i in spath:
         if i != '':
             po = po.get(i)
@@ -152,13 +154,13 @@ def workflow(request, id, path=''):
             if not has_edit and workflow.has_edit_permission(u):
                 workflow.edit_permissions.remove(u)
                 e_rmed = True
-            elif has_edit and not workflow.has_edit_permission(u):
+            if has_edit and not workflow.has_edit_permission(u):
                 workflow.edit_permissions.add(u)
                 e_added = True
             if not has_view and workflow.has_view_permission(u):
                 workflow.view_permissions.remove(u)
                 v_rmed = True
-            elif has_view and not workflow.has_view_permission(u):
+            if has_view and not workflow.has_view_permission(u):
                 workflow.view_permissions.add(u)
                 v_added = True
             msg_text = None
@@ -186,7 +188,7 @@ def workflow(request, id, path=''):
             if has_edit:
                 workflow.edit_permissions.add(u)
             if has_edit or has_view:
-                w.save()
+                workflow.save()
 
             msg_text = '{{ touser }} can now %s this workflow' % (
                     has_view and has_edit and 'view and edit ' or has_edit and 'edit ' or 'view '
@@ -198,7 +200,7 @@ def workflow(request, id, path=''):
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
         except:
-            pass
+            pass        
     elif editable:
         ef = EditWorkflowForm(instance=workflow)
 
@@ -208,21 +210,49 @@ def workflow(request, id, path=''):
     
     if jobform is not None:
         stuff['jobform'] = jobform
-    if po.is_actor():
-        if not editable:
-            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
-        ActorForm = generate_parameters_form(workflow, po, [])
-        if request.method == 'POST' and request.POST.has_key('parameters'):
-            try:
-                #form = ActorForm(request.POST)
-                save_parameters_from_post(workflow, request.POST, request.FILES)
-            except:
-                traceback.print_exc();
-            return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
-            
-        stuff['form'] = ActorForm()
+
+    if request.method == 'POST' and request.POST.has_key('reporterror'):
+        message = request.POST.get('message')
+        reported = False
+        try:
+            submit_ticket(workflow, request.user, message)
+            reported = True
+        except:
+            traceback.print_exc()
+            superuser = User.objects.filter(is_superuser=True)[0]
+            msg = Message(touser=superuser,
+                          fromuser=get_system_user(),
+                          verb='reporting an error',
+                          text='Problem with workflow id=%s. reported by %s with message: %s' % (
+                workflow.pk,
+                request.user,
+                message,
+                ))
+            msg.save()
+            UserMessage(subject='problem with workflow id=%s' % workflow.pk,
+                        message=msg).save()
+            reported = True
+        if reported:
+            stuff['reported'] = True    
+
+    if po is None and workflow.error:
+        stuff['workflowerror'] = workflow.error
+        stuff['reporterrorform'] = CommentForm()
     else:
-        stuff['model'] = po.get_as_dict()
+        if po.is_actor():
+            if not editable:
+                return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
+            ActorForm = generate_parameters_form(workflow, po, [])
+            if request.method == 'POST' and request.POST.has_key('parameters'):
+                try:
+                    save_parameters_from_post(workflow, request.POST, request.FILES)
+                except:
+                    traceback.print_exc();
+                return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
+            
+            stuff['form'] = ActorForm()
+        else:
+            stuff['model'] = po.get_as_dict()
 
     return render_to_response('view_workflow.html',
                               stuff,
