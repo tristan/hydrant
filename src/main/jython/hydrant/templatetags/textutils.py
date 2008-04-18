@@ -11,6 +11,8 @@ def split(str,splitter):
 register.filter('split', split)
 
 def truncate_to_len(text, length):
+    if text == None:
+        return ''
     result = ''
     for i in text.split(' '):
         if len(result) + len(i) > length:
