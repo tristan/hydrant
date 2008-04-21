@@ -34,7 +34,9 @@
   <div class="details">
     <div class="icon">
       <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+      <a href="{% url profile job.owner.username %}">
       <img src="{% gravatar_url job.owner 32 %}" alt="{{ job.owner.username}}"/>
+      </a>
     </div>
     <div class="status">
       <b>status:</b> {{ job.status }}<br/>

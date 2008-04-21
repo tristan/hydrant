@@ -70,7 +70,9 @@
     <div style="clear: both;"></div>
     <div id="icons">
       <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="system"/>
+      <a href="{% url profile obj.owner.username %}">
       <img src="{% gravatar_url obj.owner 32 %}" alt="{{ obj.owner.username }}"/>
+      </a>
     </div>
     {% if job %}
     <div id="details">

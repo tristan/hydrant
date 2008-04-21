@@ -1,3 +1,4 @@
+{% load textutils %}
 {% load gravatar %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -19,9 +20,11 @@
     <a href="{% url logout %}">Log out</a>
     </div>
     {% block faqlink %}<div class="toollink"><a href="#">FAQ</a></div>{% endblock %}
+    {% comment %}
     {% if user.is_superuser %}
     {% block adminlink %}<div class="toollink"><a href="#">Administration</a></div>{% endblock %}
     {% endif %}
+    {% endcomment %}
     {% block profilelink %}<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
     {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}
@@ -33,7 +36,8 @@
   </div>
 </div>
 <div id="logo">
-  <a href="{% url home %}"><img src="{{ MEDIA_URL }}/img/hydrant-logo-empty-w-cp.png" alt="hydrant"/></a>
+  <!--[if IE]><a href="{% url about %}"><img src="{{ MEDIA_URL }}/img/hydrant-logo-filled.gif" alt="hydrant"/></a><![endif]-->
+  <!--[if !IE]>--><a href="{% url about %}"><img src="{{ MEDIA_URL }}/img/hydrant-logo-filled.png" alt="hydrant"/></a><!--<![endif]-->
 </div>
 {% if user.is_authenticated %}
 <div id="userbox">
@@ -59,11 +63,19 @@
   <div id="indexview">
   <div id="text">
     <div id="title">
-    <h1>Hydrant</h1> <span>( beta )</span>
+    <h1>Hydrant</h1>
     <div style="clear: both;"></div>
     </div>
-    <h2>Making Kepler easy ...</h2>
+    <h2>{% random_saying %}</h2>
     <div id="intro">
+      TODO LIST:
+      <ul>
+	<li>Job security</li>
+	<li>Comments</li>
+	<li>FAQ</li>
+	<li>Tour</li>
+	<li>Help</li>
+      </ul>
     </div>
   </div>
   <img src="{{ MEDIA_URL }}/img/hydrant-screenshot.png"/>

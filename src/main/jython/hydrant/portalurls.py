@@ -8,6 +8,7 @@ urlpatterns = patterns('hydrant.portalviews',
     # Uncomment this for admin:
     url(r'^$', 'home', name='home'),
     url(r'^dashboard/$', 'home', name='dashboard'),
+    url(r'^about/$', 'intro', name='about'),
     url(r'^upload/$', 'upload_workflow', name='upload_workflow'),
     url(r'^workflow/delete/([\w]+)/$', 'delete_workflow', name='delete_workflow'),
     url(r'^workflow/undelete/([\w]+)/$', 'delete_workflow', {'undelete':True}, name='undelete_workflow'),

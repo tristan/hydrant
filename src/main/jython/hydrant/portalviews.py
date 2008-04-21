@@ -32,7 +32,7 @@ from django.newforms import form_for_model, form_for_instance, widgets
 from django.utils.safestring import mark_safe, mark_for_escaping
 
 def intro(request):
-    return render_to_response('kepler/intro.html', {'pic_no':random.randint(0,10)}, context_instance=RequestContext(request))
+    return render_to_response('index.html', {}, context_instance=RequestContext(request))
 
 def hide_workflows(request, path):
     """ Used to hide the path to the workflow xml files from everyone

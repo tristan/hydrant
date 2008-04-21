@@ -37,7 +37,9 @@
   <div class="details">
   <div class="icon">
     <img src="{{ MEDIA_URL }}/img/kepler-logo-32.png" alt="kepler job"/>
+    <a href="{% url profile workflow.owner.username %}">
     <img src="{% gravatar_url workflow.owner 32 %}" alt="{{ workflow.owner.username}}"/>
+    </a>
   </div>
   <div class="status">
     {{ workflow.description }}

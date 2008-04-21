@@ -42,6 +42,13 @@ def timeuntil_with_secs(dt):
         return u'unknown'
 register.filter('timeuntil_with_secs', timeuntil_with_secs)
 
+import random
+def random_saying():
+    sayings = ('Use Hydrant, Be Awesome!', 'Where anything is possible!',)
+    return sayings[random.randint(0, len(sayings)-1)]
+random_saying = register.simple_tag(random_saying)
+
+    
 
 # taken from django.utils.timesince
 # modified to return seconds as well
