@@ -35,7 +35,7 @@
   {% ifnotequal page.paginator.count 0 %}
   <h1>Page {{ page.number }} of {{ page.paginator.num_pages }}</h1>
   {% for obj in page.object_list %}
-  <div id="listitem">
+  <div id="listitem" {% if workflow and obj.deleted %}class="deleted"{% endif %}>
     <div id="name">
       <a href="{% if job %}{% url job obj.pk %}{% else %}{% url workflow obj.pk %}{% endif %}">
       {{ obj.name }}</a>
@@ -50,17 +50,17 @@
       |
       <a href="{% url duplicate_workflow obj.pk %}" class="addlink">Duplicate</a>
       |
-      <a href="#" onClick="delete_workflow();" class="xlink">Delete</a>
+      <a href="{% if obj.deleted %}{% url undelete_workflow obj.pk %}">Und{% else %}{% url delete_workflow obj.pk %}"> D{% endif %}elete</a>
       {% endif %}
       {% if job %}
       {% if not obj.start_date %}
       <a href="{% url job obj.pk %}">Edit</a>
       |
-      <a href="#">Cancel Job</a>
+      <a href="{% url job_stop obj.pk %}">Cancel Job</a>
       |
       {% else %}
       {% if not obj.end_date %}
-      <a href="#">Stop Job</a>
+      <a href="{% url job_stop obj.pk %}">Stop Job</a>
       |
       {% endif %}
       {% endif %}

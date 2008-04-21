@@ -90,6 +90,11 @@
             background-color: #f0f0f0;
 }
 
+#list .deleted { 
+            border: 1px solid #dd3c10;
+            background-color: #ffebe8;
+}
+
 #listitem #name {
                   float: left;
 }

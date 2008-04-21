@@ -1,0 +1,13 @@
+{% extends 'upload_workflow.html' %}
+{% block content %}
+<div  class="areyousure login-box">
+  <p>Are you sure you want to delete the workflow "{{ workflow.name }}"?</p>
+  <form action="" method="POST">
+    <div id="buttons">
+      <input type="submit" value="No, I'm Not" name="NO"/>
+      <input type="submit" value="Yes, I'm sure" name="YES"/>
+    </div>
+    <div style="clear: left;"></div>
+  </form>
+</div>
+{% endblock %}

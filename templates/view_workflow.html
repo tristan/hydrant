@@ -30,7 +30,7 @@
       |
       <a href="{% url duplicate_workflow workflow.pk %}" class="addlink">Duplicate</a>
       |
-      <a href="#" onClick="delete_workflow();" class="xlink">Delete</a>
+      <a href="{% url delete_workflow workflow.pk %}" class="xlink">Delete</a>
     </div>
     <div style="clear: both;"></div>
   </div>

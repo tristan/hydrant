@@ -62,6 +62,9 @@ class Workflow(models.Model):
                 user == self.owner
                 )
 
+    def has_delete_permission(self, user):
+        return (user.is_superuser or user == self.owner)
+
     def get_parameter(self, id):
         """ Gets a WorkflowParameter object linked to this Workflow.
         """

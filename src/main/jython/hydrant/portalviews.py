@@ -258,25 +258,62 @@ def workflow(request, id, path=''):
                               stuff,
                               context_instance=RequestContext(request))
 
-def delete_workflow(request, id):
+def delete_workflow(request, id, undelete=False):
     """ Handles deleting a workflow. If a GET request then display a
     page asking for conformation of the delete. If a POST request then
     set the workflow to deleted.
     """
-    user = User.objects.get(id=request.user.id)
-    workflow = Workflow.objects.get(pk=id)
-    if workflow.owner != user:
-        # the message here doesn't actually get passed. TODO: fix it
-        #raise PermissionDenied('''you don't have permission to delete this workflow: you are not the owner''')
-        request.user.message_set.create(message={'type':'ERROR', 'message':'You don\'t have permission to delete this workflow'})
-        return HttpResponseRedirect(reverse('workflow_view', args=id))
-    if request.POST:
-        workflow.deleted = True
+    workflow = get_object_or_404(Workflow, pk=id)
+    if not workflow.has_delete_permission(request.user):
+        raise Http404
+
+    if undelete == True:
+        workflow.deleted = False
         workflow.save()
-        msg = 'The workflow "%s" was deleted successfully' % workflow.name
-        request.user.message_set.create(message=msg)
-        return HttpResponseRedirect(reverse('workflows'))
-    return render_to_response('kepler/delete_confirmation.html', {'workflow': workflow}, context_instance=RequestContext(request))
+
+        if workflow.public == 'ON':
+            tousers = [get_system_user()]
+        else:
+            tousers = [u for u in workflow.view_permissions.all()]
+            tousers.append(workflow.owner)
+
+        for u in tousers:
+            msg = Message(touser=u,
+                          fromuser=get_system_user(),
+                          verb='undeleted',
+                          text='This workflow can now be accessed again',
+                          private = u != get_system_user()
+                          )
+            msg.save()
+            WorkflowMessage(workflow=workflow, message=msg).save()
+        
+        return HttpResponseRedirect(reverse('workflow', args=(workflow.pk,)))
+
+    if request.method == 'POST':
+        if request.POST.has_key("YES"):
+            workflow.deleted = True
+            workflow.save()
+
+            if workflow.public == 'ON':
+                tousers = [get_system_user()]
+            else:
+                tousers = [u for u in workflow.view_permissions.all()]
+
+            for u in tousers:
+                msg = Message(touser=u,
+                              fromuser=request.user,
+                              verb='deleted',
+                              text="""This workflow can no longer be accessed""",
+                              private = u != get_system_user()
+                              )
+                msg.save()
+                WorkflowMessage(workflow=workflow, message=msg).save()
+
+        return HttpResponseRedirect(reverse('home'))
+    return render_to_response('delete_workflow.html',
+                              {'workflow': workflow},
+                              context_instance=RequestContext(request)
+                              )
 delete_workflow = login_required(delete_workflow)
 
 def job_create(request, workflowid):
@@ -391,10 +428,11 @@ def workflows(request):
         prefix = '?'
     permission_based_results = []
     for w in results:
-        if w.has_view_permission(request.user):
-            if w.has_edit_permission(request.user):
-                w.user_can_edit = True
-            permission_based_results.append(w)
+        if request.user.is_superuser or not w.deleted:
+            if w.has_view_permission(request.user):
+                if w.has_edit_permission(request.user):
+                    w.user_can_edit = True
+                permission_based_results.append(w)
         
     results = permission_based_results
     paginator = Paginator(results, 8)
