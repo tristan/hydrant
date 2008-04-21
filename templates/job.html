@@ -20,7 +20,14 @@
       <a href="{% url workflow job.workflow.pk %}">{{ job.workflow.name }}</a>
     </div>
     <div class="tools">
-
+      {% if not job.start_date %}
+      <a href="{% url job_stop job.pk %}">Cancel Job</a> |
+      {% else %}
+      {% if not job.end_date %}
+      <a href="{% url job_stop job.pk %}">Stop Job</a> | 
+      {% endif %}
+      {% endif %}
+      <a href="{% url job_create job.workflow.pk %}">Re-run this job</a>
     </div>
     <div style="clear: both;"></div>
   </div>
@@ -30,6 +37,7 @@
       <img src="{% gravatar_url job.owner 32 %}" alt="{{ job.owner.username}}"/>
     </div>
     <div class="status">
+      <b>status:</b> {{ job.status }}<br/>
       <b>created:</b> {{ job.creation_date }}<br/>
       {% if job.submission_date %}<b>submitted:</b> {{ job.submission_date }}<br/>{% endif %}
       {% if job.start_date %}<b>started:</b> {{ job.start_date }}<br/>

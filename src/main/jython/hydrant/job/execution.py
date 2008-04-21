@@ -13,7 +13,7 @@ class KeplerJobManager(Thread):
         Thread.__init__(self)
         self.max_active = max_active
         self.queue = []
-        self.running = []
+        self.running = {}
         #self.complete = []
         self.cond = Condition()
         self.halt = False
@@ -22,14 +22,14 @@ class KeplerJobManager(Thread):
             if len(self.queue) > 0 and len(self.running) < self.max_active:
                 t = self.queue.pop()
                 print 'starting thread: %s' % t
-                self.running.append(t)
+                self.running[t.job] = t
                 t.start()
             elif len(self.running) > 0:
                 # check all the running threads to see if they've completed
-                for t in self.running:
-                    if not t.isAlive():
+                for job in self.running:
+                    if not self.running[job].isAlive():
                         #self.complete.append(t)
-                        self.running.remove(t)
+                        t = self.running.pop(job)
                         print 'removed thread: %s' % t
             else:
                 self.cond.acquire()
@@ -46,6 +46,20 @@ class KeplerJobManager(Thread):
         self.queue.append(KeplerExecutionThread(job, model, replacement_manager))
         print 'queued new thread: %s' % self.queue[-1]
         self.boo()
+    def stop_job(self, job):
+        t = self.running.get(job, None)
+        if t == None:
+            for t in self.queue:
+                if t.job == job:
+                    self.queue.remove(t)
+                    return
+            # if we get to here then the job has stopped before getting here
+            # or something has gone wrong somewhere else
+        else:
+            t.stop()
+
+                
+            
 default_job_manager = KeplerJobManager()
 default_job_manager.start()
 
@@ -73,8 +87,9 @@ class KeplerExecutionThread(Thread):
                           )
             msg.save()
             JobMessage(job=self.job, message=msg).save()
-            
+
             self.manager.execute()
+            
             self.job.status = 'DONE'
             error = None
         except java.lang.Exception, e:
@@ -97,6 +112,10 @@ class KeplerExecutionThread(Thread):
         JobMessage(job=self.job, message=msg).save()
         
         default_job_manager.boo()
+    def stop(self):
+        self.job.status = 'STOPPING'
+        self.job.save()
+        self.manager.stop()
     def get_state(self):
         return self.manager.getState().getDescription()
     def get_iteration_count(self):

@@ -288,6 +288,21 @@ def job_create(request, workflowid):
     job.save()
     return HttpResponseRedirect(reverse('job', args=(job.pk,)))
 
+def job_stop(request, jobid):
+    job = get_object_or_404(Job, pk=jobid)
+    if job.status == 'QUEUED':
+        stop_job(job)
+    if job.status == 'NEW' or job.status == 'QUEUED':
+        for i in job.get_job_inputs():
+            i.delete()
+        for o in job.get_job_outputs():
+            o.delete()
+        job.delete()
+        return HttpResponseRedirect(reverse('home',))
+    else:
+        stop_job(job)
+        return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+
 def job(request, jobid):
     """ Handles displaying the details of a Job, including the
     properties form for specifying Job metadata (i.e. name and

@@ -17,3 +17,6 @@ def queue_new_job(job):
     modify_rexpression_actors(pe, drm)
     pe.workspace().doneWriting()
     default_job_manager.queue_job(job, model, drm)
+
+def stop_job(job):
+    default_job_manager.stop_job(job)
