@@ -4,3 +4,7 @@
                      margin: 0;
                      width: 47.2em;
 }
+
+#usersform #radio-field ul { 
+                        margin: 0 0 0 1em;
+}

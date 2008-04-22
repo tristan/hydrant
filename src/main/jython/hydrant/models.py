@@ -38,13 +38,13 @@ class Workflow(models.Model):
                                               verbose_name='Users who have edit rights', 
                                               blank=True, 
                                               filter_interface=models.HORIZONTAL,
-                                              related_name='edit_permissions',
+                                              related_name='workflow_edit_permissions',
                                               )
     view_permissions = models.ManyToManyField(User,
                                               verbose_name='Users who can view', 
                                               blank=True, 
                                               filter_interface=models.HORIZONTAL,
-                                              related_name='view_permissions',
+                                              related_name='workflow_view_permissions',
                                               )
     deleted = models.BooleanField(default=False,)
 
@@ -197,6 +197,25 @@ class Job(models.Model):
     end_date = models.DateTimeField(null=True)
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(null=True)
+    public = models.CharField(max_length=3, default='OFF',
+                              verbose_name='Who can see this job?',
+                              choices=(('ON', 'Anyone'),
+                                       ('OFF', 'Only the people I specify'),
+                                       )
+                              )
+    view_permissions = models.ManyToManyField(User,
+                                              verbose_name='Users who can view', 
+                                              blank=True, 
+                                              filter_interface=models.HORIZONTAL,
+                                              related_name='job_view_permissions',
+                                              )
+
+    def has_view_permission(self, user):
+        return (user in self.view_permissions.all() or
+                user == self.owner or
+                self.public == 'ON' or
+                user.is_superuser
+                )
 
     def get_eta(self):
         if not self.start_date:

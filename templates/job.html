@@ -5,9 +5,8 @@
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/job.css"/>
 <!--[if IE]><style type="text/css">@import "{{ MEDIA_URL }}/css/job_ie.css";</style><![endif]-->
-{% if jobform %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
-{% endif %}
+<script type="text/javascript" src="{{ MEDIA_URL }}/js/prototype.js"></script>
 {% endblock %}
 
 {% block content %}
@@ -56,7 +55,7 @@
     </div>
     <div style="clear: both;"></div>
   </div>
-  </div>
+</div>
 {% if jobform %}
 <div id="jobform">
   <h1>Job Creation Form</h1>
@@ -65,17 +64,80 @@
       {% endif %}
       id="id_job_submission_form" action="" method="post">
   {% for f in jobform %}
-    <div id="field">
+    <div id="{% ifequal f.name 'public' %}radio-{% endifequal %}field"
+      {% if f.errors %}class="error"{% endif %}>
       <label for="id_{{ f.name }}">{{ f.label }}<br/>{{ f }}</label>
       <div id="help-text">{{ f.help_text }}</div>
       <div style="clear: both;"></div>
+      {% if f.errors %}<div id="errortext">
+      {% for e in f.errors %}{{ e }}{% endfor %}</div>
+      {% endif %}
     </div>
   {% endfor %}
     <div class="submit-row">
       <input type="submit" name="save_job" value="Save for later"/>
       <input type="submit" name="run_job" value="Run Job"/>
+    </div>
   </form>
 </div>
+{% endif %}
+{% if permissionsform %}
+<form method="POST" action="">
+<div id="usersform">
+  <div id="title">User Permissions</div>
+  <div id="radio-field">
+    <label for="{{ permissionsform.public.id }}">{{ permissionsform.public.label }}<br/>{{ permissionsform.public }}</label>
+    <div style="clear: both;"></div>
+  </div>
+  <label>User's Permitted to view this workflow:</label>
+  {% for u in job.view_permissions.all %}
+  <div id="user">
+    <a href="{% url profile u.username %}">
+    <img src="{% gravatar_url u 16 %}" alt="{{ u.username }}"/>
+    </a>
+    <a href="{% url profile u.username %}">
+    {{ u }}
+    </a>
+  </div>
+  <div id="perms">
+    <label for="id_{{ u.username }}_remove">remove?:
+    <input type="checkbox"
+    id="id_{{ u.username }}_remove"
+    name="{{ u.username }}_remove"
+    /></label>
+  </div>
+  <div style="clear: both;"></div>
+  {% endfor %}
+  <div id="adduserrow">
+    <a id="add_user_link" href="#">Add User</a>
+    <div id="add_new_user_form" style="display: none;">
+      {{ permissionsform.username }}
+      <a id="close_add_new_user_form_link" href="#">Close</a>
+    </div>
+  </div>
+  <div id="submitrow">
+    <input type="submit" name="save_permissions" value="Save"/>
+  </div>
+</div>
+</form>
+<script type="text/javascript">
+  <!--
+  $('add_user_link').observe('click',
+      function(event){
+          $('add_new_user_form').show();
+          $('id_username').focus();
+          event.stop();
+      }
+  )
+  $('close_add_new_user_form_link').observe('click',
+      function(event){
+          $('id_username').clear();
+          $('add_new_user_form').hide();
+          event.stop();
+      }
+  )
+  // -->
+</script>
 {% endif %}
 {% if outputs %}
 {% for o in outputs %}

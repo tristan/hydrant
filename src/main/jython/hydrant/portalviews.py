@@ -117,10 +117,7 @@ def workflow(request, id, path=''):
 
     editable = workflow.has_edit_permission(request.user)
 
-    jobform = None
-    JobSubmissionForm = generate_job_submission_form(workflow)
-    if JobSubmissionForm is not None:
-        jobform = JobSubmissionForm()
+    jobform = JobPreviewForm(instance=workflow)
 
     spath = path.split('/')
     po = workflow.get_proxy_object()
@@ -346,31 +343,59 @@ def job(request, jobid):
     description).
     """
     job = get_object_or_404(Job, pk=jobid)
-    outputs = []
-    if job.status == 'NEW':
-        if request.method == 'POST':
-            save_job_form(job, request.POST, request.FILES)
-            if request.POST.has_key('save_job'):
-                pass
-            elif request.POST.has_key('run_job'):
-                msg = Message(touser=get_system_user(),
-                              fromuser=request.user,
-                              verb='submitted',
-                              text=job.description)
-                msg.save()
-                JobMessage(job=job, message=msg).save()
-                queue_new_job(job)
-                return HttpResponseRedirect(reverse('job', args=(job.pk,)))
 
-        JobSubmissionForm = generate_job_submission_form(job.workflow, job)
-        if JobSubmissionForm is not None:
-            jobform = JobSubmissionForm()
+    if not job.has_view_permission(request.user):
+        raise Http404
+    
+    outputs = []
+
+    if request.method == 'POST' and request.POST.has_key('save_permissions'):
+        for u in job.view_permissions.all():
+            if request.POST.get(u.username + '_remove', False):
+                job.view_permissions.remove(u)
+        try:
+            job.public = request.POST.get('public')
+            u = User.objects.get(username=request.POST['username'])
+            job.view_permissions.add(u)
+            
+            msg_text = '{{ touser }} can now view this job'
+            msg = Message(touser=u,
+                          fromuser=request.user,
+                          verb='gave {{ touser }} permissions to',
+                          text=msg_text)
+            msg.save()
+            JobMessage(job=job, message=msg).save()
+        except:
+            traceback.print_exc()
+        job.save()
+
+    stuff = {'job': job,}
+    if request.user == job.owner:
+        stuff['permissionsform'] = JobPermissionsForm(instance=job)
+
+    if job.status == 'NEW':
+        if request.method == 'POST' and not request.POST.has_key('save_permissions'):
+            jobform = JobCreationForm(request.POST, request.FILES, instance=job)
+            if jobform.is_valid():
+                if request.POST.has_key('save_job'):
+                    jobform.save() # need a save for later type thing
+                elif request.POST.has_key('run_job'):
+                    jobform.save()
+                    msg = Message(touser=get_system_user(),
+                                  fromuser=request.user,
+                                  verb='submitted',
+                                  text=job.description)
+                    msg.save()
+                    JobMessage(job=job, message=msg).save()
+                    queue_new_job(job)
+                return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+            else:
+                print jobform.errors
         else:
-            jobform = None
+            jobform = JobCreationForm(instance=job)
+        stuff['jobform'] = jobform
         return render_to_response('job.html',
-                                  {'jobform': jobform,
-                                   'job': job,
-                                   },
+                                  stuff,
                                   context_instance=RequestContext(request))
 
     for o in [j for j in job.get_job_outputs() if j.name != 'Provenance Data']:
@@ -393,10 +418,9 @@ def job(request, jobid):
         elif o.type == 'IMAGE' or o.type == 'FILE':
             out['url'] = reverse('serve_job_media', args=(jobid, o.pk))
         outputs.append(out)
+    stuff['outputs'] = outputs
     return render_to_response('job.html',
-                              {'job': job,
-                               'outputs': outputs
-                               },
+                              stuff,
                               context_instance=RequestContext(request))
 job = login_required(job)
 

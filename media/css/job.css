@@ -100,3 +100,64 @@
                         width: 38.2em;
                         padding: 0.5em;
 }
+
+#usersform { 
+            padding: 0.7em;
+            margin: 0 0 1.0em 0;
+            border: 1px solid #d8d8d8;
+            background-color: #f0f0f0;
+}
+
+#usersform #title {
+                   font-weight: bold;
+                   padding: 0 0 0.4em 0;    
+}
+
+#usersform #user { 
+                   vertical-align: middle;
+                   padding: 0.1em 1em 0.4em 1em;
+}
+
+#usersform #user #name {
+                         float: left;
+                         padding: 0.2em 0 0 0;
+                         width: 10em;
+}
+
+#usersform #perms { 
+                    padding: 0.2em 0 0 0;
+                    float: left;
+                    margin: -1.8em 0 0 10em;
+}
+
+#usersform #user img { 
+                       border: 1px solid #d0d0d0;
+                       padding: 2px;
+                       width: 1.23em;
+                       height: 1.23em;
+                       margin: 0 0.6em 0 0;
+                       float: left;
+}
+
+#usersform #radio-field { 
+                        border-top: 1px solid #ccc;
+                        margin: 0.5em 0 0 0;
+                        padding: 0.5em 0 1em 0;
+}
+
+#usersform #radio-field ul li { 
+                              float: left;
+                              display: block;
+}
+
+#usersform #radio-field li label { 
+                                    width: auto;
+                                    font-size: 1em;
+                                    color: black;
+}
+
+#usersform #radio-field ul {
+                           clear: both;
+                           margin: 0.3em 0 0 -1.8em;
+
+}

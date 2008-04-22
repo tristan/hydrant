@@ -1,10 +1,14 @@
+import os
+import traceback
+
 from django.db import models
-from models import *
 from django.newforms import ModelForm, Form, ValidationError
 from django.newforms.fields import *
 from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
+
+from models import *
 from kepler.workflow import utils
-import traceback
+from settings import STORAGE_ROOT
 
 class EditWorkflowForm(ModelForm):
     public = CharField(
@@ -47,6 +51,20 @@ class AddUserForm(Form):
     has_edit = BooleanField(label='Can edit this Workflow', initial=False)
     has_view = BooleanField(label='Can see this Workflow', initial=True)
 
+class JobPermissionsForm(ModelForm):
+    public = CharField(
+        widget=RadioSelect(
+        renderer=RadioFieldRenderer,
+        choices=Job._meta.get_field('public').choices,
+        ),
+        label='Who can view this job?',
+        initial='OFF',
+        )
+    username = CharField(label='Username')
+
+    class Meta:
+        model = Job
+        fields = ('public',)
 
 SEARCH_ORDER_CHOICES = (('ASC','ascending'),
                         ('DSC','decending'),
@@ -267,4 +285,120 @@ class CommentForm(Form):
     message = CharField(max_length=2048,
                         widget=Textarea(),
                         )
-    
+
+
+def generate_job_fields(form, workflow, job=None):
+    parameters = workflow.get_exposed_parameters()
+    for p in parameters:
+        if job != None:
+            try:
+                ji = JobInput.objects.get(job=job,parameter=p)
+                p.value = ji.value
+            except:
+                pass
+        if p.type == 'TEXT':
+            form.fields['%s' % p.property_id] = CharField(
+                max_length=1000,
+                initial=p.value,
+                label=p.name,
+                help_text=p.description,
+                widget=Textarea
+                )
+        elif p.type == 'CHECKBOX':
+            form.fields['%s' % p.property_id] = BooleanField(
+                initial=eval(capfirst(p.value)),
+                label=p.name,
+                help_text=p.description
+                )
+        elif p.type == 'SELECT':
+            m = workflow.get_model()
+            actor = p.property_id.split('.')[2]
+            choices = tuple([(i, i) for i in [i for i in m.get_properties([actor]) if i['id'] == p.property_id][0]['choices']])
+            if '"' in p.value:
+                p.value = eval(p.value)
+                form.fields['%s' % p.property_id] = ChoiceField(
+                    initial=p.value,
+                    label=p.name,
+                    choices=choices,
+                    help_text=p.description
+                    )
+        elif p.type == 'FILE':
+            form.fields['%s' % p.property_id] = FileField(
+                #initial=p.value, # cannot display initial in file field
+                label=p.name,
+                help_text=p.description
+                )
+            # this is a hack to allow a job to be saved without yet putting
+            # in any file data. this however, breaks form validation
+            form.fields['%s' % p.property_id].clean = lambda s,a: None
+        elif p.type == 'INPUT':
+            form.fields['%s' % p.property_id] = CharField(
+                initial=p.value,
+                label=p.name,
+                help_text=p.description
+                )
+        else:
+            raise 'invalid parameter type for property %s: type "%s" unknown' % ( p.property_id, p.type)
+                
+class JobPreviewForm(ModelForm):
+    class Meta:
+        model = Workflow
+        exclude = ('moml_file','name','owner','created','description','public',
+                   'edit_permissions','view_permissions','deleted')
+
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        if hasattr(self, 'instance'):
+            generate_job_fields(self, self.instance)
+
+
+BINARY_CONTENT_TYPES = ('application', 'image',)
+class JobCreationForm(ModelForm):
+    class Meta:
+        model = Job
+        fields=('name', 'description')
+
+    def __init__(self, *args, **kwargs):
+        super(ModelForm, self).__init__(*args, **kwargs)
+        # dodgy hack to remove validation from description field
+        self.fields['description'].clean = lambda s: s
+        if hasattr(self, 'instance'):
+            generate_job_fields(self, self.instance.workflow, self.instance)
+            
+    def save(self, *args, **kwargs):
+        ret = super(ModelForm, self).save(*args, **kwargs)
+        if hasattr(self, 'instance'):
+            if self.files.keys() != []:
+                dirname = '%s/jobs/%s/input' % (STORAGE_ROOT, self.instance.pk)
+                try:
+                    os.makedirs(dirname)
+                except:
+                    if not os.path.exists(dirname):
+                        raise
+            parameters = self.instance.workflow.get_exposed_parameters()
+            for p in parameters:
+                if p.property_id in self.data.keys():
+                    value = self.data.get('%s' % p.property_id)
+                elif p.property_id in self.files.keys():
+                    form_file = self.files.get(p.property_id)
+                    if True in map(lambda a: a in form_file['content-type'], BINARY_CONTENT_TYPES):
+                        binary = True
+                    else:
+                        binary = False
+                    filename = '%s/%s' % (dirname, form_file['filename'])
+                    stored_file = open(filename, 'w%s' % (binary and 'b' or ''))
+                    stored_file.write(form_file['content'])
+                    stored_file.close()
+                    value = filename
+                else:
+                    value = p.value
+                if p.type == 'CHECKBOX':
+                    # workaround to turn off checkboxes
+                    if p.expose_to_user == True and p.property_id not in self.data.keys():
+                        value = 'false'
+                    elif value == 'on':
+                        value = 'true'
+                ji, created = JobInput.objects.get_or_create(job=self.instance, parameter=p)
+                ji.value = value
+                ji.save()
+        return ret

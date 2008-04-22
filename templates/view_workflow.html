@@ -149,36 +149,36 @@
     <div id="title">User Permissions</div>
     {% for u in workflow.all_permitted_users %}
     <div id="user">
-      <a href="#">
-      <img src="{% gravatar_url u 16 %}" alt="{{ u.username}}"/>
+      <a href="{% url profile u.username %}">
+      <img src="{% gravatar_url u 16 %}" alt="{{ u.username }}"/>
       </a>
-      <a id="name" href="#">
+      <a href="{% url profile u.username %}">
       {{ u }}
       </a>
-      <div id="perms">
-	<label for="id_{{ u.username }}_edit">edit:
-	<input type="checkbox"
-	id="id_{{ u.username }}_edit"
-	name="{{ u.username }}_edit"
-	{% for u2 in workflow.edit_permissions.all %}
-	{% ifequal u u2 %}
-	checked="checked"
-	{% endifequal %}
-	{% endfor %}
-	/></label>
-	<label for="id_{{ u.username }}_view">view:
-	<input type="checkbox"
-	id="id_{{ u.username }}_view"
-	name="{{ u.username }}_view"
-	{% for u2 in workflow.view_permissions.all %}
-	{% ifequal u u2 %}
-	checked="checked"
-	{% endifequal %}
-	{% endfor %}
-	/></label>
-      </div>
-      <div style="clear: both;"></div>
     </div>
+    <div id="perms">
+      <label for="id_{{ u.username }}_edit">edit:
+      <input type="checkbox"
+      id="id_{{ u.username }}_edit"
+      name="{{ u.username }}_edit"
+      {% for u2 in workflow.edit_permissions.all %}
+      {% ifequal u u2 %}
+      checked="checked"
+      {% endifequal %}
+      {% endfor %}
+      /></label>
+      <label for="id_{{ u.username }}_view">view:
+      <input type="checkbox"
+      id="id_{{ u.username }}_view"
+      name="{{ u.username }}_view"
+      {% for u2 in workflow.view_permissions.all %}
+      {% ifequal u u2 %}
+      checked="checked"
+      {% endifequal %}
+      {% endfor %}
+      /></label>
+    </div>
+    <div style="clear: both;"></div>
     {% endfor %}
     <div id="adduserrow">
       <a id="add_user_link" href="#">Add User</a>

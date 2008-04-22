@@ -133,14 +133,14 @@
 }
 
 #jobform { 
-                       padding: 0.7em 0.7em 1.5em 0.7em;
+           padding: 0.7em 0.7em 1.5em 0.7em;
 }
 
 #jobform #field { 
-                              border-top: 1px solid #ccc;
-                              margin: 0.5em 0 0 0;
-                              padding: 0.5em 0 0 0;
-                              width: 100%;
+                  border-top: 1px solid #ccc;
+                  margin: 0.5em 0 0 0;
+                  padding: 0.5em 0 0 0;
+                  width: 100%;
 }
 
 #jobform label {
@@ -175,6 +175,19 @@
 
 #jobform .submit-row { 
                        text-align: right;
+}
+
+#jobform .error { 
+                  color: #a00;
+}
+
+#jobform .error input { 
+                        border: 1px solid #a00 !important;
+                        background-color: #f2e1e1;
+}
+
+#jobform #errortext { 
+                      color: #a00;
 }
 
 #editform {

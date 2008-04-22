@@ -121,7 +121,7 @@
 
 #usersform #user { 
                    vertical-align: middle;
-                   padding: 0 0 0.4em 1em;
+                   padding: 0 1em 0.4em 1em;
 }
 
 #usersform #user #name {
@@ -130,8 +130,10 @@
                          width: 10em;
 }
 
-#usersform #user #perms { 
-                          padding: 0.2em 0 0 0;
+#usersform #perms { 
+                    padding: 0.2em 0 0 0;
+                    float: left;
+                    margin: -1.8em 0 0 10em;
 }
 
 #usersform #user img { 
