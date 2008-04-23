@@ -15,7 +15,7 @@ try:
      {'next_page':'/%s' % ROOT_URL}, 'logout'),
     (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
 #    (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
-    (r'^faq/$', 'django.views.generic.simple.direct_to_template', {'template': 'faq.html', 'name': 'faq'}),
+    url(r'^%sfaq/$' % ROOT_URL, 'django.views.generic.simple.direct_to_template', {'template': 'faq.html'}, name='faq'),
     (r'^%s' % ROOT_URL, include('jython.hydrant.portalurls')),
                         
  )

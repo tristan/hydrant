@@ -1,1 +1,53 @@
 {% extends 'index.html' %}
+
+{% block content %}
+<div id="faq">
+  <div id="faqitem">
+    <div id="itemtitle">
+      <h1><a href="#whatis">What can't I find an answer here?</a></h1>
+    </div>
+    <div id="itembody">
+      This FAQ is currently very light due to the lack of actual frequently
+      asked questions. If you have a question, post it on the
+      <a href="http://www.kepler-project.org/Wiki.jsp?page=KeplerProject#section-KeplerProject-MailingLists">
+      kepler users mailing list</a> and if deamed worthy, the question will be
+      added to this list.
+    </div>
+  </div>
+  <div id="faqitem">
+    <div id="itemtitle">
+      <h1><a href="#whatis">What is Hydrant</a></h1>
+    </div>
+    <div id="itembody">
+      Hydrant is a Web based portal which sits on top of the core Kepler engine.
+    </div>
+  </div>
+  {% if user.is_authenticated %}
+  <div id="faqitem">
+    <div id="itemtitle">
+      <h1><a href="#uploadproblems">Why wont my workflow upload?</a></h1>
+    </div>
+    <div id="itembody">
+      If you get a <i>Workflow Validation</i> error when attempting to upload a
+      workflow, it means that the XML validation process which checks every
+      workflow when it's uploaded failed. Check to make sure that what you are
+      uploading is a valid MoML document (if it load's in kepler it should be fine).
+    </div>
+  </div>
+  <div id="faqitem">
+    <div id="itemtitle">
+      <h1><a href="#jobworkflowpermissions">I can see a Job, but I can't see the workflow it is created from. What's going on?</a></h1>
+    </div>
+    <div id="itembody">
+      There are two reason's this may happen. The first being that the workflow in
+      question may have been deleted since the job was run. The other is related to
+      workflow and job permissions. Workflow and Job permissions are seperate from
+      each other. This means that a user can share a job with you which has been
+      created from a workflow which you don't have access to. You can try sending
+      a message to the owner of the Job and see whether they will make the workflow
+      visable to you.
+    </div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

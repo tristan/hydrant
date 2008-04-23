@@ -1,6 +1,6 @@
 import time, md5, traceback, copy, array, shutil, random
 
-from django import oldforms #, template
+from django import oldforms
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponseServerError, HttpResponse, HttpResponseRedirect
@@ -13,7 +13,6 @@ from django.db import models
 from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.views.static import serve
-#from django.contrib.auth.forms import PasswordResetForm, PasswordChangeForm
 
 #from pygments import highlight
 #from pygments.lexers import XmlLexer
@@ -486,7 +485,7 @@ def jobs(request):
         prefix = '?'
     permission_based_results = []
     for j in results:
-        if j.workflow.has_view_permission(request.user):
+        if j.has_view_permission(request.user):
             permission_based_results.append(j)
     results = permission_based_results
     paginator = Paginator(results, 8)

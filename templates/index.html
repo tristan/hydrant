@@ -19,7 +19,7 @@
     <div class="toollink">
     <a href="{% url logout %}">Log out</a>
     </div>
-    {% block faqlink %}<div class="toollink"><a href="#">FAQ</a></div>{% endblock %}
+    {% block faqlink %}<div class="toollink"><a href="{% url faq %}">FAQ</a></div>{% endblock %}
     {% comment %}
     {% if user.is_superuser %}
     {% block adminlink %}<div class="toollink"><a href="#">Administration</a></div>{% endblock %}
@@ -32,6 +32,7 @@
     <div class="toollink">
     <a href="{% url login %}">Log in</a>
     </div>
+    <div class="toollink"><a href="{% url faq %}">FAQ</a></div>
     {% endif %}
   </div>
 </div>
@@ -70,9 +71,8 @@
     <div id="intro">
       TODO LIST:
       <ul>
-	<li>Job security</li>
 	<li>Comments</li>
-	<li>FAQ</li>
+	<li>Permission Denied Msg (links to FAQ)</li>
 	<li>Tour</li>
 	<li>Help</li>
       </ul>

@@ -200,3 +200,18 @@ a img {
 #content #indexview img { 
                             float: left;
 }
+
+#faq a:link, a:visited {
+                         color: #4183c4;
+                         text-decoration: none;
+}
+
+#faq a:hover { 
+               color: #4183c4;
+               text-decoration: underline;
+}
+
+#faq #faqitem { 
+                padding: 1em;
+                font-size: 0.8em;
+}
