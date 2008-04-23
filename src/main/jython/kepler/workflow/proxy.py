@@ -2,6 +2,8 @@ import md5
 import copy
 import traceback
 
+from django.utils.safestring import mark_for_escaping, mark_safe
+
 import java.lang.Class
 import java.lang.Object
 import java.lang.ExceptionInInitializerError
@@ -597,6 +599,8 @@ but the linking relation doesn\'t have a vertex. i=%s, r=%s' % (i, r)))
                     min_y = float(loc['y'])
         # set the canvas width and height based on the max and min
         # locations of the contained entities including a bit of padding
+        if not rdic.has_key('canvas'):
+            rdic['canvas'] = {}
         rdic['canvas']['x'] = (max_x - min_x) + 130
         rdic['canvas']['y'] = (max_y - min_y) + 90
 

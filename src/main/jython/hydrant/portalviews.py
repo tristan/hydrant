@@ -120,15 +120,33 @@ def workflow(request, id, path=''):
     po = workflow.get_proxy_object()
     name = workflow.name
 
-    for i in spath:
-        if i != '':
-            po = po.get(i)
-            name = po.name
+    i = 0
+    newspath = []
+    while i < len(spath):
+        if spath[i] != '':
+            oldpo = po
+            po = oldpo.get(spath[i])
+            j = i
+            i = i + 1
+            while po == None and i < len(spath):
+                i = i + 1
+                po = oldpo.get('/'.join(spath[j:i]))
+            if po == None:
+                raise Http404
+            else:
+                newspath.append('/'.join(spath[j:i]))
+                name = po.name
+        else:
+            i = i + 1
+    spath = newspath
+    
     crumbs = []
     if len(spath) > 0 and spath[0] != '':
         crumbs.append({'name': workflow.name, 'url': reverse('workflow', args=(id,))})
         for i in range(len(spath[:-1])):
-            crumbs.append({'name': spath[i], 'url': reverse('workflow', args=(id,'/'.join(spath[:i])))})
+            crumbs.append({'name': spath[i], 'url': '%s%s/' % (reverse('workflow', args=(id,)), '/'.join(spath[:(i+1)])) })
+
+    print crumbs
 
     stuff = {'crumbs': crumbs,
              'name': name,
@@ -235,15 +253,17 @@ def workflow(request, id, path=''):
     else:
         if po.is_actor():
             if not editable:
-                return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
+                return HttpResponseRedirect('%s%s' % (reverse('workflow', args=(id,)), '/'.join(spath[:-1])))
             ActorForm = generate_parameters_form(workflow, po, [])
             if request.method == 'POST' and request.POST.has_key('parameters'):
                 try:
                     save_parameters_from_post(workflow, request.POST, request.FILES)
                 except:
                     traceback.print_exc();
-                return HttpResponseRedirect(reverse('workflow', args=(id,'/'.join(spath[:-1]))))
-            
+                try:
+                    return HttpResponseRedirect('%s%s' % (reverse('workflow', args=(id,)), '/'.join(spath[:-1])))
+                except:
+                    return HttpResponseRedirect(reverse('workflow', args=(id,)))
             stuff['form'] = ActorForm()
         else:
             stuff['model'] = po.get_as_dict()
@@ -372,7 +392,7 @@ def job(request, jobid):
     if request.user == job.owner:
         stuff['permissionsform'] = JobPermissionsForm(instance=job)
 
-    if job.status == 'NEW':
+    if job.status == 'NEW' and request.user == job.owner:
         if request.method == 'POST' and not request.POST.has_key('save_permissions'):
             jobform = JobCreationForm(request.POST, request.FILES, instance=job)
             if jobform.is_valid():
