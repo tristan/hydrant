@@ -61,8 +61,6 @@ def home(request):
                                    },
                                   context_instance=RequestContext(request))
     else:
-        # set the test cookie, so that if the user decides to log in the login form actually works
-        request.session.set_test_cookie()
         return render_to_response('index.html', context_instance=RequestContext(request))
 
 def upload_workflow(request):
@@ -254,6 +252,7 @@ def workflow(request, id, path=''):
     return render_to_response('view_workflow.html',
                               stuff,
                               context_instance=RequestContext(request))
+workflow = login_required(workflow)
 
 def delete_workflow(request, id, undelete=False):
     """ Handles deleting a workflow. If a GET request then display a
@@ -321,6 +320,7 @@ def job_create(request, workflowid):
     job.owner = request.user
     job.save()
     return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+job_create = login_required(job_create)
 
 def job_stop(request, jobid):
     job = get_object_or_404(Job, pk=jobid)
@@ -549,6 +549,7 @@ def download_workflow(request, id):
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
     return serve(request, workflow.moml_file, MEDIA_ROOT)
+download_workflow = login_required(download_workflow)
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)

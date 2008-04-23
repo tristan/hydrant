@@ -59,6 +59,8 @@ ROOT_URLCONF = 'jython.urls'
 
 STORAGE_ROOT = PROJECT_HOME + '/storage'
 
+LOGIN_URL = '/' + ROOT_URL + 'accounts/login/'
+
 AUTH_PROFILE_MODULE = 'hydrant.userprofile'
 EMAIL_HOST = 'mail.cluster'
 EMAIL_SUBJECT_PREFIX = '[hydrant] '
