@@ -619,3 +619,19 @@ def profile(request, username):
                               stuff,
                               context_instance=RequestContext(request))
 profile = login_required(profile)
+
+def signup(request):
+    stuff = {}
+    if request.method == 'POST':
+        signupform = SignupForm(request.POST)
+        if signupform.is_valid():
+            u,p = signupform.save()
+            stuff['signupsuccessful'] = True
+        else:
+            stuff['signupform'] = signupform
+    else:
+        signupform = SignupForm()
+        stuff['signupform'] = signupform
+    return render_to_response('signup.html',
+                              stuff,
+                              context_instance=RequestContext(request))

@@ -32,6 +32,7 @@
     <div class="toollink">
     <a href="{% url login %}">Log in</a>
     </div>
+    <div class="toollink"><a href="{% url signup %}">Sign up</a></div>
     <div class="toollink"><a href="{% url faq %}">FAQ</a></div>
     {% endif %}
   </div>
@@ -40,14 +41,18 @@
   <!--[if IE]><a href="{% url about %}"><img src="{{ MEDIA_URL }}/img/hydrant-logo-filled.gif" alt="hydrant"/></a><![endif]-->
   <!--[if !IE]>--><a href="{% url about %}"><img src="{{ MEDIA_URL }}/img/hydrant-logo-filled.png" alt="hydrant"/></a><!--<![endif]-->
 </div>
-{% if user.is_authenticated %}
 <div id="userbox">
   <div id="gravatar">
     <a href="{% url home %}">
+    {% if user.is_authenticated %}
     <img src="{% gravatar_url user 48 %}" alt="gravatar"/>
+    {% else %}
+    <img src="{{ MEDIA_URL }}/img/hydrant-icon-48.png" alt="gravatar"/>
+    {% endif %}
     </a>
   </div>
   <div id="username">
+    {% if user.is_authenticated %}
     <a href="{% url home %}">
     {% if user.first_name %}
     {{ user.first_name }} {{ user.last_name }}
@@ -55,9 +60,11 @@
     {{ user.username }}
     {% endif %}
     </a>
+    {% else %}
+    <a href="#sad">Hydrant</a>
+    {% endif %}
   </div>
 </div>
-{% endif %}
 </div>
 <div id="content">
   {% block content %}

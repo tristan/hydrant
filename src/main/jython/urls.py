@@ -11,6 +11,8 @@ try:
      {'document_root': MEDIA_ROOT, 'show_indexes': True}),
     (r'^%saccounts/login/$' % ROOT_URL, 'django.contrib.auth.views.login',
      {'template_name': 'login.html'}, 'login'),
+    (r'^%saccounts/signup/$' % ROOT_URL, 'jython.hydrant.portalviews.signup',
+     {}, 'signup'),
     (r'^%saccounts/logout/$' % ROOT_URL, 'django.contrib.auth.views.logout',
      {'next_page':'/%s' % ROOT_URL}, 'logout'),
     (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),

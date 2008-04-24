@@ -1,0 +1,39 @@
+{% extends "index.html" %}
+
+{% block extrastyle %}
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forms.css"/>
+{% endblock %}
+
+{% block content %}
+<div id="signup-box">
+  {% if signupform %}
+  <form action="" method="post" id="login-form">
+  
+  <h1>Sign up</h1>
+
+  <div id="fields">
+    {% for field in signupform %}
+    <label {% if field.errors %}class="missing-field" {% endif %}
+    for="id_{{ field.name }}">
+    {{ field.label }}{% if field.field.required %} *{% endif %}{% if field.errors %}
+    <span class="error-text-small">{% for e in field.errors %}{% ifnotequal e '' %}({{ e }}){% endifnotequal %}{% endfor %}</span>
+    {% endif %}<br/>
+    {{ field }}<br/>
+    </label>
+    {% endfor %}
+  </div>
+  <div id="buttons">
+    <input type="submit" value="Sign Up" />
+  </div>
+  </form>
+  <script type="text/javascript">
+  document.getElementById('id_username').focus()
+  </script>
+  {% endif %}
+  {% if signupsuccessful %}
+  <div id="success">
+  Signup successful! You can now <a href="{% url login %}">Log in</a>.
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

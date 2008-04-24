@@ -32,7 +32,7 @@ a img {
 }
 #header #logo {
                 position: absolute;
-                padding: 0.8em 0 0 0.7em;
+                padding: 0.6em 0 0 0.7em;
                 font-size: 2em;
 }
 #header #logo img {
@@ -112,12 +112,13 @@ a img {
 }
                             
 #header #userbox a:link, a:visited {
-                                     color: black;
+                                     color: #4183c4;
+                                     font-weight: bold;
                                      text-decoration: none;
 }
 
 #header #userbox a:hover { 
-                           color: black;
+                           color: #4183c4;
                            text-decoration: underline;
 }
 

@@ -441,7 +441,6 @@ class UserProfile(models.Model):
     """ This model contains additional information about a User
 
     user -- The user which this info relates to.
-    twitter -- The user's twitter id.
     """
 
     user = models.ForeignKey(User)

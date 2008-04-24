@@ -6,6 +6,7 @@ from django.newforms import ModelForm, Form, ValidationError
 from django.newforms.fields import *
 from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
 
+from django.contrib.auth.models import User
 from models import *
 from kepler.workflow import utils
 from settings import STORAGE_ROOT
@@ -402,3 +403,72 @@ class JobCreationForm(ModelForm):
                 ji.value = value
                 ji.save()
         return ret
+
+class UserField(CharField):
+    def clean(self, value):
+        super(UserField, self).clean(value)
+        try:
+            User.objects.get(username=value)
+            raise ValidationError("Someone is already using this username. Please pick an other.")
+        except User.DoesNotExist:
+            return value
+
+class SignupForm(Form):
+    username = UserField(max_length=30)
+    password = CharField(widget=PasswordInput())
+    password2 = CharField(widget=PasswordInput(), label="Repeat your password")
+    email = EmailField()
+    email2 = EmailField(label="Repeat your email")
+
+    first_name = CharField(max_length=30, required=False)
+    last_name = CharField(max_length=30, required=False)
+    company = CharField(max_length=200, required=False)
+    city = CharField(max_length=200, required=False)
+    country = CharField(max_length=200, required=False)
+
+    def clean_email(self):
+        if self.data['email'] != self.data['email2']:
+            raise ValidationError('Emails are not the same')
+        if self.data['email'] != '':
+            try:
+                User.objects.get(email=self.data['email'])
+                raise ValidationError("A user is already registered with this email address.")
+            except User.DoesNotExist:
+                pass
+        return self.data['email']
+    def clean_email2(self):
+        if self.data['email'] != self.data['email2']:
+            raise ValidationError('')
+        return self.data['email2']
+
+    def clean_password(self):
+        if self.data['password'] != self.data['password2']:
+            raise ValidationError('Passwords are not the same')
+        return self.data['password']
+    def clean_password2(self):
+        if self.data['password'] != self.data['password2']:
+            raise ValidationError('')
+        return self.data['password2']
+    
+    def clean(self,*args, **kwargs):
+        self.clean_email()
+        self.clean_password()
+        return super(SignupForm, self).clean(*args, **kwargs)
+
+    def save(self, commit=True):
+        if commit == False:
+            raise 'Cannot save without commit'
+        u = User(username=self.cleaned_data['username'],
+                 email=self.cleaned_data['email'],
+                 first_name=self.cleaned_data['first_name'],
+                 last_name=self.cleaned_data['last_name'],
+                 )
+        u.set_password(self.cleaned_data['password'])
+        u.save()
+        p = UserProfile(user=u,
+                        company=self.cleaned_data['company'],
+                        city=self.cleaned_data['city'],
+                        country=self.cleaned_data['country'],
+                        )
+        p.save()
+        return (u, p)

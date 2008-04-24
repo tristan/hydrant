@@ -95,6 +95,11 @@
               font-style: italic;
 }
 
+.error-text-small { 
+                    font-style: italic;
+                    font-size: 0.8em;
+}
+
 #wf-p table { 
               margin: 0 auto;
               border-top: 1px solid #ccc;
@@ -257,3 +262,30 @@
                         padding: 0.4em;
                         text-align: right;
  }
+
+#signup-box { 
+             font-size: 1em;
+             border: #81abd4 1.2em solid;
+             width: 41em;
+             margin: 2.5em auto;
+             background: #eaf2f5;
+             padding: 1.0em 1.5em 0.5em 1.5em;
+}
+
+#signup-box #fields { 
+                      padding: 0 0 1em 0;
+}
+
+#signup-box #fields label {
+                            padding: 0 0 1.5em 0;
+                            }
+
+#signup-box #fields input {
+                    padding: 0.4em;
+                    width: 97.3%;
+                    border:1px solid #ccc; 
+                    }
+
+#signup-box #success {
+                       padding: 0 0 0.5em 0;
+                    }
