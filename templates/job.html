@@ -26,7 +26,7 @@
       <a href="{% url job_stop job.pk %}">Stop Job</a> | 
       {% endif %}
       {% endif %}
-      <a href="{% url job_create job.workflow.pk %}">Re-run this job</a>
+      <a href="{% url job_rerun job.pk %}">Re-run this job</a>
     </div>
     <div style="clear: both;"></div>
   </div>

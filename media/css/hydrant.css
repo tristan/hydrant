@@ -195,11 +195,14 @@ a img {
 }
 
 #content #indexview #text #intro { 
-                                   text-align: left;
+                                   margin: 1em 0 0 0;
+                                   text-align: center;
 }
 
 #content #indexview img { 
-                            float: left;
+                          float: left;
+                          width: 31.25em;
+                          height: 21.375em;
 }
 
 #faq a:link, a:visited {

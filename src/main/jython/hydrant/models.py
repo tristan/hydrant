@@ -195,6 +195,7 @@ class Job(models.Model):
     submission_date = models.DateTimeField(null=True)
     start_date = models.DateTimeField(null=True)
     end_date = models.DateTimeField(null=True)
+    last_modified = models.DateTimeField(auto_now=True)
     name = models.CharField(max_length=200, null=True)
     description = models.TextField(null=True)
     public = models.CharField(max_length=3, default='OFF',

@@ -85,7 +85,7 @@
 	<a href="{% url job_stop job.pk %}"><img alt="stop job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
 	{% endif %}
 	{% endif %}
-	<a href="{% url job_create job.workflow.pk %}"><img alt="create job" src="{{ MEDIA_URL }}/img/icons/reload-16x16.png"/></a>
+	<a href="{% url job_rerun job.pk %}"><img alt="re-run job" src="{{ MEDIA_URL }}/img/icons/reload-16x16.png"/></a>
       </div>
       <div class="details">
       <div class="status">

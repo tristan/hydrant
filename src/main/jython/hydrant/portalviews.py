@@ -46,7 +46,7 @@ def home(request):
     jobs = []
     if request.user.is_authenticated():
         workflows.extend([i for i in Workflow.objects.filter(owner=request.user,deleted=False) if i not in workflows])
-        jobs = Job.objects.filter(owner=request.user)
+        jobs = Job.objects.filter(owner=request.user).order_by('-last_modified')
         if len(jobs) > 5:
             jobs = jobs[:5]
         messages = get_all_messages_related_to_user(request.user).order_by('-date')
@@ -338,6 +338,21 @@ def job_create(request, workflowid):
     job.name = workflow.name + ' Job'
     job.owner = request.user
     job.save()
+    return HttpResponseRedirect(reverse('job', args=(job.pk,)))
+job_create = login_required(job_create)
+
+def job_rerun(request, jobid):
+    origjob=get_object_or_404(Job, pk=jobid)
+    job = Job(
+        workflow=origjob.workflow,
+        description=origjob.description,
+        name=origjob.name + ' Re-run',
+        owner=request.user,
+        )
+    job.save()
+    for origji in origjob.get_job_inputs():
+        ji = JobInput(job=job, parameter=origji.parameter, value=origji.value)
+        ji.save()
     return HttpResponseRedirect(reverse('job', args=(job.pk,)))
 job_create = login_required(job_create)
 
