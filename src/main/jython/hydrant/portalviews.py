@@ -545,7 +545,6 @@ def duplicate_workflow(request, id):
     """ Takes a Workflow and makes an exact copy of it which can be
     modified seperatly from the original.
     """
-    user = User.objects.get(id=request.user.id)
     workflow = get_object_or_404(Workflow, pk=id)
     if not workflow.public and workflow.owner != request.user and request.user not in workflow.valid_users.all():
         raise Http404
@@ -556,7 +555,7 @@ def duplicate_workflow(request, id):
         name = '%s (copy %d)' % (workflow.name, i)
         i += 1
     workflow_copy.name = name
-    workflow_copy.owner = user
+    workflow_copy.owner = request.user
     workflow_copy.public = False
     workflow_copy.description = workflow.description
     filename = workflow.moml_file
@@ -577,7 +576,7 @@ def duplicate_workflow(request, id):
         p_copy.type = p.type
         p_copy.save()
     request.user.message_set.create(message={'type':'MESSAGE', 'message':'workflow has been successfully duplicated'})
-    return HttpResponseRedirect(reverse('workflow_view', args=(workflow_copy.pk,)))
+    return HttpResponseRedirect(reverse('workflow', args=(workflow_copy.pk,)))
 
 def download_workflow(request, id):
     """ Serves the Workflow MoML file.
