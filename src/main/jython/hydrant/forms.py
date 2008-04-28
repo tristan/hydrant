@@ -84,7 +84,8 @@ class SearchForm(Form):
         initial='ASC',
         )
 
-JOB_SEARCH_ORDER_CHOICES = (('creation_date','Creation Date'),
+JOB_SEARCH_ORDER_CHOICES = (('last_modified','Last Modified'),
+                            ('creation_date','Creation Date'),
                             ('submission_date','Submission Date'),
                             ('start_date','Start Date'),
                             ('ETA','Time Remaining'),
@@ -93,7 +94,7 @@ JOB_SEARCH_ORDER_CHOICES = (('creation_date','Creation Date'),
                             ('owner','Owner'),
                             )
 class JobSearchForm(SearchForm):
-    sort_by = ChoiceField(choices=JOB_SEARCH_ORDER_CHOICES,initial='creation_date')
+    sort_by = ChoiceField(choices=JOB_SEARCH_ORDER_CHOICES,initial='last_modified')
 
     def get_results(self):
         results = Job.objects.get_empty_query_set()
