@@ -39,14 +39,14 @@
     <div class="details">
     <div class="icon">
       {% ifequal msg.fromuser.username 'system' %}
-      <img src="{{ MEDIA_URL }}/img/hydrant-icon-32-2.png" alt="system"/>
+      <img src="{{ MEDIA_URL }}/img/hydrant-icon-32.png" alt="system"/>
       {% else %}
       <a href="{% url profile msg.fromuser.username %}">
       <img src="{% gravatar_url msg.fromuser 32 %}" alt="{{ msg.fromuser.username }}"/>
       </a>
       {% endifequal %}
       {% ifequal msg.touser.username 'system' %}
-      <img src="{{ MEDIA_URL }}/img/hydrant-icon-32-2.png" alt="system"/>
+      <img src="{{ MEDIA_URL }}/img/hydrant-icon-32.png" alt="system"/>
       {% else %}
       <a href="{% url profile msg.touser.username %}">
       <img src="{% gravatar_url msg.touser 32 %}" alt="{{ msg.touser.username }}"/>
