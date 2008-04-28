@@ -5,6 +5,23 @@
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/list.css"/>
 {% endblock %}
+
+{% block workflowslink %}
+{% if workflow %}
+<div class="toollink"><a class="selected">Workflows</a></div>
+{% else %}
+<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>
+{% endif %}
+{% endblock %}
+
+{% block jobslink %}
+{% if job %}
+<div class="toollink"><a class="selected">Jobs</a></div>
+{% else %}
+<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>
+{% endif %}
+{% endblock %}
+
 {% block content %}
 <div id="list" class="{% if job %}jobsearch{% endif %}{% if workflow %}workflowsearch{% endif %}">
   <div id="searchbox">

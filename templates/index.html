@@ -17,23 +17,24 @@
   <div class="tools">
     {% if user.is_authenticated %}
     <div class="toollink">
-    <a href="{% url logout %}">Log out</a>
+      <a href="{% url logout %}">Log out</a>
     </div>
+    {% else %}
+    {% block loginlink %}<div class="toollink"><a href="{% url login %}">Log in</a></div>{% endblock %}
+    {% block signuplink %}<div class="toollink"><a href="{% url signup %}">Sign up</a></div>{% endblock %}
+    {% endif %}
+
     {% block faqlink %}<div class="toollink"><a href="{% url faq %}">FAQ</a></div>{% endblock %}
     {% comment %}
     {% if user.is_superuser %}
     {% block adminlink %}<div class="toollink"><a href="#">Administration</a></div>{% endblock %}
     {% endif %}
     {% endcomment %}
+    {% if user.is_authenticated %}
     {% block profilelink %}<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
     {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}
-    {% else %}
-    <div class="toollink">
-    <a href="{% url login %}">Log in</a>
-    </div>
-    <div class="toollink"><a href="{% url signup %}">Sign up</a></div>
-    <div class="toollink"><a href="{% url faq %}">FAQ</a></div>
+    {% block dashboardlink %}<div class="toollink"><a href="{% url dashboard %}">Dashboard</a></div>{% endblock %}
     {% endif %}
   </div>
 </div>
@@ -76,6 +77,7 @@
     </div>
     <h2>{% random_saying %}</h2>
     <div id="intro">
+      
     </div>
   </div>
   <img src="{{ MEDIA_URL }}/img/hydrant-screenshot.png"/>

@@ -332,10 +332,12 @@ def delete_workflow(request, id, undelete=False):
 delete_workflow = login_required(delete_workflow)
 
 def job_create(request, workflowid):
-    workflow=get_object_or_404(Workflow, pk=workflowid)
+    wf=get_object_or_404(Workflow, pk=workflowid)
+    if not wf.has_view_permission(request.user):
+        raise Http404
     job = Job()
-    job.workflow = workflow
-    job.name = workflow.name + ' Job'
+    job.workflow = wf
+    job.name = wf.name + ' Job'
     job.owner = request.user
     job.save()
     return HttpResponseRedirect(reverse('job', args=(job.pk,)))
@@ -343,6 +345,8 @@ job_create = login_required(job_create)
 
 def job_rerun(request, jobid):
     origjob=get_object_or_404(Job, pk=jobid)
+    if not origjob.has_view_permission(request.user) or not origjob.workflow.has_view_permission(request.user):
+        raise Http404
     job = Job(
         workflow=origjob.workflow,
         description=origjob.description,

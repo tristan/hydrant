@@ -3,7 +3,16 @@
 {% load gravatar %}
 {% block extrastyle %}
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/profile.css"/>
+<!--[if IE]><style type="text/css">@import "{{ MEDIA_URL }}/css/profile_ie.css";</style><![endif]-->
 <script type="text/javascript" src="{{ MEDIA_URL }}/js/prototype.js"></script>
+{% endblock %}
+
+{% block profilelink %}
+{% ifequal user requested_user %}
+<div class="toollink"><a class="selected">Profile</a></div>
+{% else %}
+<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>
+{% endifequal %}
 {% endblock %}
 
 {% block content %}

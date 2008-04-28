@@ -7,6 +7,8 @@
 <link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/dashboard.css"/>
 {% endblock %}
 
+{% block dashboardlink %}<div class="toollink"><a class="selected">Dashboard</a></div>{% endblock %}
+
 {% block content %}
 <div id="dashboard">
   <div id="col-one">
@@ -65,7 +67,7 @@
   </div>
   <div id="col-two">
   <div id="small-jobs">
-    <h1>Your Recent Jobs</h1>
+    <h1>Your Recent Jobs <a href="{% url jobs %}?search_term={{ user.username }}&search_users=on&sort_by=creation_date&sort_order=ASC&p=1">(view all)</a></h1>
     {% for job in jobs %}
     <div class="thing">
       <div class="icon">
@@ -78,14 +80,14 @@
       <div style="clear: both;"></div>
       <div class="tools">
 	{% if not job.start_date %}
-	<a href="{% url job job.pk %}"><img src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
-	<a href="{% url job_stop job.pk %}"><img alt="cancel job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+	<a href="{% url job job.pk %}"><img title="setup" alt="setup job" src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
+	<a href="{% url job_stop job.pk %}"><img title="cancel" alt="cancel job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
 	{% else %}
 	{% if not job.end_date %}
-	<a href="{% url job_stop job.pk %}"><img alt="stop job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+	<a href="{% url job_stop job.pk %}"><img title="stop" alt="stop job" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
 	{% endif %}
 	{% endif %}
-	<a href="{% url job_rerun job.pk %}"><img alt="re-run job" src="{{ MEDIA_URL }}/img/icons/reload-16x16.png"/></a>
+	<a href="{% url job_rerun job.pk %}"><img title="re-run" alt="re-run job" src="{{ MEDIA_URL }}/img/icons/reload-16x16.png"/></a>
       </div>
       <div class="details">
       <div class="status">
@@ -126,10 +128,10 @@
       </div>
       <div style="clear: both;"></div>
       <div class="tools">
-	<a href="{% url job_create w.pk %}"><img alt="create job" src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
-	<a href="{% url workflow w.pk %}"><img alt="setup workflow" src="{{ MEDIA_URL }}/img/icons/prefs-16x16.png"/></a>
-	<a href="{% url download_workflow w.pk %}"><img alt="download workflow" src="{{ MEDIA_URL }}/img/icons/down-16x16.png"/></a>
-	<a href="{% url delete_workflow w.pk %}"><img alt="delete workflow" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
+	<a href="{% url job_create w.pk %}"><img title="create job" alt="create job" src="{{ MEDIA_URL }}/img/icons/exec-16x16.png"/></a>
+	<a href="{% url workflow w.pk %}"><img title="setup" alt="setup workflow" src="{{ MEDIA_URL }}/img/icons/prefs-16x16.png"/></a>
+	<a href="{% url download_workflow w.pk %}"><img title="download" alt="download workflow" src="{{ MEDIA_URL }}/img/icons/down-16x16.png"/></a>
+	<a href="{% url delete_workflow w.pk %}"><img title="delete" alt="delete workflow" src="{{ MEDIA_URL }}/img/icons/delete-16x16.png"/></a>
       </div>
       <div class="details">
 	<div class="status">

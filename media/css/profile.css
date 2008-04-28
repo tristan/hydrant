@@ -18,10 +18,12 @@
                  width: 26em;
 }
 
-#infoform #fields #textfields input, #messagebox>form>label>input, #messagebox>form>label>textarea {
-                  border: 1px solid #bedce7;
-                  padding: 0.2em;
-                  width: 98%;
+#infoform #fields #textfields input,
+#messagebox>form>label>input, 
+#messagebox>form>label>textarea {
+                                  border: 1px solid #bedce7;
+                                  padding: 0.2em;
+                                  width: 98%;
 }
 
 #submitrow { 

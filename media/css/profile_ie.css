@@ -1,0 +1,17 @@
+#infoform form #fields #textfields label input { 
+                                                 border: 1px solid #bedce7;
+                                                 margin: 0 0 -1.0em 0;
+                                                 padding: 0.2em;
+                                                 width: 98%;
+}
+
+#messagebox form label input { 
+                               border: 1px solid #bedce7;
+                                  padding: 0.2em;
+                                  width: 98%;
+}
+#messagebox form label textarea {
+                                  border: 1px solid #bedce7;
+                                  padding: 0.2em;
+                                  width: 98%;
+}
