@@ -7,9 +7,10 @@ from ptolemy.kernel.util import IllegalActionException, KernelException
 from helpers import *
 from hydrant.models import Message, JobMessage, get_system_user
 from hydrant.templatetags.textutils import timeuntil_with_secs
+from settings import MAX_RUNNING_JOBS
 
 class KeplerJobManager(Thread):
-    def __init__(self, max_active=2):
+    def __init__(self, max_active=MAX_RUNNING_JOBS):
         Thread.__init__(self)
         self.max_active = max_active
         self.queue = []
