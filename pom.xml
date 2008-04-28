@@ -146,7 +146,15 @@
 	  <scanIntervalSeconds>0</scanIntervalSeconds>
 	  <connectors>
 	    <connector implementation="org.mortbay.jetty.nio.SelectChannelConnector">
-	      <port>8000</port>
+	      <port>8080</port>
+	    </connector>
+	    <connector implementation="org.mortbay.jetty.security.SslSocketConnector">
+	      <port>8443</port>
+	      <keystore>keystore</keystore>
+	      <password>zxcasdqwe123</password>
+	      <keyPassword>zxcasdqwe123</keyPassword>
+	      <truststore>keystore</truststore>
+	      <trustPassword>zxcasdqwe123</trustPassword>
 	    </connector>
 	  </connectors>
 	  <systemProperties>

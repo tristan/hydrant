@@ -16,7 +16,7 @@ DATABASE_PASSWORD = 'k3pl3r'         # Not used with sqlite3.
 DATABASE_HOST = 'kepler.hpc.jcu.edu.au'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
-#SESSION_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
 
 TIME_ZONE = 'Australia/Brisbane'
 
@@ -29,6 +29,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
+    #'django.middleware.ssl.SSLRedirect',
 )
 
 INSTALLED_APPS = (
