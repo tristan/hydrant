@@ -1,2 +1,0 @@
-#!/bin/sh
-jython src/main/jython/manage.py runserver 0.0.0.0:8001

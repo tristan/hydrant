@@ -1,5 +1,0 @@
-# blah
-# blah
-mvn compile
-mvn jar:jar
-cp target/hydrant-1.0-SNAPSHOT.jar lib/

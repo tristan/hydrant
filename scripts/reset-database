@@ -1,0 +1,14 @@
+#!/bin/bash
+# This script rebuilds the database.
+# WARNING: this will delete all entries from the database
+# input: the database server address
+if [ "$1" == "" ]; then
+    echo "missing postgresql-server-address"
+    echo "Usage: $0 postgresql-server-address"
+else
+    pushd ../
+    jython src/main/jython/manage.py sqlreset hydrant > reset.sql
+    psql -U kepler -h $1 -f reset.sql
+    rm reset.sql
+    popd
+fi

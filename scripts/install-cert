@@ -1,0 +1,4 @@
+pushd ../
+javac -d target/ src/etc/java/InstallCert.java
+java -cp target/ InstallCert $@
+popd

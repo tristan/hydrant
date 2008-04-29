@@ -125,7 +125,7 @@
 	<executions>
 	  <execution>
 	    <id>build-classpath</id>
-	    <phase>package</phase>
+	    <phase>compile</phase>
 	    <goals>
 	      <goal>build-classpath</goal>
 	    </goals>

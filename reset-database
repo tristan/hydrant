@@ -1,4 +1,0 @@
-#!/bin/bash
-jython src/main/jython/manage.py sqlreset hydrant > reset.sql
-psql -U kepler -h kepler.hpc.jcu.edu.au -f reset.sql
-rm reset.sql

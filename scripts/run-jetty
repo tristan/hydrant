@@ -1,0 +1,5 @@
+#!/bin/bash
+# this script starts up the jetty server
+pushd ../
+mvn jetty:run
+popd

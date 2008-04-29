@@ -1,0 +1,10 @@
+#!/bin/bash
+# This script initialises all the java components and classpaths
+# hydrant needs to run. This should be run anytime dependencies
+# are changed in the pom.xml or any changes are made to the java
+# code.
+pushd ../
+mvn compile
+mvn jar:jar
+cp target/hydrant-1.0-SNAPSHOT.jar lib/
+popd

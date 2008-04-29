@@ -1,0 +1,11 @@
+#!/bin/bash
+# this script runs the django development server
+# inputs: the port to start the server on
+if [ "$1" == "" ]; then
+    PORT=8000
+else
+    PORT=$1
+fi
+pushd ../
+jython src/main/jython/manage.py runserver 0.0.0.0:$PORT
+popd
