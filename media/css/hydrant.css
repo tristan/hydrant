@@ -132,9 +132,10 @@ a img {
 }
 
 .seperator { 
-             border-top: 5px solid #DDD; 
+             border-top: 0.3em solid #DDD; 
              width:100%; 
              margin: 0 0 0 0;
+             padding: 0 0 0 0;
 }
 
 #content { 
@@ -144,10 +145,12 @@ a img {
 }
 
 #footer { 
-          display: block;
+          border-top: 0.4em solid #DDD; 
           font-size: 0.7em;
           color: #FFF;
-          background: grey;
+          background: #555;
+          padding: 0;
+          margin: 0;
 }
 
 #footer #stuff { 
@@ -187,16 +190,15 @@ a img {
 
 #content #indexview #text #title { 
                                    margin: 0 auto;
-                                   width: 6.85em;
                                    text-align: center;
 }
 
 #content #indexview #text h1 { 
                                color: #3e5a8b;
                                font-size: 1.8em;
-                               text-decoration: underline;
+                               text-decoration: none;
                                text-align: center;
-                               float: left;
+
 }
 
 #content #indexview #text span { 
