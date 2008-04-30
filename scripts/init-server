@@ -6,5 +6,6 @@
 pushd ../
 mvn compile
 mvn jar:jar
+mkdir lib
 cp target/hydrant-1.0-SNAPSHOT.jar lib/
 popd

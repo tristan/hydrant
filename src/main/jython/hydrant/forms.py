@@ -245,7 +245,6 @@ class UserInfoForm(ModelForm):
                 'email_job',
                 'email_workflow',
                 'email_messages',
-                'email_comments',
                 )
 
 class PasswordChangeForm(Form):
