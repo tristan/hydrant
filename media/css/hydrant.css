@@ -144,15 +144,18 @@ a img {
 }
 
 #footer { 
-          padding: 1em 0 1em 0;
-          text-align: center;
           display: block;
           font-size: 0.7em;
-          color: #666;
+          color: #FFF;
+          background: grey;
+}
+
+#footer #stuff { 
+                 padding: 1em 0.5em 1em 0.5em;
 }
 
 #footer a:link, a:visited {
-                            color: #5D80B2;
+                            color: #9DC0F2;
                             text-decoration: none;
 }
 
@@ -160,7 +163,11 @@ a img {
                   color: #036;
 }
 
-#footer img {
+#footer .hostedby { 
+                    vertical-align: top;
+}
+
+#footer .poweredby img {
               padding: 0.3em 0 0 0;
               width: 7.13em;
               height: 1.33em;
