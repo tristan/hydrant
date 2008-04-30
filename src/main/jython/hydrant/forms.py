@@ -72,7 +72,7 @@ SEARCH_ORDER_CHOICES = (('ASC','ascending'),
                         )
 class SearchForm(Form):
     search_term = CharField(max_length=200)
-    search_comments = BooleanField(initial=True)
+    #search_comments = BooleanField(initial=True)
     search_names = BooleanField(initial=True)
     search_users = BooleanField(initial=True)
     search_descriptions = BooleanField(initial=True)
