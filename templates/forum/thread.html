@@ -25,9 +25,7 @@
 	<img src="{% gravatar_url post.author 32 %}" alt="{{ post.author }}"/>
 	</a>
       </div>
-      <div id="text" style="float: left;">
-	{{ post.body|escape|safe }}
-      </div>
+      <div id="text" style="float: left;">{{ post.body|linebreaksbr|escape  }}</div>
       <div style="clear: both;"></div>
     </div>
   </div>
