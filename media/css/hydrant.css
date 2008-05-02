@@ -235,10 +235,15 @@ a img {
                                       color: black;
 }
 
-#content #indexview img { 
+#content #indexview .screenshot { 
                           float: left;
                           width: 31.25em;
                           height: 21.375em;
+}
+
+#content #indexview .screencast-button { 
+                                         width: 9.375em;
+                                         height: 3.25em;
 }
 
 #faq a:link, a:visited {

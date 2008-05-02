@@ -1,0 +1,112 @@
+a { 
+    color: #4183c4;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+a:hover { 
+          text-decoration: underline;
+ }
+
+#thread #post #details #name a:visited { 
+                                 font-weight: bold;
+ }
+
+.last-post a, .last-post a:visited, #thread #post #details a:visited { 
+               font-weight: normal;
+}
+
+#forums-list { 
+              padding: 1em;
+}
+
+#forums-list table {
+                     width: 100%;
+                     background-color: #f0f0f0;
+                     border: 1px solid #d8d8d8;             
+}
+
+#forums-list th, #forums-list td {
+                     border: 1px solid #ccc;
+                     padding: 0.3em;
+}
+
+#create-thread { 
+                 padding: 0em 1em 1em 1em;
+                  border: 1px solid #bedce7;
+                  background: #eaf2f5;
+                 }
+
+#create-thread #fields { 
+                         margin: 0 0 1em 0;
+}
+
+#create-thread #fields input, #create-thread #fields textarea {
+                                  border: 1px solid #bedce7;
+                                  padding: 0.2em;
+                                  width: 98%;
+}
+
+#djangoForumThreadList .posts, #djangoForumThreadList .views { 
+                                text-align: center;
+}
+
+#thread-all { 
+              padding: 1em;
+}
+
+#thread-list { 
+               margin: 0 0 1em 0;
+}
+
+#thread-list table {
+                     width: 100%;
+                     background-color: #f0f0f0;
+                     border: 1px solid #d8d8d8;             
+}
+
+#thread-list th, #thread-list td {
+                     border: 1px solid #ccc;
+                     padding: 0.3em;
+}
+
+#thread { 
+          padding: 1em;
+ }
+
+#crumbs { 
+                 margin: 0 0 1em 0;
+                 }
+
+#thread #details {
+                   padding: 0.3em;
+                   border-bottom: 1px solid #d0d0d0;
+                   }
+
+#thread #details #time { 
+                         font-size: 0.8em;
+}
+
+#thread #body #avatar img { 
+                          border: 1px solid #d0d0d0;
+                          padding: 2px;
+                            width: 2.46em;
+                          height: 2.463em;
+
+}
+
+#thread #body #avatar { 
+                        margin: 0 0.5em 0 0;
+ }
+
+#thread #body {
+                   padding: 0.7em;
+                   }
+
+#thread #post { 
+                border: 1px solid #bedce7;
+                padding: 0.2em;
+                margin: 0 0 0.5em 0;
+                background: #eaf2f5;
+               
+ }

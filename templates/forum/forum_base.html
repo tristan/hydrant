@@ -1,0 +1,11 @@
+{% extends "index.html" %}
+
+{% block extrastyle %}
+<link rel="alternate" type="application/rss+xml" title="All Latest Posts via RSS" href="{% url forum_index %}rss/" />
+<link rel="alternate" type="application/atom+xml" title="All Latest Posts via ATOM" href="{% url forum_index %}atom/" />
+<link rel="stylesheet" type="text/css" href="{{ MEDIA_URL }}/css/forum.css"/>
+{% endblock %}
+
+{% block forumlink %}
+<div class="toollink"><a class="selected">Forum</a></div>
+{% endblock %}

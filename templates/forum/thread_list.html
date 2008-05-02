@@ -1,0 +1,81 @@
+{% extends "forum/forum_base.html" %}
+
+{% load gravatar %}
+
+{% block content %}
+
+
+
+{% if forum.child.all %}
+<table id='djangoForumList'>
+<tr>
+<th>Sub-Forum</th>
+<th>Last Post</th>
+</tr>
+
+{% for subforum in forum.child.all %}
+<tr>
+<td class='djangoForumListDetails'><p><strong><a href='{{ subforum.get_absolute_url }}'>{{ subforum.title }}</a></strong><br /><span class='djangoForumStats'>{{ subforum.threads }} thread{{ subforum.threads|pluralize }}, {{ subforum.posts }} post{{ subforum.posts|pluralize }}</span></p>
+<p>{{ subforum.description }}</p></td>
+<td class='djangoForumListLastPost'>{% if subforum.forum_latest_post %}{{ subforum.forum_latest_post.time|timesince }} ago by {{ subforum.forum_latest_post.author }} (<a href='{{ subforum.forum_latest_post.get_absolute_url }}'>view</a>){% else %}No Posts{% endif %}</td>
+</tr>
+{% endfor %}
+</table>
+<br />
+{% endif %}
+
+<div id="thread-all">
+
+  <div id="crumbs">
+    <a href="{% url forum_index %}">Forums</a> {% for title, url in forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a> {% endfor %} ({{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }})
+  </div>
+  
+  <div id="thread-list">
+
+    <table cellspacing="0">
+
+      <tr>
+	<th>Thread</th>
+	<th style='width: 50px;'>Posts</th>
+	<th style='width: 50px;'>Views</th>
+	<th>Last Post</th>
+      </tr>
+
+      {% for t in threads %}
+      <tr>
+	<td>{% if t.sticky %}Sticky {% endif %}<a href='{{ t.get_absolute_url }}'>{{ t.title|escape }}</a>{% if t.closed %} (Closed){% endif %}</td>
+	<td class="posts">{{ t.posts }}</td>
+	<td class="views"'>{{ t.views }}</td>
+	<td class="last-post">
+	  {{ t.thread_latest_post.time|timesince }}
+	  ago by
+	  <a href="{% url profile forum.forum_latest_post.author %}">
+	  <img src="{% gravatar_url forum.forum_latest_post.author 12 %}" alt="{{ forum.forum_latest_post.author }}"/>
+	  {{ forum.forum_latest_post.author.get_full_name }}</a>
+	  (<a href='{{ t.thread_latest_post.get_absolute_url }}'>view</a>)
+	</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+  <div id="create-thread">
+    <h2>Create a Thread</h2>
+    {% if user.is_authenticated %}
+    <form method='post' action='new/'>
+    <div id="fields">
+      <label for='title'>Title</br>
+      <input type='text' name='title' maxlength='100' />
+      </label>
+      <label for='body'>Body<br/>
+      <textarea name='body' rows='8' cols='50'></textarea></label>
+    </div>
+    <div><input type='submit' value='Post' /></div>
+    </form>
+    {% else %}
+    <p>Please login to create a thread.</p>
+    {% endif %}
+  </div>
+
+</div>
+  
+{% endblock %}

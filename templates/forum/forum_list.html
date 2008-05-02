@@ -1,0 +1,31 @@
+{% extends "forum/forum_base.html" %}
+{% load gravatar %}
+
+{% block content %}
+<div id="forums-list">
+  <table cellspacing="0">
+    <tr>
+      <th>Forum</th>
+      <th>Last Post</th>
+    </tr>
+
+    {% for forum in object_list %}
+    <tr>
+      <td class="details"><p><strong><a href='{{ forum.get_absolute_url }}'>{{ forum.title }}</a></strong><br /><span class='djangoForumStats'>{{ forum.threads }} thread{{ forum.threads|pluralize }}, {{ forum.posts }} post{{ forum.posts|pluralize }}</span></p>
+	<p>{{ forum.description }}</p>
+      </td>
+      <td class="last-post">
+	{% if forum.forum_latest_post %}
+	{{ forum.forum_latest_post.time|timesince }}
+	ago by
+	<a href="{% url profile forum.forum_latest_post.author %}">
+	<img src="{% gravatar_url forum.forum_latest_post.author 12 %}" alt="{{ forum.forum_latest_post.author }}"/>
+	{{ forum.forum_latest_post.author.get_full_name }}</a>
+	(<a href='{{ forum.forum_latest_post.get_absolute_url }}'>view</a>)
+	{% else %}No Posts{% endif %}
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

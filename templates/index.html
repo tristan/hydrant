@@ -31,6 +31,7 @@
     {% endif %}
     {% endcomment %}
     {% if user.is_authenticated %}
+    {% block forumlink %}<div class="toollink"><a href="{% url forum_index %}">Forum</a></div>{% endblock %}
     {% block profilelink %}<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
     {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}
@@ -91,11 +92,11 @@
       Hydrant also provides some basic social networking features, allowing
       users to share their workflows and results with other users.
       <br/><br/>
-      <a href="#">Take the Tour</a>
+      <center><a href="#"><img class="screencast-button" alt="Take the Tour" src="{{ MEDIA_URL }}/img/screencast_button.png"/></a></center>
     </div>
   </div>
-  <div style="float: right; margin: 0.5em 0 0 0;">
-    <img src="{{ MEDIA_URL }}/img/hydrant-screenshot.png"/>
+  <div style="float: right; margin: 2.8em 0 0 0;">
+    <img class="screenshot" src="{{ MEDIA_URL }}/img/hydrant-screenshot.png"/>
   </div>
   <div style="clear: both;"></div>
   </div>

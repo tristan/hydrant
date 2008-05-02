@@ -1,7 +1,7 @@
 from django.conf.urls.defaults import *
-from portalviews import *
+from views import *
 
-urlpatterns = patterns('hydrant.portalviews',
+urlpatterns = patterns('hydrant.views',
     # Example:
     # (r'^kepler/', include('kepler.foo.urls')),
 
@@ -23,5 +23,5 @@ urlpatterns = patterns('hydrant.portalviews',
     url(r'^job/([\w]+)/([\w]+)/$', 'job_media', name='serve_job_media'),
     url(r'^workflows/$', 'workflows', name='workflows'),
     url(r'^jobs/$', 'jobs', name='jobs'),
-    url(r'^([\w]+)/$', 'profile',name='profile'),
+    url(r'^user/([\w]+)/$', 'profile',name='profile'),
 )

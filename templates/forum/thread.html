@@ -1,0 +1,54 @@
+{% extends "forum/forum_base.html" %}
+{% load gravatar %}
+
+{% block content %}
+
+<div id="thread">
+
+  <div id="crumbs">
+    <a href="{% url forum_index %}">Forums</a> {% for title, url in thread.forum.get_url_name %} &raquo; <a href='{{ url }}'>{{ title }}</a>{% endfor %} &raquo; <a href='{{ thread.get_absolute_url }}'>{{ thread.title|escape }}</a> ({{ thread.posts }} post{{ thread.posts|pluralize }})
+  </div>
+  {% for post in posts %}
+  <div id="post">
+    <div id="details">
+      <div id="name" style="float: left;">
+	<a href="{% url profile post.author %}">{{ post.author.get_full_name }}</a>
+      </div>
+      <div id="time" style="float: right;">
+	Posted {{ post.time|timesince }} ago.
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+    <div id="body">
+      <div id="avatar" style="float: left;">
+	<a href="{% url profile post.author %}">
+	<img src="{% gravatar_url post.author 32 %}" alt="{{ post.author }}"/>
+	</a>
+      </div>
+      <div id="text" style="float: left;">
+	{{ post.body|escape|safe }}
+      </div>
+      <div style="clear: both;"></div>
+    </div>
+  </div>
+  {% endfor %}
+
+  <div id="create-thread">
+    <h2>Post a Reply</h2>
+    {% if user.is_authenticated %}
+    <form method='post' action='reply/'>
+    <div id="fields">
+      <label for='body'>
+      <textarea name='body' rows='8' cols='50'></textarea>
+      </label>
+    </div>
+    <div><input type='submit' value='Post' /></div>
+    </form>
+    {% else %}
+    <p>Please login to create a thread.</p>
+    {% endif %}
+  </div>
+  
+  </div>
+
+{% endblock %}

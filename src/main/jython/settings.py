@@ -39,8 +39,11 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.admin',
     'django.contrib.sites',
-    'jython.hydrant'
+    'jython.hydrant',
+    'jython.forum',
 )
+
+FORUM_BASE = '/forum'
 
 TEMPLATE_DIRS = (
     PROJECT_HOME + '/templates/',
