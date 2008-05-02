@@ -103,6 +103,11 @@ a:hover {
                    padding: 0.7em;
                    }
 
+#thread #body #text {
+                      padding: 0.7em;
+                      width: 91%;
+                   }
+
 #thread #post { 
                 border: 1px solid #bedce7;
                 padding: 0.2em;
