@@ -1,4 +1,5 @@
 import os
+import django
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -60,6 +61,7 @@ LIB_DIRECTORY = (
 )
 
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
+ADMIN_MEDIA_ROOT = '/'.join(django.__file__.split('/')[:-1]) + '/contrib/admin/media/'
 ROOT_URLCONF = 'jython.urls'
 
 STORAGE_ROOT = PROJECT_HOME + '/storage'

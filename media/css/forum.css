@@ -110,3 +110,8 @@ a:hover {
                 background: #eaf2f5;
                
  }
+
+.last-post img { 
+                 width: 0.75em;
+                 height: 0.75em;
+}

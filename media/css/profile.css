@@ -46,6 +46,11 @@
         float: left;
 }
 
+#more img {
+            width: 0.75em;
+            height: 0.75em; 
+ }
+
 #profile a, #profile a:visited { 
                                  color: #4183c4;
                                  text-decoration: none;
@@ -100,8 +105,10 @@
 }
 
 #avatar img { 
-          border: 1px solid #ccc;
-          padding: 2px;
+              border: 1px solid #ccc;
+              padding: 2px;
+              width: 3.72em;
+              height: 3.72em;
               }
 
 #userdetails { 

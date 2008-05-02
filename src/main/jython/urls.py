@@ -1,7 +1,7 @@
 import traceback
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
-from settings import MEDIA_ROOT, ROOT_URL, USE_HTTPS
+from settings import MEDIA_ROOT, ADMIN_MEDIA_ROOT, ROOT_URL, USE_HTTPS
 
 try:
  urlpatterns = patterns('',
@@ -9,6 +9,8 @@ try:
      'hydrant.views.hide_workflows'),
     (r'^%smedia/(?P<path>.*)$' % ROOT_URL, 'django.views.static.serve', 
      {'document_root': MEDIA_ROOT, 'show_indexes': True}),
+    (r'^%smediaadmin/(?P<path>.*)$' % ROOT_URL, 'django.views.static.serve', 
+     {'document_root': ADMIN_MEDIA_ROOT, 'show_indexes': True}),
     (r'^%saccounts/login/$' % ROOT_URL, 'django.contrib.auth.views.login',
      {'template_name': 'login.html', 'SSL':USE_HTTPS}, 'login'),
     (r'^%saccounts/signup/$' % ROOT_URL, 'jython.hydrant.views.signup',
