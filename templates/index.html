@@ -29,9 +29,9 @@
     {% if user.is_superuser %}
     {% block adminlink %}<div class="toollink"><a href="#">Administration</a></div>{% endblock %}
     {% endif %}
+    {% block forumlink %}<div class="toollink"><a href="{% url forum_index %}">Forum</a></div>{% endblock %}
     {% endcomment %}
     {% if user.is_authenticated %}
-    {% block forumlink %}<div class="toollink"><a href="{% url forum_index %}">Forum</a></div>{% endblock %}
     {% block profilelink %}<div class="toollink"><a href="{% url profile user.username %}">Profile</a></div>{% endblock %}
     {% block jobslink %}<div class="toollink"><a href="{% url jobs %}">Jobs</a></div>{% endblock %}
     {% block workflowslink %}<div class="toollink"><a href="{% url workflows %}">Workflows</a></div>{% endblock %}
@@ -121,6 +121,9 @@
       <a href="http://www.kepler-project.org"><img src="{{ MEDIA_URL }}/img/logos/kepler-powered.png" alt="Kepler"/></a><br/>
     </div>
     <div style="clear: both;"></div>
+    <div class="discussion">
+      <a href="http://groups.google.com/group/hydrant-kepler">got Feedback? Suggestions? Need help? Visit the Hydrant google group.</a>
+    </div>
     <div class="copywrite" style="float:left;">
       Created By Tristan King, Copyright &copy; 2007 to 2008, James Cook University. All rights reserved.
       <a href="http://www.jcu.edu.au/top/jcuprd_013723.html">Terms of use</a> | <a href="http://www.jcu.edu.au/privacy/">Privacy statement</a>
