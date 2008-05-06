@@ -48,6 +48,8 @@ def random_saying():
                'Where anything is possible!',
                'Making scientific workflows easy!',
                'Wow!',
+               'The stuff dreams are made of!',
+               'Let your dreams flow!',
                )
     return sayings[random.randint(0, len(sayings)-1)]
 random_saying = register.simple_tag(random_saying)
