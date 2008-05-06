@@ -218,6 +218,7 @@ a img {
 
 #content #indexview #text #intro { 
                                    margin: 1em 1em 1em 0;
+                                   font-size: 0.9em;
 }
 
 #content #indexview #text #intro a:link, a:visited {
@@ -233,6 +234,8 @@ a img {
 #content #indexview #text #intro h2 { 
                                       text-align: left;
                                       color: black;
+                                      font-weight: bold;
+                                      font-size: 1.3em;
 }
 
 #content #indexview .screenshot { 
@@ -242,6 +245,7 @@ a img {
 }
 
 #content #indexview .screencast-button { 
+                                         font-size: 1.11em;
                                          width: 9.375em;
                                          height: 3.25em;
 }
