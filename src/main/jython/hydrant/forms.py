@@ -5,6 +5,7 @@ from django.db import models
 from django.newforms import ModelForm, Form, ValidationError
 from django.newforms.fields import *
 from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
+from django.core.validators import alnum_re
 
 from django.contrib.auth.models import User
 from models import *
@@ -144,8 +145,6 @@ class JobSearchForm(SearchForm):
             url += '&search_names=on'
         if self['search_users'].data == 'on':
             url += '&search_users=on'
-        if self['search_comments'].data == 'on':
-            url += '&search_comments=on'
         url += '&sort_by=%s' % self['sort_by'].data
         url += '&sort_order=%s' % self['sort_order'].data
         return url
@@ -205,8 +204,8 @@ class WorkflowSearchForm(SearchForm):
             url += '&search_names=on'
         if self['search_users'].data == 'on':
             url += '&search_users=on'
-        if self['search_comments'].data == 'on':
-            url += '&search_comments=on'
+#        if self['search_comments'].data == 'on':
+#            url += '&search_comments=on'
         url += '&sort_by=%s' % self['sort_by'].data
         url += '&sort_order=%s' % self['sort_order'].data
         return url
@@ -425,6 +424,12 @@ class SignupForm(Form):
     company = CharField(max_length=200, required=False)
     city = CharField(max_length=200, required=False)
     country = CharField(max_length=200, required=False)
+
+    def clean_username(self):
+        if alnum_re.search(self.data['username']):
+            return self.data['username']
+        else:
+            raise ValidationError("This value must contain only letters, numbers and underscores.")
 
     def clean_email(self):
         if self.data['email'] != self.data['email2']:
