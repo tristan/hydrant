@@ -11,7 +11,7 @@
 
 {% block content %}
 <div id="job-content">
-<div id="details">
+<div id="details" {% ifequal job.status 'ERROR' %}class="error"{% endifequal %}>
   <div class="title">
     <div class="name">
       <a href="#">{{ job.name }}</a>
@@ -141,7 +141,7 @@
 {% endif %}
 {% if outputs %}
 {% for o in outputs %}
-<div id="output">
+<div id="output" {% if o.error %}class="error"{% endif %}>
   <div class="title">
     <div class="name">
       Output from: <u>{{ o.name }}</u>
@@ -155,9 +155,10 @@
     {{ o.content }}
     {% endifequal %}
     {% ifequal o.type 'IMAGE' %}
-    <center>
+    <div class="image">
     <img src="{{ o.url }}"/>
-    </center>
+    </div>
+    <a href="{{ o.url }}">Download File</a>
     {% endifequal %}
     {% ifequal o.type 'FILE' %}
     <a href="{{ o.url }}">Download File</a>

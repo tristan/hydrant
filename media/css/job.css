@@ -87,6 +87,13 @@
                  font-size: 1.8em;
 }
 
+#output .value .image { 
+                        text-align: center;
+                        overflow: auto;
+                        margin: 0 0 1em 0;
+                        width: 39.5em;
+                     }
+
 #output .value pre { 
                      overflow: auto;
                      padding: 0 0 1em 0;
@@ -161,3 +168,8 @@
                            margin: 0.3em 0 0 -1.8em;
 
 }
+
+.error { 
+         background: #ffebe8 !important;
+         border: 1px solid #dd3c10 !important;
+ }

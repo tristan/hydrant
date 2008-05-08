@@ -69,7 +69,17 @@ class __string_based_attribute_proxy__(object):
         return self.javaobj.getExpression()
     
     def set(self, x):
-        self.javaobj.setExpression(x)
+        _x = x
+        # if the java objects isn't in string mode
+        # test to check if the value being assigned is
+        # evaluatable, and if not, surround the value
+        # with quotes
+        if not self.javaobj.isStringMode():
+            try:
+                eval(x)
+            except:
+                _x = '"%s"' % x
+        self.javaobj.setExpression(_x)
     
     def __repr__(self):
         return self.get()
@@ -309,7 +319,8 @@ class EntityProxy(object):
         if path_to_actor:
             self.get(path_to_actor[0]).set_actor_property(path_to_actor[1:], property, value)
         else:
-            self.get(property).set(value)
+            prop = self.get(property)
+            prop.set(value)
 
     def get_actor_property(self, path_to_actor, property):
         """ A function which traverses into the actor hierachy to

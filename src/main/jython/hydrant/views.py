@@ -438,7 +438,9 @@ def job(request, jobid):
 
     for o in [j for j in job.get_job_outputs() if j.name != 'Provenance Data']:
         out = {'name': o.name, 'type': o.type }
-
+        if o.type == 'ERROR':
+            o.type = out['type'] = 'TEXT'
+            out['error'] = True
         if o.type == 'URI':
             if o.file.lower().startswith('file://'):
                 out['url'] = reverse('serve_job_media', args=(jobid, o.pk))
@@ -455,6 +457,7 @@ def job(request, jobid):
             out['content'] = mark_for_escaping(f.read())
         elif o.type == 'IMAGE' or o.type == 'FILE':
             out['url'] = reverse('serve_job_media', args=(jobid, o.pk))
+        print out
         outputs.append(out)
     stuff['outputs'] = outputs
     return render_to_response('job.html',

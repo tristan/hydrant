@@ -94,7 +94,7 @@ class KeplerExecutionThread(Thread):
             self.job.status = 'DONE'
             error = None
         except java.lang.Exception, e:
-            error = {'name': 'Exception', 'type':'TEXT', 'output': KernelException.stackTraceToString(e) }
+            error = {'name': 'Exception', 'type':'ERROR', 'output': KernelException.stackTraceToString(e) }
             self.job.status = 'ERROR'
         if error is not None:
             self.replacement_manager.writePythonData(error)

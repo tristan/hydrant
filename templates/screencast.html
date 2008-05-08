@@ -1,0 +1,14 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div id="screencast" style="margin: 1em;">
+  <h1 style="text-align: center;">Hydrant Screencast!</h1>
+  <div style="text-align: center; margin: 0 0 1em 0;" id="disclaimer">I'm terrible at these things, so please excuse the poor quality :)</div>
+  <div id="video" style="text-align: center;">
+    <object width="425" height="350">
+    <param name="movie" value="http://www.youtube.com/v/z7WLa4xWCI0"></param>
+    <embed src="http://www.youtube.com/v/z7WLa4xWCI0" type="application/x-shockwave-flash" width="425" height="350"></embed>
+    </object>
+  </div>
+</div>
+{% endblock %}
