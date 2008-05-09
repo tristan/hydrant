@@ -5,6 +5,9 @@ from kepler.workflow.proxy import EntityProxy, EntityProxyCache
 from kepler.workflow import utils
 import datetime, time, traceback
 from django.core.mail import send_mail
+from settings import EMAIL_SUBJECT_PREFIX, USE_HTTPS
+from django.core.urlresolvers import reverse
+from django.contrib.sites.models import Site
 
 class Workflow(models.Model):
 
@@ -395,7 +398,7 @@ class UserMessage(models.Model):
         profile, created = UserProfile.objects.get_or_create(user=self.message.touser)
         if profile.email_messages == True:
             try:
-                send_mail('%s send you a message' % (self.message.fromuser),
+                send_mail('%s%s sent you a message' % (EMAIL_SUBJECT_PREFIX, self.message.fromuser),
                           'Subject: %s\n\n%s' % (self.subject, self.message.text),
                           self.message.fromuser.email,
                           [self.message.touser.email],)
@@ -413,8 +416,15 @@ class JobMessage(models.Model):
         profile, created = UserProfile.objects.get_or_create(user=self.message.touser)
         if profile.email_job == True:
             try:
-                send_mail('your job is now %s' % (self.job.status.lower()),
-                          self.message.text,
+                send_mail('%syour job %s is now %s' % (EMAIL_SUBJECT_PREFIX, self.job.status.lower()),
+                          'name: %s\n\nurl: %s\n\nmessage: %s' % (
+                    self.job.name,
+                    '%s://%s%s' % (
+                    USE_HTTPS and 'https' or 'http',
+                    Site.objects.get_current(),              
+                    reverse('job', args=(self.job.pk,))
+                    ),
+                    self.message.text),
                           'noreply@hydrant',
                           [self.message.touser.email],)
             except:
