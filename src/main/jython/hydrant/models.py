@@ -416,7 +416,7 @@ class JobMessage(models.Model):
         profile, created = UserProfile.objects.get_or_create(user=self.message.touser)
         if profile.email_job == True:
             try:
-                send_mail('%syour job %s is now %s' % (EMAIL_SUBJECT_PREFIX, self.job.status.lower()),
+                send_mail('%syour job %s is now %s' % (EMAIL_SUBJECT_PREFIX, self.job.name, self.job.status.lower()),
                           'name: %s\n\nurl: %s\n\nmessage: %s' % (
                     self.job.name,
                     '%s://%s%s' % (
