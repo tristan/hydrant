@@ -5,7 +5,7 @@ from kepler.workflow.proxy import EntityProxy, EntityProxyCache
 from kepler.workflow import utils
 import datetime, time, traceback
 from django.core.mail import send_mail
-from settings import EMAIL_SUBJECT_PREFIX, USE_HTTPS
+from settings import EMAIL_SUBJECT_PREFIX, USE_HTTPS, EMAIL_SYSTEM_ADDRESS
 from django.core.urlresolvers import reverse
 from django.contrib.sites.models import Site
 
