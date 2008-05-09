@@ -38,6 +38,10 @@
       </a>
     </div>
     <div class="status">
+      {% ifnotequal job.owner user %}
+      <b>Owner:</b>
+      <a href="{% url profile obj.owner.username %}">{{ job.owner.get_full_name }}</a><br/>
+      {% endifnotequal %}
       <b>status:</b> {{ job.status }}<br/>
       <b>created:</b> {{ job.creation_date }}<br/>
       {% if job.submission_date %}<b>submitted:</b> {{ job.submission_date }}<br/>{% endif %}

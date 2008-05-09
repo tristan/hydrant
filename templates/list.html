@@ -91,10 +91,14 @@
       <img src="{% gravatar_url obj.owner 32 %}" alt="{{ obj.owner.username }}"/>
       </a>
     </div>
-    {% if job %}
     <div id="details">
+      {% if job %}
       <span id="label">Workflow:</span>
       <a href="{% url workflow obj.workflow.pk %}">{{ obj.workflow.name }}</a><br/>
+      {% endif %}
+      <span id="label">Owner:</span>
+      <a href="{% url profile obj.owner.username %}">{{ obj.owner.get_full_name }}</a><br/>
+      {% if job %}
       <span id="label">created:</span> {{ obj.creation_date }}<br/>
       {% if obj.submission_date %}<span id="label">submitted:</span> {{ obj.submission_date }}<br/>{% endif %}
       {% if obj.start_date %}<span id="label">started:</span> {{ obj.start_date }}<br/>
@@ -103,8 +107,8 @@
       <span id="label">ETA:</b> {{ job.get_eta|timeuntil_with_secs }}
       {% endif %}
       {% endif %}
+      {% endif %}
     </div>
-    {% endif %}
     <div id="description{% if workflow %}-workflow{% endif %}">
       {{ obj.description|truncate_to_len:430 }}<br/>
       {% if job %}
