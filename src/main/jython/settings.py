@@ -71,6 +71,7 @@ LOGIN_URL = '/' + ROOT_URL + 'accounts/login/'
 AUTH_PROFILE_MODULE = 'hydrant.userprofile'
 EMAIL_HOST = 'mail.cluster'
 EMAIL_SUBJECT_PREFIX = '[hydrant] '
+EMAIL_SYSTEM_ADDRESS = '' # none to use user's email address
 
 #TRAC_URL = 'https://dev.archer.edu.au/projects/kepler/'
 #TRAC_USER = ''

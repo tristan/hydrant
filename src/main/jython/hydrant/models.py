@@ -425,7 +425,7 @@ class JobMessage(models.Model):
                     reverse('job', args=(self.job.pk,))
                     ),
                     self.message.text),
-                          'noreply@hydrant',
+                          EMAIL_SYSTEM_ADDRESS or self.message.touser.email,
                           [self.message.touser.email],)
             except:
                 traceback.print_exc()
