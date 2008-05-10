@@ -489,7 +489,7 @@ def workflows(request):
         prefix = form.get_url()
     else:
         form = WorkflowSearchForm()
-        results = Workflow.objects.all()
+        results = Workflow.objects.all().order_by('-created')
         prefix = '?'
     permission_based_results = []
     for w in results:
@@ -523,7 +523,7 @@ def jobs(request):
         prefix = form.get_url()
     else:
         form = JobSearchForm()
-        results = Job.objects.all()
+        results = Job.objects.all().order_by('-creation_date')
         prefix = '?'
     permission_based_results = []
     for j in results:

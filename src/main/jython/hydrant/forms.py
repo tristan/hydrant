@@ -82,7 +82,7 @@ class SearchForm(Form):
         renderer=RadioFieldRenderer,
         choices=SEARCH_ORDER_CHOICES,
         ),
-        initial='ASC',
+        initial='DSC',
         )
 
 JOB_SEARCH_ORDER_CHOICES = (('last_modified','Last Modified'),

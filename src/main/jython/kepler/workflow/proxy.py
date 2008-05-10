@@ -74,7 +74,7 @@ class __string_based_attribute_proxy__(object):
         # test to check if the value being assigned is
         # evaluatable, and if not, surround the value
         # with quotes
-        if not self.javaobj.isStringMode():
+        if not self.javaobj.isStringMode() and x.lower() not in ['true','false']:
             try:
                 eval(x)
             except:

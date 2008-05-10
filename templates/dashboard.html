@@ -67,7 +67,7 @@
   </div>
   <div id="col-two">
   <div id="small-jobs">
-    <h1>Your Recent Jobs <a href="{% url jobs %}?search_term={{ user.username }}&search_users=on&sort_by=last_modified&sort_order=ASC&p=1">(view all)</a></h1>
+    <h1>Your Recent Jobs <a href="{% url jobs %}?search_term={{ user.username }}&search_users=on&sort_by=last_modified&sort_order=DSC&p=1">(view all)</a></h1>
     {% for job in jobs %}
     <div class="thing">
       <div class="icon">
