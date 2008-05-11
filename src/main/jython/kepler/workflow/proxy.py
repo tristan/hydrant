@@ -15,6 +15,7 @@ import ptolemy.kernel.util.StringAttribute
 from org.kepler.sms import SemanticType
 from org.kepler.moml import NamedObjId
 from ptolemy.actor import Manager, CompositeActor, Actor, Director
+from ptolemy.actor.lib import Expression
 from ptolemy.actor.gui import SizeAttribute
 from ptolemy.actor.sched import Scheduler
 from ptolemy.data.type import BaseType
@@ -74,7 +75,7 @@ class __string_based_attribute_proxy__(object):
         # test to check if the value being assigned is
         # evaluatable, and if not, surround the value
         # with quotes
-        if not self.javaobj.isStringMode() and x.lower() not in ['true','false']:
+        if hasattr(self.javaobj, 'isStringMode') and not self.javaobj.isStringMode() and x.lower() not in ['true','false']:
             try:
                 eval(x)
             except:
