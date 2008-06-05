@@ -97,7 +97,7 @@
       <a href="{% url workflow obj.workflow.pk %}">{{ obj.workflow.name }}</a><br/>
       {% endif %}
       <span id="label">Owner:</span>
-      <a href="{% url profile obj.owner.username %}">{{ obj.owner.get_full_name }}</a><br/>
+      <a href="{% url profile obj.owner.username %}">{{ obj.owner.get_profile.get_name }}</a><br/>
       {% if job %}
       <span id="label">created:</span> {{ obj.creation_date }}<br/>
       {% if obj.submission_date %}<span id="label">submitted:</span> {{ obj.submission_date }}<br/>{% endif %}

@@ -465,6 +465,13 @@ class UserProfile(models.Model):
     email_messages = models.BooleanField()
     email_comments = models.BooleanField()
 
+    def get_name(self):
+        """ This is the functionality I want from User.get_full_name """
+        n = self.user.get_full_name()
+        if n == "":
+            return self.user.username
+        return n
+
 def get_system_user():
     try:
         u = User.objects.get(username='system')

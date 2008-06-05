@@ -21,12 +21,12 @@
   <h1>Your Profile</h1>
   {% else %}
   <div id="infoform">
-    <h1>Profile for {{ requested_user.get_full_name }}</h1>
+    <h1>Profile for {{ requested_user.get_profile.get_name }}</h1>
     <div id="avatar">
       <img src="{% gravatar_url requested_user 48 %}" alt="{{ requested_user.username }}"/>
     </div>
     <div id="userdetails">
-      Name: {{ requested_user.get_full_name }}<br/>
+      Name: {{ requested_user.get_profile.get_name }}<br/>
       Company/Institution: {{ profile.company }}<br/>
       Location: {{ profile.city }}{% if profile.city %}, {% endif %}{{ profile.country }}<br/>
     </div>
