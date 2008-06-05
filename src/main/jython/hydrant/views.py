@@ -18,7 +18,7 @@ from django.views.static import serve
 #from pygments.lexers import XmlLexer
 #from pygments.formatters import HtmlFormatter
 
-from kepler.workflow.utils import validateMoML
+#from kepler.workflow.utils import validateMoML
 from kepler.workflow.cache import open_workflow, open_workflow_from_object
 from portalviewshelper import *
 from models import *

@@ -218,7 +218,7 @@ class EntityProxy(object):
         f.extend(filters)
         MoMLParser.setMoMLFilters(f)
 
-        messages = utils.validateMoML(moml)
+        messages = utils.check_moml_dependencies(moml)
 
         # If a list is returned by validateMoML an error has occured 
         # during validation, and we shouldn't continue.

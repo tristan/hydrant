@@ -3,7 +3,7 @@ from ptolemy.moml import MoMLParser, Vertex
 from ptolemy.moml.filter import RemoveGraphicalClasses
 from java.lang import Class, Throwable, NoClassDefFoundError, NullPointerException
 from ptolemy.kernel.util import NamedObj
-import org.python.core.PyJavaPackage
+from org.python.core import PyJavaPackage
 from ptolemy.moml import MoMLParser
 
 class ValidationError(Exception):
@@ -39,7 +39,7 @@ def addMoMLFilters(filters):
         if f.__class__ not in fcs:
             MoMLParser.addMoMLFilter(f)
 
-def validateMoML(moml):
+def check_moml_dependencies(moml):
     """ Checks all the classes in a MoML file by importing each one
     along with it's entire class heirarchy checking for any missing
     classes or libraries.
@@ -67,7 +67,7 @@ def validateMoML(moml):
             klass = __import__(classname)
             # check if the imported object is a javapackage, rather than a class,
             # and if so loop thru the package heirarchy to find the class
-            while isinstance(klass, org.python.core.PyJavaPackage):
+            while isinstance(klass, PyJavaPackage):
                 klass = getattr(klass, k_list[0])
                 k_list = k_list[1:]
             # once we have the class itself, check it's class heirarchy for errors
