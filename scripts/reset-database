@@ -5,10 +5,13 @@
 if [ "$1" == "" ]; then
     echo "missing postgresql-server-address"
     echo "Usage: $0 postgresql-server-address"
+    echo "using localhost"
+    HST="localhost"
 else
-    pushd ../
-    jython src/main/jython/manage.py sqlreset hydrant > reset.sql
-    psql -U kepler -h $1 -f reset.sql
-    rm reset.sql
-    popd
+    HST=$1
 fi
+pushd ../
+jython src/main/jython/manage.py sqlreset hydrant > reset.sql
+psql -U kepler -h $HST -f reset.sql
+rm reset.sql
+popd
