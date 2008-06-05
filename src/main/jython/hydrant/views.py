@@ -71,7 +71,6 @@ def upload_workflow(request):
     if request.method == 'POST':
         print request.POST
         form = UploadWorkflowForm(request.POST, request.FILES)
-
         if form.is_valid() and form.validate_moml():
             messages = []
             workflow = form.save(commit=False)

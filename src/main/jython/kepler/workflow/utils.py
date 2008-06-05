@@ -85,14 +85,18 @@ def check_moml_dependencies(moml):
 
 
 import org.xml.sax.ErrorHandler
+import org.xml.sax.EntityResolver
 from javax.xml.parsers import DocumentBuilderFactory
-from java.io import ByteArrayInputStream
+from org.xml.sax import InputSource
+#from java.io import ByteArrayInputStream
+from java.io import StringReader
 from java.lang import String
 from javax.xml.transform.dom import DOMSource
 from javax.xml.transform import TransformerFactory
 from javax.xml.transform import OutputKeys
 from javax.xml.transform.stream import StreamSource
 from javax.xml.transform.stream import StreamResult
+from settings import PROJECT_HOME
 
 class _ErrorHandler(org.xml.sax.ErrorHandler):
     def fatalError(self, exception):
@@ -101,6 +105,13 @@ class _ErrorHandler(org.xml.sax.ErrorHandler):
         print 'ERROR (%s): %s' % (exception.getLineNumber(), exception.getMessage())
     def warning(self, exception):
         print 'WARNING (%s): %s' % (exception.getLineNumber(), exception.getMessage())
+
+class _EntityResolver(org.xml.sax.EntityResolver):
+    def resolveEntity(self, publicId, systemId):
+        if systemId == "http://ptolemy.eecs.berkeley.edu/xml/dtd/MoML_1.dtd":
+	    return InputSource(PROJECT_HOME + "/src/etc/MoML_1.dtd")
+        else:
+	    return None
 	
 def validate_moml(moml_str):
     try:
@@ -108,7 +119,8 @@ def validate_moml(moml_str):
 	factory.setValidating(True)
 	builder = factory.newDocumentBuilder()
 	builder.setErrorHandler(_ErrorHandler())
-	xmlDocument = builder.parse(ByteArrayInputStream(String(moml_str).getBytes()))
+	builder.setEntityResolver(_EntityResolver())
+	xmlDocument = builder.parse(InputSource(StringReader(moml_str)))#ByteArrayInputStream(String(moml_str).getBytes()))
 	return True
     except:
         traceback.print_exc()
