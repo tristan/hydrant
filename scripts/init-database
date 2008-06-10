@@ -1,0 +1,15 @@
+#!/bin/bash
+# This script rebuilds the database.
+# WARNING: this will delete all entries from the database
+# input: the database server address
+if [ "$1" == "" ]; then
+    echo "missing postgresql-server-address"
+    echo "Usage: $0 postgresql-server-address"
+    echo "using localhost"
+    HST="localhost"
+else
+    HST=$1
+fi
+pushd ../
+jython src/main/jython/manage.py syncdb
+popd
