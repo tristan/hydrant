@@ -12,7 +12,7 @@ SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'
 
 DATABASE_ENGINE = 'postgresql_zxjdbc'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = PROJECT_HOME + '/db/testing.db'     # Or path to database file if using sqlite3.
-DATABASE_NAME = 'kepler'
+DATABASE_NAME = 'keplerbow'
 DATABASE_USER = 'kepler'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'k3pl3r'         # Not used with sqlite3.
 DATABASE_HOST = 'localhost'             # Set to empty string for localhost. Not used with sqlite3.
