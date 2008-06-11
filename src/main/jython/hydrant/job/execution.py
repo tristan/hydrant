@@ -27,11 +27,14 @@ class KeplerJobManager(Thread):
                 t.start()
             elif len(self.running) > 0:
                 # check all the running threads to see if they've completed
+                stopped_list = []
                 for job in self.running:
                     if not self.running[job].isAlive():
                         #self.complete.append(t)
-                        t = self.running.pop(job)
-                        print 'removed thread: %s' % t
+                        stopped_list.append(job)
+                for i in stoppend_list:
+                    t = self.running.pop(i)
+                    print 'removed thread: %s' % t
             else:
                 self.cond.acquire()
                 self.cond.wait(60)
