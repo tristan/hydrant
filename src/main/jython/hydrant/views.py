@@ -42,7 +42,7 @@ def home(request):
     """ Displays the users dashboard. Includes lists of the last five
     uploaded Workflows and Jobs.
     """
-    workflows = [i for i in Workflow.objects.filter(public='ON',deleted=False)]
+    workflows = []
     jobs = []
     if request.user.is_authenticated():
         workflows.extend([i for i in Workflow.objects.filter(owner=request.user,deleted=False) if i not in workflows])

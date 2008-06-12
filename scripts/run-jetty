@@ -1,5 +1,6 @@
 #!/bin/bash
 # this script starts up the jetty server
 pushd ../
+export MAVEN_OPTS=-Xmx512m
 mvn jetty:run
 popd

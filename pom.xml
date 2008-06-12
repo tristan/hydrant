@@ -83,6 +83,18 @@
       <version>1.8.0.7</version>
       <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>imagej</groupId>
+      <artifactId>imagej</artifactId>
+      <version>1.40</version>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>5.0.8</version>
+      <scope>runtime</scope>
+    </dependency>
 
     <!-- WebService Actor requirements -->
 
