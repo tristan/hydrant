@@ -2,6 +2,9 @@ import traceback
 from django.conf.urls.defaults import *
 from django.http import HttpResponseRedirect
 from settings import MEDIA_ROOT, ADMIN_MEDIA_ROOT, ROOT_URL, USE_HTTPS
+from django.contrib import admin
+
+admin.autodiscover()
 
 try:
     urlpatterns = patterns(
@@ -18,7 +21,8 @@ try:
          {'SSL':USE_HTTPS}, 'signup'),
     (r'^%saccounts/logout/$' % ROOT_URL, 'django.contrib.auth.views.logout',
      {'next_page':'/%s' % ROOT_URL}, 'logout'),
-        (r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
+        #(r'^%sadmin/' % ROOT_URL, include('django.contrib.admin.urls')),
+        (r'^%sadmin/(.*)' % ROOT_URL, admin.site.root),
         #    (r'^%s$' % ROOT_URL, lambda request: HttpResponseRedirect('/%sportal/' % ROOT_URL)),
         url(r'^%sfaq/$' % ROOT_URL, 'django.views.generic.simple.direct_to_template',
             {'template': 'faq.html'}, name='faq'),

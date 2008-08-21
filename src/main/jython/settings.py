@@ -10,7 +10,7 @@ MEDIA_ROOT = PROJECT_HOME + '/media'
 
 SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'
 
-DATABASE_ENGINE = 'postgresql_zxjdbc'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+DATABASE_ENGINE = 'doj.backends.zxjdbc.postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = PROJECT_HOME + '/db/testing.db'     # Or path to database file if using sqlite3.
 DATABASE_NAME = 'keplerbow'
 DATABASE_USER = 'kepler'             # Not used with sqlite3.
@@ -31,7 +31,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.middleware.doc.XViewMiddleware',
-    'django.middleware.ssl.SSLRedirect',
+    'middleware.ssl.SSLRedirect',
 )
 
 INSTALLED_APPS = (
@@ -57,6 +57,14 @@ LIB_DIRECTORY = (
     PROJECT_HOME + '/lib',
     PROJECT_HOME + '/target/project.classpath',
 )
+
+AUTH_LDAP_HOST = 'ldap://ldap.jcu.edu.au'
+AUTH_LDAP_BASEDN_USER = 'ou=users,dc=jcu,dc=edu,dc=au'
+AUTH_LDAP_BASEDN_GROUP = 'ou=Organisation,ou=groups,dc=jcu,dc=edu,dc=au'
+
+AUTHENTICATION_BACKENDS = ('middleware.auth_ldap.LdapAuthBackend',
+                           'django.contrib.auth.backends.ModelBackend'
+                           )
 
 ADMIN_MEDIA_PREFIX = MEDIA_URL + 'admin/'
 ADMIN_MEDIA_ROOT = '/'.join(django.__file__.split('/')[:-1]) + '/contrib/admin/media/'

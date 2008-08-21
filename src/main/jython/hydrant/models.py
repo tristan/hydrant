@@ -40,16 +40,15 @@ class Workflow(models.Model):
     edit_permissions = models.ManyToManyField(User,
                                               verbose_name='Users who have edit rights', 
                                               blank=True, 
-                                              filter_interface=models.HORIZONTAL,
                                               related_name='workflow_edit_permissions',
                                               )
     view_permissions = models.ManyToManyField(User,
                                               verbose_name='Users who can view', 
                                               blank=True, 
-                                              filter_interface=models.HORIZONTAL,
                                               related_name='workflow_view_permissions',
                                               )
     deleted = models.BooleanField(default=False,)
+    filter_horizontal = ('edit_permissions', 'view_permissions')
 
     def all_permitted_users(self):
         return (self.edit_permissions.all() | self.view_permissions.all()).distinct()
@@ -210,9 +209,10 @@ class Job(models.Model):
     view_permissions = models.ManyToManyField(User,
                                               verbose_name='Users who can view', 
                                               blank=True, 
-                                              filter_interface=models.HORIZONTAL,
                                               related_name='job_view_permissions',
                                               )
+
+    filter_horizontal = ('view_permissions')
 
     def has_view_permission(self, user):
         return (user in self.view_permissions.all() or

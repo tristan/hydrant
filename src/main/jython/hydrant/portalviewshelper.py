@@ -1,20 +1,18 @@
 from kepler.workflow.cache import *
 from django.http import Http404
-from django.newforms import form_for_model
 from django.utils.encoding import force_unicode, smart_str
-from django.newforms.forms import BaseForm
+from django.forms.forms import BaseForm
 from django.utils.datastructures import SortedDict
-from django import newforms as forms
+from django import forms
 from models import *
 from django.db import models
 from django.db.models.query import QuerySet
 from django.db.models.fields import FieldDoesNotExist
 import operator, traceback, os
-from django.core.paginator import ObjectPaginator
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.core.urlresolvers import reverse
 from django.db.models.query import Q
-from django.newforms import widgets
+from django.forms import widgets
 from django.utils.text import capfirst
 from django.contrib.auth.models import User
 from settings import STORAGE_ROOT
@@ -38,7 +36,7 @@ def build_crumbs_from_path(current_name, path):
     return crumbs or ['']
 
 def generate_parameters_form(workflow, model, path_to_actor):
-    """ This generates a Django newforms class which can be used to
+    """ This generates a Django forms class which can be used to
     instantiate an instance of a form containing all the properties of
     the specified actor.
 

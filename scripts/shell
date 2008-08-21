@@ -1,0 +1,6 @@
+#!/bin/bash
+# this script runs the django development server
+# inputs: the port to start the server on
+pushd ../
+jython src/main/jython/manage.py shell 
+popd

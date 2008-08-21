@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.core.paginator import Paginator, InvalidPage
 from django.db import models
-from django.utils.datastructures import FileDict
 from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist, PermissionDenied
 from django.views.static import serve
 
@@ -27,7 +26,7 @@ from job import *
 from utils import *
 from templatetags.textutils import timeuntil_with_secs
 from settings import STORAGE_ROOT, MEDIA_ROOT
-from django.newforms import form_for_model, form_for_instance, widgets
+from django.forms import widgets
 from django.utils.safestring import mark_safe, mark_for_escaping
 
 def intro(request):

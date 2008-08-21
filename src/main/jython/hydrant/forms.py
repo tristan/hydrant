@@ -2,9 +2,9 @@ import os
 import traceback
 
 from django.db import models
-from django.newforms import ModelForm, Form, ValidationError
-from django.newforms.fields import *
-from django.newforms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
+from django.forms import ModelForm, Form, ValidationError
+from django.forms.fields import *
+from django.forms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
 from django.core.validators import alnum_re
 
 from django.contrib.auth.models import User
@@ -37,7 +37,9 @@ class UploadWorkflowForm(ModelForm):
 
     def validate_moml(self):
         try:
-            utils.validate_moml(self['moml_file'].data['content'])
+            a = self['moml_file'].data
+            s = ''.join([i for i in a.chunks()])
+            utils.validate_moml(s)
             return True
         except:
             traceback.print_exc()
@@ -381,13 +383,13 @@ class JobCreationForm(ModelForm):
                     value = self.data.get('%s' % p.property_id)
                 elif p.property_id in self.files.keys():
                     form_file = self.files.get(p.property_id)
-                    if True in map(lambda a: a in form_file['content-type'], BINARY_CONTENT_TYPES):
+                    if True in map(lambda a: a in form_file.content_type, BINARY_CONTENT_TYPES):
                         binary = True
                     else:
                         binary = False
-                    filename = '%s/%s' % (dirname, form_file['filename'])
+                    filename = '%s/%s' % (dirname, form_file.name)
                     stored_file = open(filename, 'w%s' % (binary and 'b' or ''))
-                    stored_file.write(form_file['content'])
+                    stored_file.write(form_file.read())
                     stored_file.close()
                     value = filename
                 else:

@@ -13,7 +13,7 @@
     </init-param>
     <init-param>
       <param-name>python.home</param-name>
-      <param-value>/usr/local/share/jython</param-value>
+      <param-value>/home/tristan/projects/git/jython/jython/dist</param-value>
     </init-param>
     <init-param>
       <param-name>django.app.home</param-name>

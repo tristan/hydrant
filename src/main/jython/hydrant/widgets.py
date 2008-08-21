@@ -3,8 +3,8 @@ try:
 except NameError:
     from sets import Set as set   # Python 2.3 fallback
 
-from django import newforms as forms
-from django.newforms.util import flatatt
+from django import forms
+from django.forms.util import flatatt
 from django.utils.datastructures import MultiValueDict
 from django.utils.text import capfirst
 from django.utils.translation import ugettext as _

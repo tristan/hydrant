@@ -12,7 +12,7 @@
   
   <h1>Log in</h1>
 
-  {% if form.has_errors %}
+  {% if form.errors %}
   <div class="errorbox">invalid username and/or password</div>
   {% endif %}
 
@@ -29,6 +29,26 @@
   
   </form>
 </div>
+<div class="login-news">
+  <div class="header">
+    NEWS!
+  </div>
+  <div class="date">
+    22 August 2008
+  </div>
+  <div class="news">
+    Hydrant now has LDAP support! If you have an general purpose account at
+    James Cook Uni you can now log in with that, all other users still need
+    to sign up.
+  </div>
+  <div class="date">
+    20 June 2008
+  </div>
+  <div class="news">
+    The machine Hydrant was previosuly running on died and all the data was lost. Most of the User accounts were saved, but if you have trouble logging in, try sign up again. If you still have trouble after that, send a message to the mainling list. 
+  </div>
+</div>
+<div style="clear: both;"></div>
 <script type="text/javascript">
 document.getElementById('id_username').focus()
 </script>

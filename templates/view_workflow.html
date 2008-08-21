@@ -88,14 +88,14 @@
       <div id="crumb-this">{{ name }}</div>
       <div style="clear: both;"></div>
     </div>
-    <!--
+    <!-- {% comment %}
     <iframe id="workflow-frame"
             name="workflow-frame"
             src="{% url workflow_canvas workflow.pk %}"
             onload="resize_iframe();">
     Your browser does not support iframes
     </iframe>
-    -->
+    {% endcomment %} -->
     {% if model %}
     <div id="wf-canvas">
     {% include 'workflow_canvas.html' %}

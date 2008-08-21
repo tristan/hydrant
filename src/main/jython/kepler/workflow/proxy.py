@@ -738,7 +738,7 @@ class _EntityProxyCache:
     def get_proxy(self, workflow, forexec=False):
         proxy = not forexec and self._cache.get(workflow.id) or None
         if proxy is None:
-            moml = open(workflow.get_moml_file_filename(), 'r').read()
+            moml = workflow.moml_file.read()
             proxy = EntityProxy(moml, forexec and [WebServiceFilter()] or [])
             if not forexec:
                 self._cache[workflow.id] = proxy
