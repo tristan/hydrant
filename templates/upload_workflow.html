@@ -5,7 +5,7 @@
 {% endblock %}
 {% block content %}
 <div id="upload-wf-box">
-  <form enctype="multipart/form-data" action="{{ form_url }}" method="post" id="upload_workflow_form">
+  <form enctype="multipart/form-data" name="upload-workflow-form" action="{{ form_url }}" method="post" id="upload_workflow_form">
   <h1>Upload Workflow</h1>
   <div id="fields">
     {% for field in form %}
@@ -17,13 +17,11 @@
     </div>
     {% else %}
     <label {% if field.errors %}class="missing-field" {% endif %}
-    for="id_{{ field.name }}">
-    {{ field.label }}<br/>
+    for="id_{{ field.name }}">{{ field.label }}</label>
     {{ field }}
     {% if field.errors %}<br/>
     <span class="error-text">{% for e in field.errors %}{{ e }}{% endfor %}</span>
     {% endif %}<br/>
-    </label>
     {% endifequal %}
     {% endfor %}
   </div>

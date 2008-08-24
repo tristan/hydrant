@@ -8,7 +8,7 @@
 
 {% block content %}
 <div class="login-box">
-  <form action="" method="post" id="login-form">
+  <form action="" method="post" id="login-form" name="login-form">
   
   <h1>Log in</h1>
 
@@ -17,12 +17,14 @@
   {% endif %}
 
   <div id="login-fields">
-    <label for="id_username">Username<br/>{{ form.username }}</label>
-    <label for="id_password">Password<br/>{{ form.password }}</label>
+    <label for="id_username">Username</label>
+    {{ form.username }}
+    <label for="id_password">Password</label>
+    {{ form.password }}
   </div>
   <div id="buttons">
     <label style="inline">
-    <input type="submit" value="Login" />
+    <input type="submit" name="login" value="Login" />
     </label>
   </div>
   <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}{% url dashboard %}{% endif %}" />

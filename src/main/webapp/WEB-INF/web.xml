@@ -9,11 +9,11 @@
     <load-on-startup>1</load-on-startup>
     <init-param>
       <param-name>django.handler</param-name>
-      <param-value>django.core.handlers.servlet</param-value>
+      <param-value>jython.middleware.servlet_handler</param-value>
     </init-param>
     <init-param>
       <param-name>python.home</param-name>
-      <param-value>/home/tristan/projects/git/jython/jython/dist</param-value>
+      <param-value>/opt/jython</param-value>
     </init-param>
     <init-param>
       <param-name>django.app.home</param-name>
