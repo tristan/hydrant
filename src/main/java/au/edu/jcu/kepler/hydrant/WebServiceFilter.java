@@ -21,6 +21,7 @@ public class WebServiceFilter implements MoMLFilter {
 		_replacements.put("org.geon.FileWrite", "au.edu.jcu.kepler.hydrant.FileWriteReplacement");
 		_replacements.put("org.geon.BinaryFileWriter", "au.edu.jcu.kepler.hydrant.BinaryFileWriterReplacement");
 		_replacements.put("org.geon.BrowserDisplay", "au.edu.jcu.kepler.hydrant.BrowserDisplayReplacement");
+		_replacements.put("ptolemy.actor.lib.Exec", "au.edu.jcu.kepler.hydrant.CommandLineReplacement");
 	}
 	
 	public String filterAttributeValue(NamedObj container, String element,
@@ -34,7 +35,7 @@ public class WebServiceFilter implements MoMLFilter {
 		return attributeValue;
 	}
 
-	public void filterEndElement(NamedObj container, String elementName)
+        public void filterEndElement(NamedObj container, String elementName, StringBuffer currentCharData)
 			throws Exception {
 	}
 	

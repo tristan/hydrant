@@ -23,6 +23,7 @@ public abstract class ReplacementManager extends SingletonAttribute {
 		super(container, name);
 	}
 	public abstract void writePythonData(PyDictionary data);
+        public abstract String getCurrentUsername();
 
 	public void writeData(HashMap data_map) {
 		PyDictionary d = new PyDictionary();

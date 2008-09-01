@@ -24,6 +24,7 @@ from ptolemy.moml.filter import RemoveGraphicalClasses
 from ptolemy.kernel import Relation, Port, Entity
 from ptolemy.vergil.basic import KeplerDocumentationAttribute
 from ptolemy.vergil.kernel.attributes import TextAttribute
+from ptolemy.moml.filter import BackwardCompatibility
 
 from au.edu.jcu.kepler.hydrant import WebServiceFilter
 
@@ -76,10 +77,13 @@ class __string_based_attribute_proxy__(object):
         # evaluatable, and if not, surround the value
         # with quotes
         if hasattr(self.javaobj, 'isStringMode') and not self.javaobj.isStringMode() and x.lower() not in ['true','false']:
-            try:
-                eval(x)
-            except:
-                _x = '"%s"' % x
+            if x.startswith("{{") and x.endswith("}}"):
+                pass
+            else:
+                try:
+                    eval(x)
+                except:
+                    _x = '"%s"' % x
         self.javaobj.setExpression(_x)
     
     def __repr__(self):
@@ -206,6 +210,9 @@ class EntityProxy(object):
         # such that annotations don't get removed from the model
         rgc = RemoveGraphicalClasses()
         rgc.remove('ptolemy.vergil.kernel.attributes.TextAttribute')
+        rgc.remove('ptolemy.actor.lib.gui.Display')
+        rgc.remove('ptolemy.actor.lib.gui.TimedPlotter')
+
         # create a new list for the filters, and use 
         # MoMLParser.setMoMLFilters with the new list. setMoMLFitlers is
         # used because the MoML filters object inside MoMLParser is
@@ -215,6 +222,8 @@ class EntityProxy(object):
         # present. This is simply the easiest way to ensure nothing
         # goes wrong.
         f = [rgc]
+        # add backwards compatibility filters 
+        f.extend(BackwardCompatibility().allFilters())
         f.extend(filters)
         MoMLParser.setMoMLFilters(f)
 

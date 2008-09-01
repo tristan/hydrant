@@ -53,7 +53,7 @@ def check_moml_dependencies(moml):
     for filter in momlfilters:
         _classnames = []
         for c in classnames:
-            fn = filter.filterAttributeValue(None, None, None, c)
+            fn = filter.filterAttributeValue(None, None, "", c)
             if fn != None:
                _classnames.append(fn)
         classnames = _classnames

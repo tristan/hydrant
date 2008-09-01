@@ -63,6 +63,9 @@ class DefaultReplacementManager(ReplacementManager):
             f.close()
         j = JobOutput(name=name, type=type, file=file_name, job=Job.objects.get(pk=self.jobid))
         j.save()
+    def getCurrentUsername(self):
+        j = Job.objects.get(pk=self.jobid)
+        return j.owner.username
     def get_storage_dir(self):
         return '%s/jobs/%s' % (STORAGE_ROOT, self.jobid)
 
