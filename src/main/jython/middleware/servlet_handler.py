@@ -1,4 +1,5 @@
 import os
+import StringIO
 import sys
 import time
 import traceback
@@ -53,7 +54,7 @@ class ServletRequest(http.HttpRequest):
     def _load_post_and_files(self):
         contenttype = self._req.getHeader('content-type')
         if contenttype is not None and contenttype.startswith('multipart'):
-            self._post, self._files = http.parse_file_upload(headers_dict_from_request(self._req), self.raw_post_data)
+            self._post, self._files = self.parse_file_upload(self.META, StringIO.StringIO(self.raw_post_data))
         else:
             self._post, self._files = http.QueryDict(self.raw_post_data, encoding=self.encoding), datastructures.MultiValueDict()
 
