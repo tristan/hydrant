@@ -7,5 +7,5 @@ else
     PORT=$1
 fi
 pushd ../
-jython src/main/jython/manage.py runserver 0.0.0.0:$PORT
+jython -Dspringconfig=src/main/resources/hydrant-spring-config.xml src/main/jython/manage.py runserver 0.0.0.0:$PORT
 popd

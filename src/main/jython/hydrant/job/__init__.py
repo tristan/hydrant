@@ -24,7 +24,7 @@ def queue_new_job(job):
             model.set_actor_property(path_to_actor, prop, param.value)
             JobInput(job=job, parameter=param,value=param.value).save()
     drm = DefaultReplacementManager(pe, 'replacement-manager', job.pk)
-    prov = ProvenanceListenerWrapper(pe, 'provenancelistener', job.pk)
+    #prov = ProvenanceListenerWrapper(pe, 'provenancelistener', job.pk)
     modify_rexpression_actors(pe, drm)
     pe.workspace().doneWriting()
     default_job_manager.queue_job(job, model, drm)

@@ -251,6 +251,8 @@ class Job(models.Model):
             status = 'Complete'
         elif self.status == 'ERROR':
             status = 'Error'
+        elif self.status == 'WAITINGFORINPUT':
+            status = 'Waiting for user input'
         else:
             status = 'Unknown'
         if self.name is None or self.name == '':
@@ -282,9 +284,17 @@ class JobInput(models.Model):
     job = models.ForeignKey(Job)
     parameter = models.ForeignKey(WorkflowParameter)
     value = models.TextField()
-
     class Admin:
         pass
+
+class JobRuntimeInput(models.Model):
+    job = models.ForeignKey(Job)
+    actor = models.CharField(max_length=1024)
+    inputtype = models.CharField(max_length=32)
+    prompt = models.CharField(max_length=1024)
+    value = models.CharField(max_length=200, null=True);
+    creation_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
 class JobOutput(models.Model):
 
@@ -311,6 +321,7 @@ class JobOutput(models.Model):
     #           URI
     file = models.CharField(max_length=200)
     creation_date = models.DateTimeField(auto_now_add=True)
+    modified_date = models.DateTimeField(auto_now=True)
 
     class Admin:
         list_display = ('creation_date', 'job', 'name', 'type', 'file')

@@ -155,7 +155,7 @@ def locationToDict(s):
     """ Converts location string from kepler workflows into a {'x':x,
     'y':y} styled dict.
     """
-    if type(s) is type(''):
+    if type(s) in [unicode, str]:
         t = tuple(s[1:-1].replace(' ','').split(','))
     elif type(s) is type([]):
         t = s

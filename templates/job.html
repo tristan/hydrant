@@ -40,7 +40,7 @@
     <div class="status">
       {% ifnotequal job.owner user %}
       <b>Owner:</b>
-      <a href="{% url profile obj.owner.username %}">{{ job.owner.get_profile.get_name }}</a><br/>
+      <a href="{% url profile job.owner.username %}">{{ job.owner.get_profile.get_name }}</a><br/>
       {% endifnotequal %}
       <b>status:</b> {{ job.status }}<br/>
       <b>created:</b> {{ job.creation_date }}<br/>
@@ -142,6 +142,31 @@
   )
   // -->
 </script>
+{% endif %}
+{% if inputs %}
+{% for i in inputs %}
+<form action="" method="post">
+<div id="inputform">
+  <div class="title">
+    <div class="name">
+      Workflow is waiting for input: <u>{{ i.pk }}</u>
+    </div>
+    <div style="clear: both;"></div>
+  </div>
+  <div class="details">
+    <div class="prompt">
+      {{ i.prompt }}
+    </div>
+    <div class="input">
+      <input type="input" name="inputvalue"/>
+    </div>
+  </div>
+  <div id="submitrow">
+    <input type="submit" name="{{ i.actor }}" value="Send"/>
+  </div>
+</div>
+</form>
+{% endfor %}
 {% endif %}
 {% if outputs %}
 {% for o in outputs %}

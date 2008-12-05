@@ -12,8 +12,8 @@ SECRET_KEY = 'j9ccpcmbvu*8=+r9nuj#3r)vvfvv@@ha@+=3$zaw89&luzw%j%'
 
 DATABASE_ENGINE = 'doj.backends.zxjdbc.postgresql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 #DATABASE_NAME = PROJECT_HOME + '/db/testing.db'     # Or path to database file if using sqlite3.
-DATABASE_NAME = 'keplerbow'
-DATABASE_USER = 'kepler'             # Not used with sqlite3.
+DATABASE_NAME = 'hydrant'
+DATABASE_USER = 'hydrant'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'k3pl3r'         # Not used with sqlite3.
 DATABASE_HOST = 'localhost'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
