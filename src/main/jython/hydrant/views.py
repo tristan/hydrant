@@ -59,6 +59,7 @@ def home(request):
                                    },
                                   context_instance=RequestContext(request))
     else:
+        # if the user isn't authenticated, display the welcome page.
         return render_to_response('index.html', context_instance=RequestContext(request))
 
 def upload_workflow(request):
@@ -85,7 +86,9 @@ def upload_workflow(request):
                           )
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
-            
+
+            # the workflow has been uploaded successfully so we redirect the user
+            # to the url to display the newly uploaded workflow.
             return HttpResponseRedirect(reverse('workflow', args=(workflow.pk,)))
             
         else:
@@ -167,25 +170,58 @@ def workflow(request, id, path=''):
              }
 
     if request.method == 'POST' and request.POST.has_key('details'):
+        # if the key 'details' is in the POST request, this means the
+        # form which has been submitted is the edit workflow form. This
+        # manages editing the name description and the permissions of
+        # the workflow.
+
+        # the EditWorkflowForm saves the name, description and the pulic
+        # settings for the workflow
         ef = EditWorkflowForm(request.POST, instance=workflow)
         ef.save()
-        
+
+        # this section iterates through the list of all users who have
+        # some form of permissions for this workflow. It them checks
+        # to see if any of the permissions have been changed and if
+        # so modifies the stored workflow permissions appropriately.
         for u in workflow.all_permitted_users():
             v_rmed = v_added = e_rmed = e_added = False
+            # check if there is a key in the post request with the user's
+            # username followed by _edit. If there is, this means that the
+            # edit box is ticked.
             has_edit = request.POST.get(u.username + '_edit', False)
+            # similar to the above statement, except for the view box.
+            # If the view box is not ticked, but the edit one is, then
+            # we force the view box to be ticked, since it doesn't make
+            # sence to be able to edit a workflow without being able to
+            # see it.
             has_view = request.POST.get(u.username + '_view', has_edit)
+            # if the uses used to have edit permissions but their edit box
+            # is not ticked, then remove them from the edit permissions list.
             if not has_edit and workflow.has_edit_permission(u):
                 workflow.edit_permissions.remove(u)
                 e_rmed = True
+            # if the uses hasn't got edit permissions but their edit box
+            # is ticked, then add them to the edit permissions list.
             if has_edit and not workflow.has_edit_permission(u):
                 workflow.edit_permissions.add(u)
                 e_added = True
+            # if the uses used to have view permissions but their view box
+            # is not ticked, then remove them from the view permissions list.
             if not has_view and workflow.has_view_permission(u):
                 workflow.view_permissions.remove(u)
                 v_rmed = True
+            # if the uses hasn't got view permissions but their view box
+            # is ticked, then add them to the view permissions list.
+            # NOTE: technically, this section will never be run since the
+            # user will not appear in the User Permissions list until they've
+            # been added through the "Add User" form (processed below).
             if has_view and not workflow.has_view_permission(u):
                 workflow.view_permissions.add(u)
                 v_added = True
+
+            # The following section of code builds a message to send to the user in this
+            # iteration to notify them of the changes to their permissions for this workflow.
             msg_text = None
             if e_rmed or v_rmed:
                 msg_text = '{{ touser }} can no longer %s this workflow' % (
@@ -204,9 +240,18 @@ def workflow(request, id, path=''):
                 msg.save()
                 WorkflowMessage(workflow=workflow, message=msg).save()
         try:
+            # This section handles the Add User form.
+
+            # Try to get the User object with the username specified in the form.
+            # If this fails an Exception will be thrown.
             u = User.objects.get(username=request.POST['username'])
+            # check the edit checkbox.
             has_edit = request.POST.get('has_edit', False)
+            # check the view checkbox (similar to the case earlier, if the edit
+            # box is checked, then we force the view box to be checked as well).
             has_view = request.POST.get('has_view', has_edit)
+
+            # add the relivant permissions to the workflow
             if has_view:
                 workflow.view_permissions.add(u)
             if has_edit:
@@ -214,6 +259,7 @@ def workflow(request, id, path=''):
             if has_edit or has_view:
                 workflow.save()
 
+            # notify the User of the permission changes.
             msg_text = '{{ touser }} can now %s this workflow' % (
                     has_view and has_edit and 'view and edit ' or has_edit and 'edit ' or 'view '
                     )
@@ -224,6 +270,9 @@ def workflow(request, id, path=''):
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
         except:
+            # TODO: need better error handling, perhaps an error message
+            # to send back to the page notifying the user that the username
+            # they selected doesn't exist.
             pass        
     elif editable:
         ef = EditWorkflowForm(instance=workflow)
@@ -235,14 +284,20 @@ def workflow(request, id, path=''):
     if jobform is not None:
         stuff['jobform'] = jobform
 
+    # This section handles the submission of the error reporting form.
     if request.method == 'POST' and request.POST.has_key('reporterror'):
         message = request.POST.get('message')
         reported = False
         try:
+            # attempt to sumit a ticket using the trac ticket submission
+            # module.
             submit_ticket(workflow, request.user, message)
             reported = True
         except:
             traceback.print_exc()
+            # if the trac ticket submission module fails (or isn't set up)
+            # send the notification using Hydrant's built in messaging
+            # system.
             superuser = User.objects.filter(is_superuser=True)[0]
             msg = Message(touser=superuser,
                           fromuser=get_system_user(),
@@ -263,21 +318,35 @@ def workflow(request, id, path=''):
         stuff['workflowerror'] = workflow.error
         stuff['reporterrorform'] = CommentForm()
     else:
+        # this section handles the case that the requested path points to an Actor.
         if po.is_actor():
             if not editable:
+                # in the case where someone without edit permissions has tried to look at the properties
+                # of an actor, redirect them to the Composite Actor which contains the requested actor.
+                # TODO: perhaps the user should be able to view the parameters, but just not alowed to edit
+                # them.
                 return HttpResponseRedirect('%s%s' % (reverse('workflow', args=(id,)), '/'.join(spath[:-1])))
-            ActorForm = generate_parameters_form(workflow, po, [])
+            # the following section handles the submission of the Actor parameters form
             if request.method == 'POST' and request.POST.has_key('parameters'):
                 try:
+                    # attempt to save the parameters from the variables in the POST request.
                     save_parameters_from_post(workflow, request.POST, request.FILES)
                 except:
                     traceback.print_exc();
                 try:
+                    # attempt to go back to the Composite actor which this actor is inside.
                     return HttpResponseRedirect('%s%s' % (reverse('workflow', args=(id,)), '/'.join(spath[:-1])))
                 except:
+                    # the previous redirect shouldn't ever fail. not sure why this case was put in, but
+                    # leaving it here for now just in case something breaks.
                     return HttpResponseRedirect(reverse('workflow', args=(id,)))
+            # this generates the form for the actor's parameters. NOTE: this is a class, not an instance
+            # it still needs to be instantiated before it can be used.
+            ActorForm = generate_parameters_form(workflow, po, [])
             stuff['form'] = ActorForm()
         else:
+            # if the requested path points to the base workflow or a composite actor, this
+            # simply gets a python dictionary representation of the proxy object.
             stuff['model'] = po.get_as_dict()
 
     return render_to_response('view_workflow.html',
@@ -289,18 +358,36 @@ def delete_workflow(request, id, undelete=False):
     """ Handles deleting a workflow. If a GET request then display a
     page asking for conformation of the delete. If a POST request then
     set the workflow to deleted.
+
+    NOTE: we don't actually delete workflows from the system since this would mean
+    we have to delete any jobs that were created from the workflow. Instead we
+    simply set the deleted flag on the workflow which is used to filter out deleted
+    workflows from workflow lists etc but still allows jobs previously created
+    using the workflow to be visible.
+    Also, administrators can see deleted workflows and have the option to un-delete
+    workflows.
     """
     workflow = get_object_or_404(Workflow, pk=id)
+
+    # check to make sure the user has permission to delete the workflow
+    # and if not, send them to a 404 page.
+    # TODO: a permission denied page would be more suitible.
     if not workflow.has_delete_permission(request.user):
         raise Http404
 
+    # if the undelete flag is set to True
     if undelete == True:
         workflow.deleted = False
         workflow.save()
 
+        # the rest of this section figures out who to send messages to
+        # to alert them that the workflow is available again.
         if workflow.public == 'ON':
+            # if the workflow is public, send it to everyone.
             tousers = [get_system_user()]
         else:
+            # otherwise, go through the list of everyone who has
+            # view permissions and only send a message to them.
             tousers = [u for u in workflow.view_permissions.all()]
             tousers.append(workflow.owner)
 
@@ -313,14 +400,19 @@ def delete_workflow(request, id, undelete=False):
                           )
             msg.save()
             WorkflowMessage(workflow=workflow, message=msg).save()
-        
+
+        # finally, redirect the user to the now un-deleted workflow.
         return HttpResponseRedirect(reverse('workflow', args=(workflow.pk,)))
 
+    # the following section handles the POST request.
     if request.method == 'POST':
+        # if the key "YES" is in the POST request, then delete the workflow
         if request.POST.has_key("YES"):
             workflow.deleted = True
             workflow.save()
 
+            # figure out who to send messages about the deletion of the workflow
+            # and send them all messages.
             if workflow.public == 'ON':
                 tousers = [get_system_user()]
             else:
@@ -335,8 +427,9 @@ def delete_workflow(request, id, undelete=False):
                               )
                 msg.save()
                 WorkflowMessage(workflow=workflow, message=msg).save()
-
+        # return home. This is done no matter whether YES or NO is selected.
         return HttpResponseRedirect(reverse('home'))
+    # the function only gets to this point when the request is a GET.
     return render_to_response('delete_workflow.html',
                               {'workflow': workflow},
                               context_instance=RequestContext(request)

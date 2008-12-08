@@ -151,6 +151,12 @@ class ProvenanceListenerWrapper(ProvenanceListener):
 '''
 
 def modify_rexpression_actors(model, replacement_manager):
+    """ This function traverses a workflow to find all the RExpression and File Writing actors
+    and modifys their output directories so that they write to the storage directory specific
+    to the job they belong to.
+
+    TODO: the name of this function doesn't reflect what it does. fix.
+    """
     for e in model.allAtomicEntityList():
         if isinstance(e, RExpression):
             e.Rcwd.setExpression(replacement_manager.get_storage_dir())
