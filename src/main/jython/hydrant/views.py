@@ -1,6 +1,6 @@
 import time, md5, traceback, copy, array, shutil, random
 
-from django import oldforms
+#from django import oldforms
 from django.template.context import RequestContext
 from django.shortcuts import get_object_or_404, render_to_response
 from django.http import Http404, HttpResponseServerError, HttpResponse, HttpResponseRedirect

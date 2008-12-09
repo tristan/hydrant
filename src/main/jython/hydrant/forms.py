@@ -5,7 +5,9 @@ from django.db import models
 from django.forms import ModelForm, Form, ValidationError
 from django.forms.fields import *
 from django.forms.widgets import RadioSelect, RadioFieldRenderer, PasswordInput, Textarea
-from django.core.validators import alnum_re
+#from django.core.validators import alnum_re
+import re
+alnum_re = re.compile(r'^\w+$')
 
 from django.contrib.auth.models import User
 from models import *
