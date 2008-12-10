@@ -83,6 +83,9 @@ class ServletRequest(http.HttpRequest):
     def _get_cookies(self):
         if not hasattr(self, '_cookies'):
             cookies = self._req.getHeader('cookie') or ''
+            # cookies has to be a string type (not unicode), otherwise
+            # it SimpleCookie.load() assumed the input is a dictionary.
+            cookies = str(cookies)
             self._cookies = http.parse_cookie(cookies)
         return self._cookies
 

@@ -1,3 +1,3 @@
-#!/bin/bash/
-./init-server
+#!/bin/bash
+./compile-java
 ./init-database
