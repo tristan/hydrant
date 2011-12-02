@@ -6,6 +6,12 @@ Note: This project has been idle since 2008. Changes with jython, django and the
 Install Instructions
 ====================
 
+    http://web.archive.org/web/20080811105629/http://www.hpc.jcu.edu.au/projects/kepler/wiki/HydrantInstallInstructions
+
+TODO: Check if these instructions actually work, and if so translate these instructions to this document
+
+
+
 Prerequisites
 -------------
 
