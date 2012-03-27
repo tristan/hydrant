@@ -3,14 +3,14 @@ Hydrant
 
 Note: This project has been idle since 2008. Changes with jython, django and the kepler project may mean this code is unusable now.
 
+Hydrant is used in part by the kepler-run-engine module of [Kepler](https://kepler-project.org/), so it may be worth checking out that project if you're interested in similar functionality.
+
 Install Instructions
 ====================
 
     http://web.archive.org/web/20080811105629/http://www.hpc.jcu.edu.au/projects/kepler/wiki/HydrantInstallInstructions
 
 TODO: Check if these instructions actually work, and if so translate these instructions to this document
-
-
 
 Prerequisites
 -------------
